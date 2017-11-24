@@ -1,0 +1,14 @@
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\bin\Release\NotesEditerforD.exe.config
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\bin\Release\NotesEditerforD.exe
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\bin\Release\NotesEditerforD.pdb
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.Form1.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.Form2.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.MusicScore.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.Note.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.NotesButton.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.Properties.Resources.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.UserControl1.resources
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.csproj.GenerateResource.Cache
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.exe
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.pdb
+C:\Users\E.8556\Documents\workspace\NotesEditerforD\NotesEditerforD\obj\Release\NotesEditerforD.csprojResolveAssemblyReference.cache
