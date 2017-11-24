@@ -152,7 +152,7 @@ namespace NotesEditerforD
                                 else lane2[_X, _Y] = "3" + noteSize.ToString("x");
                                 break;
                             case "HellTap":
-                                if (noteSize == 16) lane1[_X, _Y] = "4g";
+                                if (noteSize == 16) lane2[_X, _Y] = "4g";
                                 else lane1[_X, _Y] = "4" + noteSize.ToString("x");
                                 break;
                             default:
