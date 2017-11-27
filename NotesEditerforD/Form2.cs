@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace NotesEditerforD
 {
@@ -15,6 +16,7 @@ namespace NotesEditerforD
         private Form1 form1;
         private int measure, lastScore;
         private static int maxBeatDevide = 192;
+        private string wavePath, jacketPath;
         public Form2(Form1 _form1)
         {
             InitializeComponent();
@@ -28,8 +30,10 @@ namespace NotesEditerforD
             textBoxTitle.Text = _title;
             textBoxArtist.Text = _artist;
             textBoxDesigner.Text = _designer;
-            textBoxWAVE.Text = _wave;
-            textBoxJacket.Text = _jacket;
+            wavePath = _wave;
+            textBoxWAVE.Text = Path.GetFileName(_wave);
+            jacketPath = _jacket;
+            textBoxJacket.Text = Path.GetFileName(_jacket);
             difficultyComboBox.SelectedIndex = _difficulty;
             playLevelUpDown.Value = (decimal)_playLevel;
             BPMUpDown.Value = (decimal)_BPM;
@@ -39,13 +43,16 @@ namespace NotesEditerforD
 
         private void export_Click(object sender, EventArgs e)
         {
-            form1.saveExportData(textBoxID.Text, textBoxTitle.Text, textBoxArtist.Text, textBoxDesigner.Text, textBoxWAVE.Text, textBoxJacket.Text, difficultyComboBox.SelectedIndex, playLevelUpDown.Value, BPMUpDown.Value, textBoxExport.Text, offsetUpDown.Value);
+            form1.saveExportData(textBoxID.Text, textBoxTitle.Text, textBoxArtist.Text, textBoxDesigner.Text, wavePath, jacketPath, difficultyComboBox.SelectedIndex, playLevelUpDown.Value, BPMUpDown.Value, textBoxExport.Text, offsetUpDown.Value);
             if (textBoxExport.Text.Length == 0) MessageBox.Show("保存先を選択してください");
             else if (textBoxTitle.Text.Length == 0) MessageBox.Show("タイトルを入力してください");
+            else if (!File.Exists(wavePath) && textBoxWAVE.Text.Length != 0) MessageBox.Show("曲ファイルが見つかりません\nファイルを選択し直してください");
+            else if (!File.Exists(jacketPath) && textBoxJacket.Text.Length != 0) MessageBox.Show("ジャケットファイルが見つかりません\nファイルを選択し直してください");
             else
             {
-                string path = textBoxExport.Text + "\\" + textBoxTitle.Text + ".sus";
-                if (System.IO.File.Exists(path))
+                string path = textBoxExport.Text + "\\" + textBoxTitle.Text + "\\" + textBoxTitle.Text + ".sus";//susファイルのパス
+                if (!Directory.Exists(textBoxExport.Text + "\\" + textBoxTitle.Text)) Directory.CreateDirectory(textBoxExport.Text + "\\" + textBoxTitle.Text);
+                if (System.IO.File.Exists(path))//すでに同名のsusがあるか
                 {
                     DialogResult result = MessageBox.Show("ファイルを上書きしますか？", "確認", MessageBoxButtons.YesNoCancel);
                     if (result == DialogResult.Yes)
@@ -54,10 +61,22 @@ namespace NotesEditerforD
                         this.Dispose();
                     }
                     else { }
-                }else
+                }
+                else
                 {
                     susExport(path);
                     this.Dispose();
+                }
+                
+                if (!File.Exists(Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(wavePath))) && wavePath.Length != 0)
+                {
+                    FileInfo waveFI = new FileInfo(wavePath);
+                    FileInfo copyWaveFile = waveFI.CopyTo(Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(wavePath)));
+                }
+                if (!File.Exists(Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(jacketPath))) && jacketPath.Length != 0)
+                {
+                    FileInfo jacketFI = new FileInfo(jacketPath);
+                    FileInfo copyJacketFile = jacketFI.CopyTo(Path.Combine(Path.GetDirectoryName(path), Path.GetFileName(jacketPath)));
                 }
             }
         }
@@ -1070,6 +1089,7 @@ namespace NotesEditerforD
             if (ofd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
             {
                 textBoxWAVE.Text = ofd.SafeFileName;
+                wavePath = ofd.FileName;
             }
         }
 
@@ -1077,12 +1097,13 @@ namespace NotesEditerforD
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.FileName = "default";
-            ofd.Filter = "画像ファイル(*.bmp;*.jpg;*.png)|*.bmp;*,jpg;*.png";
+            ofd.Filter = "画像ファイル(*.bmp;*.jpg;*.png)|*.bmp;*.jpg;*.png";
             ofd.RestoreDirectory = true;
 
             if (ofd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
             {
                 textBoxJacket.Text = ofd.SafeFileName;
+                jacketPath = ofd.FileName;
             }
         }
 

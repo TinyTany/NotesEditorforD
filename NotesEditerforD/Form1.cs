@@ -21,12 +21,12 @@ namespace NotesEditerforD
         private int difficulty, longNoteNumber;
         private decimal BPM, playLevel, offset;
         private string fileName;
-        private bool isEdited;
+        private bool isEdited, isNew = true;
         public Form1()
         {
             InitializeComponent();
-            dymsVersion = "0.2.2";
-            Version = "0.2.2";
+            dymsVersion = "0.2.3";
+            Version = "0.2.3";
             comboBoxBeat.SelectedIndex = 1;
             MusicScore2.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
             for (int i = 0; i < maxScore; i++)
@@ -72,6 +72,7 @@ namespace NotesEditerforD
             BPM = 120;
 
             fileName = "NewMusicScore.dyms";
+            pathName = null;
             setEdited(false);
 
             longNoteNumber = 0;
@@ -80,25 +81,9 @@ namespace NotesEditerforD
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
             if (!isEdited) return;
-            if(fileName.Length == 0) { object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e);  }
-            if (pathName != null) { saveScores(pathName); setEdited(false); }
+            if(isNew) { object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e);  }
             else
             {
-                /*
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.FileName = "NewMusicScore.dyms";
-                sfd.DefaultExt = ".dyms";
-                sfd.Filter = "dymsファイル(NotesEditorforD) (.dyms)|*.dyms";
-                sfd.RestoreDirectory = true;
-
-                if (sfd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
-                {
-                    saveScores(sfd.FileName);
-                    setEdited(false);
-                }
-                Text = sfd.FileName + appName;
-                fileName = sfd.FileName;
-                //*/
                 saveScores(fileName);
                 setEdited(false);
             }
@@ -116,9 +101,11 @@ namespace NotesEditerforD
             {
                 saveScores(sfd.FileName);
                 setEdited(false);
+                Text = sfd.FileName + appName;
+                fileName = sfd.FileName;
+                pathName = sfd.FileName;
+                isNew = false;
             }
-            Text = sfd.FileName + appName;
-            fileName = sfd.FileName;
         }
 
         private void saveScores(string path)
@@ -132,9 +119,9 @@ namespace NotesEditerforD
             sw.WriteLine("DESIGNER:" + designer);
             sw.WriteLine("DIFFICULTY:" + difficulty);
             sw.WriteLine("PLAYLEVEL:" + playLevel);
-            sw.WriteLine("WAVE:" + wave);
+            sw.WriteLine("WAVE=" + wave);
             sw.WriteLine("WAVEOFFSET:" + offset);
-            sw.WriteLine("JACKET:" + jacket);
+            sw.WriteLine("JACKET=" + jacket);
             sw.WriteLine("BASEBPM:" + BPM);
             sw.WriteLine("LongNoteNumber:" + longNoteNumber);
             foreach (MusicScore2 mscore in scores2)
@@ -204,6 +191,11 @@ namespace NotesEditerforD
             setEdited(true);
         }
 
+        private void fileMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -255,6 +247,8 @@ namespace NotesEditerforD
             fileName = "NewMusicScore.dyms";
             longNoteNumber = 0;
             setEdited(false);
+            pathName = null;
+            isNew = true;
         }
 
         private void openMenuItem_Click(object sender, EventArgs e)//edt//xxxxxxxxxxxxxxxxxx
@@ -289,7 +283,43 @@ namespace NotesEditerforD
                 string[] noteData;
                 int indx, msIndex;
                 dataLine = sr.ReadLine();
-                if(dataLine == "dymsVersion:0.2.2")
+                if (dataLine == "dymsVersion:0.2.3")
+                {
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    songID = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    title = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    artist = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    designer = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    difficulty = int.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    playLevel = decimal.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split('=');
+                    wave = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    offset = decimal.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split('=');
+                    jacket = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    BPM = decimal.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    longNoteNumber = int.Parse(noteData[1]);
+                }
+                else if (dataLine == "dymsVersion:0.2.2")
                 {
                     dataLine = sr.ReadLine();
                     noteData = dataLine.Split(':');
@@ -377,6 +407,7 @@ namespace NotesEditerforD
                 }
                 for (int i = 0; i < maxScore; i++) scores2[i].update();
                 setEdited(false);
+                isNew = false;
             }
             Text = ofd.SafeFileName + appName;
             fileName = ofd.FileName;
@@ -439,10 +470,12 @@ namespace NotesEditerforD
             //*/
         }
 
+        /*
         public int getBPM()
         {
             return (int)this.numericUpDownBPM.Value;
         }
+        //*/
 
         private void setEditStatus(object sender, EventArgs e)
         {

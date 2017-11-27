@@ -35,8 +35,6 @@
             this.radioAdd = new System.Windows.Forms.RadioButton();
             this.radioEdit = new System.Windows.Forms.RadioButton();
             this.radioDelete = new System.Windows.Forms.RadioButton();
-            this.labelBPM = new System.Windows.Forms.Label();
-            this.numericUpDownBPM = new System.Windows.Forms.NumericUpDown();
             this.labelBeat = new System.Windows.Forms.Label();
             this.comboBoxBeat = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanelMusicScore = new System.Windows.Forms.FlowLayoutPanel();
@@ -63,7 +61,6 @@
             this.AirLine = new NotesEditerforD.NotesButton();
             this.flowLayoutPanelNotesButton.SuspendLayout();
             this.flowLayoutPanelEditStatus.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBPM)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -139,37 +136,6 @@
             this.radioDelete.Text = "Delete";
             this.radioDelete.UseVisualStyleBackColor = true;
             this.radioDelete.Click += new System.EventHandler(this.setEditStatus);
-            // 
-            // labelBPM
-            // 
-            this.labelBPM.AutoSize = true;
-            this.labelBPM.Location = new System.Drawing.Point(443, 31);
-            this.labelBPM.Name = "labelBPM";
-            this.labelBPM.Size = new System.Drawing.Size(29, 12);
-            this.labelBPM.TabIndex = 5;
-            this.labelBPM.Text = "BPM";
-            // 
-            // numericUpDownBPM
-            // 
-            this.numericUpDownBPM.Location = new System.Drawing.Point(478, 26);
-            this.numericUpDownBPM.Maximum = new decimal(new int[] {
-            300,
-            0,
-            0,
-            0});
-            this.numericUpDownBPM.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.numericUpDownBPM.Name = "numericUpDownBPM";
-            this.numericUpDownBPM.Size = new System.Drawing.Size(61, 19);
-            this.numericUpDownBPM.TabIndex = 6;
-            this.numericUpDownBPM.Value = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
             // 
             // labelBeat
             // 
@@ -264,47 +230,56 @@
             this.exportMenuItem,
             this.quitMenuItem});
             this.fileMenuItem.Name = "fileMenuItem";
+            this.fileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
             this.fileMenuItem.Size = new System.Drawing.Size(67, 20);
             this.fileMenuItem.Text = "ファイル(F)";
+            this.fileMenuItem.Click += new System.EventHandler(this.fileMenuItem_Click);
             // 
             // newMenuItem
             // 
             this.newMenuItem.Name = "newMenuItem";
             this.newMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
-            this.newMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.newMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newMenuItem.Size = new System.Drawing.Size(254, 22);
             this.newMenuItem.Text = "新規作成(N)";
             // 
             // openMenuItem
             // 
             this.openMenuItem.Name = "openMenuItem";
             this.openMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
-            this.openMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.openMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openMenuItem.Size = new System.Drawing.Size(254, 22);
             this.openMenuItem.Text = "開く(O)...";
             // 
             // saveAsMenuItem
             // 
             this.saveAsMenuItem.Name = "saveAsMenuItem";
             this.saveAsMenuItem.ShortcutKeyDisplayString = "";
-            this.saveAsMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.saveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.saveAsMenuItem.Size = new System.Drawing.Size(254, 22);
             this.saveAsMenuItem.Text = "名前をつけて保存(A)...";
             // 
             // saveMenuItem
             // 
             this.saveMenuItem.Name = "saveMenuItem";
             this.saveMenuItem.ShortcutKeyDisplayString = "Ctrl+S";
-            this.saveMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.saveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveMenuItem.Size = new System.Drawing.Size(254, 22);
             this.saveMenuItem.Text = "上書き保存(S)";
             // 
             // exportMenuItem
             // 
             this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.exportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.exportMenuItem.Size = new System.Drawing.Size(254, 22);
             this.exportMenuItem.Text = "エクスポート(X)...";
             // 
             // quitMenuItem
             // 
             this.quitMenuItem.Name = "quitMenuItem";
-            this.quitMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.quitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.quitMenuItem.Size = new System.Drawing.Size(254, 22);
             this.quitMenuItem.Text = "終了(Q)";
             // 
             // Tap
@@ -436,8 +411,6 @@
             this.Controls.Add(this.labelGrid);
             this.Controls.Add(this.comboBoxBeat);
             this.Controls.Add(this.labelBeat);
-            this.Controls.Add(this.numericUpDownBPM);
-            this.Controls.Add(this.labelBPM);
             this.Controls.Add(this.flowLayoutPanelEditStatus);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.flowLayoutPanelNotesButton);
@@ -452,7 +425,6 @@
             this.flowLayoutPanelNotesButton.PerformLayout();
             this.flowLayoutPanelEditStatus.ResumeLayout(false);
             this.flowLayoutPanelEditStatus.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownBPM)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -474,8 +446,6 @@
         private System.Windows.Forms.RadioButton radioAdd;
         private System.Windows.Forms.RadioButton radioEdit;
         private System.Windows.Forms.RadioButton radioDelete;
-        private System.Windows.Forms.Label labelBPM;
-        private System.Windows.Forms.NumericUpDown numericUpDownBPM;
         private System.Windows.Forms.Label labelBeat;
         private System.Windows.Forms.ComboBox comboBoxBeat;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanelMusicScore;
