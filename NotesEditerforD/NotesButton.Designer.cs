@@ -128,7 +128,8 @@
             // 
             // notesPreview
             // 
-            this.notesPreview.BackColor = System.Drawing.Color.White;
+            this.notesPreview.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.notesPreview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.notesPreview.Location = new System.Drawing.Point(2, 11);
             this.notesPreview.Margin = new System.Windows.Forms.Padding(2);
             this.notesPreview.Name = "notesPreview";

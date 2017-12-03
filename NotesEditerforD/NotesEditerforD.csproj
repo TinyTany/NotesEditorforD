@@ -89,12 +89,6 @@
     <Compile Include="SpecialButton.Designer.cs">
       <DependentUpon>SpecialButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControl1.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -118,9 +112,6 @@
     <EmbeddedResource Include="SpecialButton.resx">
       <DependentUpon>SpecialButton.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -138,9 +129,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MusicScore.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EndAir.png" />
@@ -207,6 +195,39 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AirLine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MusicScore.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BPM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HoldPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SlidePreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TapPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AirUpCPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExTapPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FlickPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HellTapPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AirDownCPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AirLinePreview.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

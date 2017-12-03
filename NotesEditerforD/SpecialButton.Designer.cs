@@ -38,20 +38,42 @@
             // 
             this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label1.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.label1.Location = new System.Drawing.Point(10, 10);
+            this.label1.Location = new System.Drawing.Point(13, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(94, 23);
             this.label1.TabIndex = 0;
             this.label1.Text = "Special";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // numericUpDown1
             // 
             this.numericUpDown1.DecimalPlaces = 1;
+            this.numericUpDown1.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
             this.numericUpDown1.Location = new System.Drawing.Point(104, 83);
+            this.numericUpDown1.Maximum = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(120, 19);
             this.numericUpDown1.TabIndex = 1;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
             // label2
             // 
@@ -72,6 +94,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SpecialButton";
             this.Size = new System.Drawing.Size(227, 105);
+            this.Load += new System.EventHandler(this.SpecialButton_Load);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

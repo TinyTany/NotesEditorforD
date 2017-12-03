@@ -83,6 +83,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap AirDownCPreview {
+            get {
+                object obj = ResourceManager.GetObject("AirDownCPreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap AirDownL {
             get {
                 object obj = ResourceManager.GetObject("AirDownL", resourceCulture);
@@ -113,9 +123,29 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap AirLinePreview {
+            get {
+                object obj = ResourceManager.GetObject("AirLinePreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap AirUpC {
             get {
                 object obj = ResourceManager.GetObject("AirUpC", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap AirUpCPreview {
+            get {
+                object obj = ResourceManager.GetObject("AirUpCPreview", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,6 +183,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap BPM {
+            get {
+                object obj = ResourceManager.GetObject("BPM", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap EndAir {
             get {
                 object obj = ResourceManager.GetObject("EndAir", resourceCulture);
@@ -173,6 +213,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap ExTapPreview {
+            get {
+                object obj = ResourceManager.GetObject("ExTapPreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap Flick {
             get {
                 object obj = ResourceManager.GetObject("Flick", resourceCulture);
@@ -183,9 +233,29 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap FlickPreview {
+            get {
+                object obj = ResourceManager.GetObject("FlickPreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap HellTap {
             get {
                 object obj = ResourceManager.GetObject("HellTap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap HellTapPreview {
+            get {
+                object obj = ResourceManager.GetObject("HellTapPreview", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,6 +293,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap HoldPreview {
+            get {
+                object obj = ResourceManager.GetObject("HoldPreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap MusicScore {
             get {
                 object obj = ResourceManager.GetObject("MusicScore", resourceCulture);
@@ -253,6 +333,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap SlidePreview {
+            get {
+                object obj = ResourceManager.GetObject("SlidePreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap SlideTap {
             get {
                 object obj = ResourceManager.GetObject("SlideTap", resourceCulture);
@@ -266,6 +356,16 @@ namespace NotesEditerforD.Properties {
         internal static System.Drawing.Bitmap Tap {
             get {
                 object obj = ResourceManager.GetObject("Tap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
+        internal static System.Drawing.Bitmap TapPreview {
+            get {
+                object obj = ResourceManager.GetObject("TapPreview", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
