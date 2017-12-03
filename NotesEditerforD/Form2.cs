@@ -102,8 +102,8 @@ namespace NotesEditerforD
             sw.WriteLine("#WAVE " + '"' + textBoxWAVE.Text + '"');
             sw.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
             sw.WriteLine("#JACKET " + '"' + textBoxJacket.Text + '"');
-            sw.WriteLine("#BASEBPM " + BPMUpDown.Value);
-            sw.WriteLine("#BPM01: " + BPMUpDown.Value + ".0");
+            //sw.WriteLine("#BASEBPM " + BPMUpDown.Value);
+            sw.WriteLine("#BPM01: " + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
 
             sw.WriteLine();

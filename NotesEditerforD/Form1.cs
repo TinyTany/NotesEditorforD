@@ -23,7 +23,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.3", Version = "0.3";
+        private const string dymsVersion = "0.3", Version = "0.3.1";
         public Form1()
         {
             InitializeComponent();
@@ -231,15 +231,15 @@ namespace NotesEditerforD
                 if (comboBoxGrid.SelectedIndex == 0) comboBoxGrid.SelectedIndex = comboBoxGrid.Items.Count - 1;
                 else comboBoxGrid.SelectedIndex--;
             }
-            else if (e.KeyCode == Keys.D1) { MusicScore2.SelectedNoteStyle = "Tap"; activeNotesButton(Tap); }
-            else if (e.KeyCode == Keys.D2) { MusicScore2.SelectedNoteStyle = "ExTap"; activeNotesButton(ExTap); }
-            else if (e.KeyCode == Keys.D3) { MusicScore2.SelectedNoteStyle = "Flick"; activeNotesButton(Flick); }
-            else if (e.KeyCode == Keys.D4) { MusicScore2.SelectedNoteStyle = "HellTap"; activeNotesButton(HellTap); }
-            else if (e.KeyCode == Keys.D5) { MusicScore2.SelectedNoteStyle = "Hold"; activeNotesButton(Hold); }
-            else if (e.KeyCode == Keys.D6) { MusicScore2.SelectedNoteStyle = "Slide"; activeNotesButton(Slide); }
-            else if (e.KeyCode == Keys.D7) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
-            else if (e.KeyCode == Keys.D8) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
-            else if (e.KeyCode == Keys.D9) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
+            else if (e.KeyCode == Keys.F1) { MusicScore2.SelectedNoteStyle = "Tap"; activeNotesButton(Tap); }
+            else if (e.KeyCode == Keys.F2) { MusicScore2.SelectedNoteStyle = "ExTap"; activeNotesButton(ExTap); }
+            else if (e.KeyCode == Keys.F3) { MusicScore2.SelectedNoteStyle = "Flick"; activeNotesButton(Flick); }
+            else if (e.KeyCode == Keys.F4) { MusicScore2.SelectedNoteStyle = "HellTap"; activeNotesButton(HellTap); }
+            else if (e.KeyCode == Keys.F5) { MusicScore2.SelectedNoteStyle = "Hold"; activeNotesButton(Hold); }
+            else if (e.KeyCode == Keys.F6) { MusicScore2.SelectedNoteStyle = "Slide"; activeNotesButton(Slide); }
+            else if (e.KeyCode == Keys.F7) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
+            else if (e.KeyCode == Keys.F8) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
+            else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
             else if (AirUp.IsActive)
             {
                 if (e.KeyCode == Keys.L) AirUp.setDirection("Left");
