@@ -512,6 +512,7 @@ namespace NotesEditerforD
                 for (int i = 0; i < maxScore; i++) scores2[i].update();
                 setEdited(false);
                 isNew = false;
+                sr.Close();
             }
             Text = ofd.SafeFileName + appName;
             fileName = ofd.FileName;
