@@ -195,6 +195,11 @@ namespace NotesEditerforD
                             {
                                 tmpLongNoteNumber = shortNotes[i].LongNoteNumber;
                                 deleteNote(startNote);
+                                if (!form1.noSlideRelay)
+                                {
+                                    if (shortNotes.Count > i + 1)
+                                        deleteNote(shortNotes[i + 1]);
+                                }
                                 break;
                             }
                         }
