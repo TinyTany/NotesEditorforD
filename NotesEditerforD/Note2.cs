@@ -160,7 +160,7 @@ namespace NotesEditerforD
             return canvas;
         }
         //*
-        private Bitmap setNoteImage(string _noteStyle)
+        public Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
         {
             Bitmap noteImage;
             switch (_noteStyle)
@@ -234,6 +234,9 @@ namespace NotesEditerforD
                             noteImage = Properties.Resources.AirDownC;
                             break;
                     }
+                    break;
+                case "BPM":
+                    noteImage = Properties.Resources.BPM;
                     break;
                 default:
                     noteImage = Properties.Resources.Tap;

@@ -22,6 +22,7 @@ namespace NotesEditerforD
         public Boolean IsAir { get { return isAir; } set { isAir = value; } }
         [SettingsBindable(true)]
         public Boolean IsActive { get { return isActive; } set { isActive = value; } }
+        public Image CImage { get { return notesPreview.Image; } set { notesPreview.Image = value; } }
 
         public NotesButton()
         {
@@ -29,7 +30,13 @@ namespace NotesEditerforD
             trackBar_size.Value = 4;
         }
 
-        private void trackBar1_Scroll(object sender, EventArgs e)
+        public int TrackBar_Size
+        {
+            get { return trackBar_size.Value; }
+            set { trackBar_size.Value = value; }
+        }
+
+        public void trackBar1_Scroll(object sender, EventArgs e)
         {
             //最大値（16/16）、最小値（1/16）を設定
             trackBar_size.Maximum = 16;
@@ -71,7 +78,15 @@ namespace NotesEditerforD
             if (bol) this.radioC.Checked = true;
         }
 
-        private void setAirDirection()
+        public void setDirection(string direction)
+        {
+            if (direction == "Left") radioL.Checked = true;
+            else if (direction == "Center") radioC.Checked = true;
+            else if (direction == "Right") radioR.Checked = true;
+            else radioC.Checked = true;
+        }
+
+        public void setAirDirection()
         {
             if (radioR.Checked) MusicScore2.SelectedAirDirection = "Right";
             else if (radioL.Checked) MusicScore2.SelectedAirDirection = "Left";
@@ -91,11 +106,12 @@ namespace NotesEditerforD
 
         private void label_notes_Click(object sender, EventArgs e)
         {
-            this.BackColor = SystemColors.ActiveBorder;
-            MusicScore2.SelectedNoteSize = trackBar_size.Value;
-            MusicScore2.SelectedNoteStyle = notesName;
-            setAirDirection();
-            isActive = true;
+            //this.BackColor = SystemColors.ActiveBorder;
+            //MusicScore2.SelectedNoteSize = trackBar_size.Value;
+            //MusicScore2.SelectedNoteStyle = notesName;
+            //setAirDirection();
+            //isActive = true;
+            //notesButtonActive();
             Form1.activeNotesButton(this);
         }
 
@@ -104,6 +120,7 @@ namespace NotesEditerforD
             this.BackColor = SystemColors.ActiveBorder;
             MusicScore2.SelectedNoteSize = trackBar_size.Value;
             MusicScore2.SelectedNoteStyle = notesName;
+            setAirDirection();
             isActive = true;
         }
 

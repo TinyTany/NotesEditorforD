@@ -12,7 +12,9 @@ namespace NotesEditerforD
 {
     public class MusicScore2 : PictureBox
     {
-        private static int selectedBeat, selectedGrid, selectedNoteSize, index, tmpLongNoteNumber;
+        private static int selectedBeat, selectedGrid, selectedNoteSize, tmpLongNoteNumber;
+        private static int topMargin = 5, bottomMargin = 5, leftMargin = 20, rightMargin = 30;
+        private int index;
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
         private Point startPosition, endPosition;
         public Form1 form1;
@@ -30,7 +32,7 @@ namespace NotesEditerforD
             selectedAirDirection = "Center";
             Location = new Point(0, 0);
             Margin = new Padding(10, 7, 10, 7);
-            Size = new Size(170, 778);
+            Size = new Size(160 + leftMargin + rightMargin, 768 + topMargin + bottomMargin);
             BackgroundImage = Properties.Resources.MusicScore;
             storeImage = Properties.Resources.MusicScore;
             previewNote = null;
@@ -93,12 +95,32 @@ namespace NotesEditerforD
             set { selectedEditStatus = value; }
         }
 
+        public static int TopMargin
+        {
+            get { return topMargin; }
+        }
+
+        public static int BottomMargin
+        {
+            get { return bottomMargin; }
+        }
+
+        public static int LeftMargin
+        {
+            get { return leftMargin; }
+        }
+
+        public static int RightMargin
+        {
+            get { return rightMargin; }
+        }
+
         public void setNote(string[] _noteData , string dymsVersion)
         {
             Point notePosition;
             int noteSize, longNoteNumber;
             string noteStyle, airDirection;
-            if(dymsVersion != "0.1")
+            if(dymsVersion == "0.3")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
                 startPosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
@@ -108,11 +130,21 @@ namespace NotesEditerforD
                 airDirection = _noteData[8];
                 longNoteNumber = int.Parse(_noteData[9]);
             }
+            else if(dymsVersion != "0.1")
+            {
+                notePosition = new Point(int.Parse(_noteData[2]) + leftMargin - 5, int.Parse(_noteData[3]));
+                startPosition = new Point(int.Parse(_noteData[4]) + leftMargin - 5, int.Parse(_noteData[5]));
+                endPosition = new Point(int.Parse(_noteData[6]) + leftMargin - 5, int.Parse(_noteData[7]));
+                noteSize = int.Parse(_noteData[1]);
+                noteStyle = _noteData[0];
+                airDirection = _noteData[8];
+                longNoteNumber = int.Parse(_noteData[9]);
+            }
             else
             {
-                notePosition = new Point(int.Parse(_noteData[3]), int.Parse(_noteData[4]));
-                startPosition = new Point(int.Parse(_noteData[5]), int.Parse(_noteData[6]));
-                endPosition = new Point(int.Parse(_noteData[7]), int.Parse(_noteData[8]));
+                notePosition = new Point(int.Parse(_noteData[3]) + leftMargin - 5, int.Parse(_noteData[4]));
+                startPosition = new Point(int.Parse(_noteData[5]) + leftMargin - 5, int.Parse(_noteData[6]));
+                endPosition = new Point(int.Parse(_noteData[7]) + leftMargin - 5, int.Parse(_noteData[8]));
                 noteSize = int.Parse(_noteData[1]) / 10;
                 noteStyle = _noteData[0];
                 airDirection = _noteData[9];
@@ -251,6 +283,51 @@ namespace NotesEditerforD
                 }
                 else Cursor.Current = Cursors.No;
             }
+            if (selectedEditStatus != "Add" && previewNote != null) previewNote = null;
+            else if (selectedEditStatus == "Add" && previewNote == null)//ショートカットキーによるAddモードへの変更時の処理
+            {
+                if (selectedNoteStyle == "AirLine")
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                }
+                else
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                }
+            }
+            else if (selectedEditStatus == "Add" && previewNote != null && previewNote.NoteStyle != selectedNoteStyle)//previewノーツにノーツスタイルを反映
+            {
+                if (selectedNoteStyle == "AirLine")
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                }
+                else
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                }
+            }
+            else if (selectedEditStatus == "Add" && previewNote != null && previewNote.AirDirection != selectedAirDirection)//previewノーツにAirの向きを反映
+            {
+                if (selectedNoteStyle == "AirLine")
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                }
+                else
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                }
+            }
+            else if (selectedEditStatus == "Add" && previewNote != null && previewNote.NoteSize != selectedNoteSize)//previewノーツにノーツサイズを反映
+            {
+                if (selectedNoteStyle == "AirLine")
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                }
+                else
+                {
+                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                }
+            }
             update();
         }
 
@@ -261,8 +338,8 @@ namespace NotesEditerforD
                 ShortNote shortNote;
                 endPosition = locationize(e.Location);
                 if (endPosition.Y < 2) endPosition.Y = 2;
-                if (endPosition.X < 6) endPosition.X = 6;
-                if (endPosition.X > 166 - selectedNoteSize * 10) endPosition.X = 166 - selectedNoteSize * 10; 
+                if (endPosition.X < leftMargin + 1) endPosition.X = leftMargin + 1;
+                if (endPosition.X > 161 + leftMargin - selectedNoteSize * 10) endPosition.X = 161 + leftMargin - selectedNoteSize * 10;
                 switch (selectedNoteStyle)
                 {
                     case "Hold":
@@ -321,7 +398,7 @@ namespace NotesEditerforD
 
         private void this_MouseLeave(object sender, EventArgs e)
         {
-            if(SelectedEditStatus == "Add")
+            if(SelectedEditStatus == "Add" && previewNote != null)
             {
                 previewNote = null;
                 update();
@@ -426,7 +503,7 @@ namespace NotesEditerforD
         {
             storeImage = Properties.Resources.MusicScore;
             Graphics g = Graphics.FromImage(storeImage);
-            foreach (ShortNote _note in dummyNotes)
+            foreach (ShortNote _note in dummyNotes)//ダミーノーツを描画
             {
                 if (_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
                 else if (_note.NoteStyle == "HoldLine" || _note.NoteStyle == "AirLine") g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
@@ -437,7 +514,7 @@ namespace NotesEditerforD
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
             }
-            foreach (ShortNote _note in shortNotes)
+            foreach (ShortNote _note in shortNotes)//普通のノーツを描画
             {
                 if(_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
                 else if(_note.NoteStyle == "HoldLine" || _note.NoteStyle == "AirLine") g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
@@ -448,12 +525,12 @@ namespace NotesEditerforD
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
             }
-            if (previewNote != null)
+            if (previewNote != null)//プレビュー用のノーツを描画
             {
                 if (previewNote.NoteStyle == "AirUp" || previewNote.NoteStyle == "AirDown") g.DrawImage(previewNote.NoteImage, new Point(previewNote.NotePosition.X, previewNote.NotePosition.Y - 32));
                 else g.DrawImage(previewNote.NoteImage, previewNote.NotePosition);
             }
-            if (previewLongNote != null)
+            if (previewLongNote != null)//プレビュー用ロングノーツを描画
             {
                 if (previewLongNote.NoteStyle == "SlideLine")
                 {
@@ -462,6 +539,9 @@ namespace NotesEditerforD
                 }
                 else g.DrawImage(previewLongNote.setNoteImage(), new Point(previewLongNote.StartPosition.X, previewLongNote.EndPosition.Y));
             }
+            g.DrawString((2 * index + 1).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 768 - 5, 30, 10));//MeasureNumber
+            g.DrawString((2 * (index + 1)).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 384 - 5, 30, 10));//MeasureNumber
+            if(index == 0) g.DrawString(form1.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, 768 - 5, 50, 15));//BPM
             BackgroundImage = storeImage;
             g.Dispose();
             this.Refresh();
@@ -504,11 +584,12 @@ namespace NotesEditerforD
         private Point locationize(Point p)
         {
             int noteX, noteY;
-            if (p.X > 165 - 10 * selectedNoteSize) noteX = 165 - 10 * selectedNoteSize;
-            else if (p.X < 5) noteX = 5;
-            else noteX = ((p.X - 5) / (10 * (16 / selectedGrid))) * (10 * (16 / selectedGrid)) + 5;
-            if (p.Y < 5) noteY = 5;
-            else noteY = 778 - ((778 - p.Y - 5) / (768 / (2 * selectedBeat))) * (768 / (2 * selectedBeat)) - 5;
+            if (p.X > 160 + leftMargin - 10 * selectedNoteSize) noteX = 160 + leftMargin - 10 * selectedNoteSize;
+            else if (p.X < leftMargin) noteX = leftMargin;
+            else noteX = ((p.X - leftMargin) / (10 * (16 / selectedGrid))) * (10 * (16 / selectedGrid)) + leftMargin;
+            if (p.Y < topMargin) noteY = topMargin;
+            else if (p.Y > 768 + topMargin) noteY = 768 + topMargin;
+            else noteY = 768 + topMargin + bottomMargin - ((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (2 * selectedBeat)) - topMargin;
             noteX += 1; noteY += -3;//描写の都合上の位置調整
 
             return new Point(noteX, noteY);

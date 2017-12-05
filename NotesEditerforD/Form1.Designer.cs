@@ -50,6 +50,11 @@
             this.saveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BPMupdown = new System.Windows.Forms.NumericUpDown();
+            this.labelBPM = new System.Windows.Forms.Label();
+            this.AirDown = new NotesEditerforD.NotesButton();
+            this.AirLine = new NotesEditerforD.NotesButton();
+            this.BPMButton = new NotesEditerforD.SpecialButton();
             this.Tap = new NotesEditerforD.NotesButton();
             this.ExTap = new NotesEditerforD.NotesButton();
             this.Flick = new NotesEditerforD.NotesButton();
@@ -57,11 +62,10 @@
             this.Hold = new NotesEditerforD.NotesButton();
             this.Slide = new NotesEditerforD.NotesButton();
             this.AirUp = new NotesEditerforD.NotesButton();
-            this.AirDown = new NotesEditerforD.NotesButton();
-            this.AirLine = new NotesEditerforD.NotesButton();
             this.flowLayoutPanelNotesButton.SuspendLayout();
             this.flowLayoutPanelEditStatus.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BPMupdown)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -86,6 +90,7 @@
             this.flowLayoutPanelNotesButton.Controls.Add(this.AirUp);
             this.flowLayoutPanelNotesButton.Controls.Add(this.AirDown);
             this.flowLayoutPanelNotesButton.Controls.Add(this.AirLine);
+            this.flowLayoutPanelNotesButton.Controls.Add(this.BPMButton);
             this.flowLayoutPanelNotesButton.Location = new System.Drawing.Point(7, 26);
             this.flowLayoutPanelNotesButton.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanelNotesButton.Name = "flowLayoutPanelNotesButton";
@@ -140,7 +145,7 @@
             // labelBeat
             // 
             this.labelBeat.AutoSize = true;
-            this.labelBeat.Location = new System.Drawing.Point(556, 29);
+            this.labelBeat.Location = new System.Drawing.Point(587, 31);
             this.labelBeat.Name = "labelBeat";
             this.labelBeat.Size = new System.Drawing.Size(29, 12);
             this.labelBeat.TabIndex = 7;
@@ -161,7 +166,7 @@
             "96",
             "128",
             "192"});
-            this.comboBoxBeat.Location = new System.Drawing.Point(591, 26);
+            this.comboBoxBeat.Location = new System.Drawing.Point(622, 26);
             this.comboBoxBeat.Name = "comboBoxBeat";
             this.comboBoxBeat.Size = new System.Drawing.Size(46, 20);
             this.comboBoxBeat.TabIndex = 8;
@@ -181,7 +186,7 @@
             // labelGrid
             // 
             this.labelGrid.AutoSize = true;
-            this.labelGrid.Location = new System.Drawing.Point(652, 29);
+            this.labelGrid.Location = new System.Drawing.Point(683, 31);
             this.labelGrid.Name = "labelGrid";
             this.labelGrid.Size = new System.Drawing.Size(26, 12);
             this.labelGrid.TabIndex = 10;
@@ -194,7 +199,7 @@
             "4",
             "8",
             "16"});
-            this.comboBoxGrid.Location = new System.Drawing.Point(684, 25);
+            this.comboBoxGrid.Location = new System.Drawing.Point(715, 26);
             this.comboBoxGrid.Name = "comboBoxGrid";
             this.comboBoxGrid.Size = new System.Drawing.Size(46, 20);
             this.comboBoxGrid.TabIndex = 11;
@@ -204,7 +209,7 @@
             // labelTotalNotes
             // 
             this.labelTotalNotes.AutoSize = true;
-            this.labelTotalNotes.Location = new System.Drawing.Point(751, 31);
+            this.labelTotalNotes.Location = new System.Drawing.Point(782, 31);
             this.labelTotalNotes.Name = "labelTotalNotes";
             this.labelTotalNotes.Size = new System.Drawing.Size(79, 12);
             this.labelTotalNotes.TabIndex = 12;
@@ -282,10 +287,100 @@
             this.quitMenuItem.Size = new System.Drawing.Size(254, 22);
             this.quitMenuItem.Text = "終了(Q)";
             // 
+            // BPMupdown
+            // 
+            this.BPMupdown.DecimalPlaces = 1;
+            this.BPMupdown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.BPMupdown.Location = new System.Drawing.Point(503, 27);
+            this.BPMupdown.Maximum = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.BPMupdown.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.BPMupdown.Name = "BPMupdown";
+            this.BPMupdown.Size = new System.Drawing.Size(66, 19);
+            this.BPMupdown.TabIndex = 14;
+            this.BPMupdown.Value = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            this.BPMupdown.ValueChanged += new System.EventHandler(this.BPMupdown_ValueChanged);
+            // 
+            // labelBPM
+            // 
+            this.labelBPM.AutoSize = true;
+            this.labelBPM.Location = new System.Drawing.Point(443, 31);
+            this.labelBPM.Name = "labelBPM";
+            this.labelBPM.Size = new System.Drawing.Size(54, 12);
+            this.labelBPM.TabIndex = 15;
+            this.labelBPM.Text = "StartBPM";
+            // 
+            // AirDown
+            // 
+            this.AirDown.AutoSize = true;
+            this.AirDown.BackColor = System.Drawing.SystemColors.Control;
+            this.AirDown.CImage = global::NotesEditerforD.Properties.Resources.AirDownCPreview;
+            this.AirDown.IsActive = false;
+            this.AirDown.IsAir = true;
+            this.AirDown.Location = new System.Drawing.Point(1, 696);
+            this.AirDown.Margin = new System.Windows.Forms.Padding(1);
+            this.AirDown.Name = "AirDown";
+            this.AirDown.NotesName = "AirDown";
+            this.AirDown.Size = new System.Drawing.Size(227, 97);
+            this.AirDown.TabIndex = 7;
+            this.AirDown.TrackBar_Size = 4;
+            // 
+            // AirLine
+            // 
+            this.AirLine.AutoSize = true;
+            this.AirLine.BackColor = System.Drawing.SystemColors.Control;
+            this.AirLine.CImage = global::NotesEditerforD.Properties.Resources.AirLinePreview;
+            this.AirLine.IsActive = false;
+            this.AirLine.IsAir = false;
+            this.AirLine.Location = new System.Drawing.Point(1, 795);
+            this.AirLine.Margin = new System.Windows.Forms.Padding(1);
+            this.AirLine.Name = "AirLine";
+            this.AirLine.NotesName = "AirLine";
+            this.AirLine.Size = new System.Drawing.Size(227, 97);
+            this.AirLine.TabIndex = 8;
+            this.AirLine.TrackBar_Size = 4;
+            // 
+            // BPMButton
+            // 
+            this.BPMButton.Label = "BPM";
+            this.BPMButton.Location = new System.Drawing.Point(2, 895);
+            this.BPMButton.Margin = new System.Windows.Forms.Padding(2);
+            this.BPMButton.MaxValue = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.BPMButton.MinValue = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.BPMButton.Name = "BPMButton";
+            this.BPMButton.NoteName = "BPM";
+            this.BPMButton.Size = new System.Drawing.Size(227, 105);
+            this.BPMButton.TabIndex = 9;
+            this.BPMButton.Visible = false;
+            // 
             // Tap
             // 
             this.Tap.AutoSize = true;
             this.Tap.BackColor = System.Drawing.SystemColors.Control;
+            this.Tap.CImage = global::NotesEditerforD.Properties.Resources.TapPreview;
             this.Tap.Cursor = System.Windows.Forms.Cursors.Default;
             this.Tap.IsActive = true;
             this.Tap.IsAir = false;
@@ -295,11 +390,13 @@
             this.Tap.NotesName = "Tap";
             this.Tap.Size = new System.Drawing.Size(227, 97);
             this.Tap.TabIndex = 0;
+            this.Tap.TrackBar_Size = 4;
             // 
             // ExTap
             // 
             this.ExTap.AutoSize = true;
             this.ExTap.BackColor = System.Drawing.SystemColors.Control;
+            this.ExTap.CImage = global::NotesEditerforD.Properties.Resources.ExTapPreview;
             this.ExTap.IsActive = false;
             this.ExTap.IsAir = false;
             this.ExTap.Location = new System.Drawing.Point(1, 100);
@@ -307,12 +404,14 @@
             this.ExTap.Name = "ExTap";
             this.ExTap.NotesName = "ExTap";
             this.ExTap.Size = new System.Drawing.Size(227, 97);
-            this.ExTap.TabIndex = 5;
+            this.ExTap.TabIndex = 1;
+            this.ExTap.TrackBar_Size = 4;
             // 
             // Flick
             // 
             this.Flick.AutoSize = true;
             this.Flick.BackColor = System.Drawing.SystemColors.Control;
+            this.Flick.CImage = global::NotesEditerforD.Properties.Resources.FlickPreview;
             this.Flick.IsActive = false;
             this.Flick.IsAir = false;
             this.Flick.Location = new System.Drawing.Point(1, 199);
@@ -320,12 +419,14 @@
             this.Flick.Name = "Flick";
             this.Flick.NotesName = "Flick";
             this.Flick.Size = new System.Drawing.Size(227, 97);
-            this.Flick.TabIndex = 4;
+            this.Flick.TabIndex = 2;
+            this.Flick.TrackBar_Size = 4;
             // 
             // HellTap
             // 
             this.HellTap.AutoSize = true;
             this.HellTap.BackColor = System.Drawing.SystemColors.Control;
+            this.HellTap.CImage = global::NotesEditerforD.Properties.Resources.HellTapPreview;
             this.HellTap.IsActive = false;
             this.HellTap.IsAir = false;
             this.HellTap.Location = new System.Drawing.Point(2, 299);
@@ -333,12 +434,14 @@
             this.HellTap.Name = "HellTap";
             this.HellTap.NotesName = "HellTap";
             this.HellTap.Size = new System.Drawing.Size(227, 97);
-            this.HellTap.TabIndex = 10;
+            this.HellTap.TabIndex = 3;
+            this.HellTap.TrackBar_Size = 4;
             // 
             // Hold
             // 
             this.Hold.AutoSize = true;
             this.Hold.BackColor = System.Drawing.SystemColors.Control;
+            this.Hold.CImage = global::NotesEditerforD.Properties.Resources.HoldPreview;
             this.Hold.IsActive = false;
             this.Hold.IsAir = false;
             this.Hold.Location = new System.Drawing.Point(1, 399);
@@ -346,12 +449,14 @@
             this.Hold.Name = "Hold";
             this.Hold.NotesName = "Hold";
             this.Hold.Size = new System.Drawing.Size(227, 97);
-            this.Hold.TabIndex = 3;
+            this.Hold.TabIndex = 4;
+            this.Hold.TrackBar_Size = 4;
             // 
             // Slide
             // 
             this.Slide.AutoSize = true;
             this.Slide.BackColor = System.Drawing.SystemColors.Control;
+            this.Slide.CImage = global::NotesEditerforD.Properties.Resources.SlidePreview;
             this.Slide.IsActive = false;
             this.Slide.IsAir = false;
             this.Slide.Location = new System.Drawing.Point(1, 498);
@@ -359,12 +464,14 @@
             this.Slide.Name = "Slide";
             this.Slide.NotesName = "Slide";
             this.Slide.Size = new System.Drawing.Size(227, 97);
-            this.Slide.TabIndex = 2;
+            this.Slide.TabIndex = 5;
+            this.Slide.TrackBar_Size = 4;
             // 
             // AirUp
             // 
             this.AirUp.AutoSize = true;
             this.AirUp.BackColor = System.Drawing.SystemColors.Control;
+            this.AirUp.CImage = global::NotesEditerforD.Properties.Resources.AirUpCPreview;
             this.AirUp.IsActive = false;
             this.AirUp.IsAir = true;
             this.AirUp.Location = new System.Drawing.Point(1, 597);
@@ -373,32 +480,7 @@
             this.AirUp.NotesName = "AirUp";
             this.AirUp.Size = new System.Drawing.Size(227, 97);
             this.AirUp.TabIndex = 6;
-            // 
-            // AirDown
-            // 
-            this.AirDown.AutoSize = true;
-            this.AirDown.BackColor = System.Drawing.SystemColors.Control;
-            this.AirDown.IsActive = false;
-            this.AirDown.IsAir = true;
-            this.AirDown.Location = new System.Drawing.Point(1, 696);
-            this.AirDown.Margin = new System.Windows.Forms.Padding(1);
-            this.AirDown.Name = "AirDown";
-            this.AirDown.NotesName = "AirDown";
-            this.AirDown.Size = new System.Drawing.Size(227, 97);
-            this.AirDown.TabIndex = 7;
-            // 
-            // AirLine
-            // 
-            this.AirLine.AutoSize = true;
-            this.AirLine.BackColor = System.Drawing.SystemColors.Control;
-            this.AirLine.IsActive = false;
-            this.AirLine.IsAir = false;
-            this.AirLine.Location = new System.Drawing.Point(1, 795);
-            this.AirLine.Margin = new System.Windows.Forms.Padding(1);
-            this.AirLine.Name = "AirLine";
-            this.AirLine.NotesName = "AirLine";
-            this.AirLine.Size = new System.Drawing.Size(227, 97);
-            this.AirLine.TabIndex = 9;
+            this.AirUp.TrackBar_Size = 4;
             // 
             // Form1
             // 
@@ -406,6 +488,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1384, 886);
+            this.Controls.Add(this.labelBPM);
+            this.Controls.Add(this.BPMupdown);
             this.Controls.Add(this.labelTotalNotes);
             this.Controls.Add(this.comboBoxGrid);
             this.Controls.Add(this.labelGrid);
@@ -416,17 +500,20 @@
             this.Controls.Add(this.flowLayoutPanelNotesButton);
             this.Controls.Add(this.flowLayoutPanelMusicScore);
             this.Controls.Add(this.menuStrip1);
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "NotesEditorforD";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.flowLayoutPanelNotesButton.ResumeLayout(false);
             this.flowLayoutPanelNotesButton.PerformLayout();
             this.flowLayoutPanelEditStatus.ResumeLayout(false);
             this.flowLayoutPanelEditStatus.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BPMupdown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -463,6 +550,9 @@
         private System.Windows.Forms.ToolStripMenuItem quitMenuItem;
         private NotesButton AirDown;
         private NotesButton HellTap;
+        private System.Windows.Forms.NumericUpDown BPMupdown;
+        private System.Windows.Forms.Label labelBPM;
+        private SpecialButton BPMButton;
     }
 }
 
