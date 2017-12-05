@@ -130,12 +130,14 @@
             // 
             this.notesPreview.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
             this.notesPreview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.notesPreview.Cursor = System.Windows.Forms.Cursors.Hand;
             this.notesPreview.Location = new System.Drawing.Point(2, 11);
             this.notesPreview.Margin = new System.Windows.Forms.Padding(2);
             this.notesPreview.Name = "notesPreview";
             this.notesPreview.Size = new System.Drawing.Size(115, 83);
             this.notesPreview.TabIndex = 0;
             this.notesPreview.TabStop = false;
+            this.notesPreview.Click += new System.EventHandler(this.label_notes_Click);
             // 
             // NotesButton
             // 
@@ -151,10 +153,12 @@
             this.Controls.Add(this.trackBar_size);
             this.Controls.Add(this.label_notes);
             this.Controls.Add(this.notesPreview);
+            this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "NotesButton";
             this.Size = new System.Drawing.Size(227, 105);
             this.Load += new System.EventHandler(this.NotesButton_Load);
+            this.Click += new System.EventHandler(this.label_notes_Click);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_size)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.notesPreview)).EndInit();
             this.ResumeLayout(false);

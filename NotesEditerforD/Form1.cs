@@ -24,6 +24,7 @@ namespace NotesEditerforD
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
         private const string dymsVersion = "0.3", Version = "0.3.1";
+        public bool noSlideRelay = false;
         public Form1()
         {
             InitializeComponent();
@@ -76,8 +77,14 @@ namespace NotesEditerforD
             fileName = "NewMusicScore.dyms";
             pathName = null;
             setEdited(false);
-
+            
             longNoteNumber = 0;
+
+            //KeyDownEventはすべてにおいて発火する
+            foreach (Control c in Controls)
+            {
+                c.KeyDown += Form1_KeyDown;
+            }
         }
 
         public decimal StartBPM
@@ -240,6 +247,10 @@ namespace NotesEditerforD
             else if (e.KeyCode == Keys.F7) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
             else if (e.KeyCode == Keys.F8) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
             else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
+            else if (e.KeyCode == Keys.S)
+            {
+                noSlideRelay = !noSlideRelay;
+            }
             else if (AirUp.IsActive)
             {
                 if (e.KeyCode == Keys.L) AirUp.setDirection("Left");
