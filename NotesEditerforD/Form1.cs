@@ -23,7 +23,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.3", Version = "0.3.1";
+        private const string dymsVersion = "0.4", Version = "0.4a";
         public bool noSlideRelay = false;
         public Form1()
         {
@@ -54,7 +54,7 @@ namespace NotesEditerforD
             Text = "NewMusicScore" + appName;
             prevNotesButton = Tap;
             Tap.notesButtonActive();
-            prevSpecialButton = BPMButton;
+            //prevSpecialButton = BPMButton;
             openMenuItem.Click += openMenuItem_Click;
             saveAsMenuItem.Click += saveAsMenuItem_Click;
             saveMenuItem.Click += saveMenuItem_Click;
@@ -159,6 +159,20 @@ namespace NotesEditerforD
                 }
                 indx++;
             }
+            sw.WriteLine("#SpecialNotes"); indx = 0;
+            foreach (MusicScore2 mscore in scores2)
+            {
+                foreach (ShortNote note in mscore.specialNotes)
+                {
+                    sw.WriteLine(
+                        note.NoteStyle + "," +       //0
+                        note.NotePosition.X + "," +  //1
+                        note.NotePosition.Y + "," +  //2
+                        note.SpecialValue + "," +    //3
+                        indx);                       //4
+                }
+                indx++;
+            }
             sw.Close();
         }
 
@@ -215,11 +229,12 @@ namespace NotesEditerforD
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.A && e.Modifiers == Keys.Shift) radioAdd.Checked = true;
-            else if (e.KeyCode == Keys.E && e.Modifiers == Keys.Shift) radioEdit.Checked = true;
-            else if (e.KeyCode == Keys.D && e.Modifiers == Keys.Shift) radioDelete.Checked = true;
+            if (e.KeyCode == Keys.A && e.Modifiers == Keys.Shift) { /*ActiveControl = null;*/ radioAdd.Checked = true; }
+            else if (e.KeyCode == Keys.E && e.Modifiers == Keys.Shift) { /*ActiveControl = null;*/ radioEdit.Checked = true; }
+            else if (e.KeyCode == Keys.D && e.Modifiers == Keys.Shift) { /*ActiveControl = null;*/ radioDelete.Checked = true; }
             else if (e.KeyCode == Keys.B && e.Modifiers == Keys.None)
             {
+                //ActiveControl = null;
                 if (comboBoxBeat.SelectedIndex == comboBoxBeat.Items.Count - 1) comboBoxBeat.SelectedIndex = 0;
                 else comboBoxBeat.SelectedIndex++;
             }
@@ -251,29 +266,57 @@ namespace NotesEditerforD
             {
                 noSlideRelay = !noSlideRelay;
             }
-            else if (AirUp.IsActive)
+            if (AirUp.IsActive)
             {
                 if (e.KeyCode == Keys.L) AirUp.setDirection("Left");
                 else if (e.KeyCode == Keys.C) AirUp.setDirection("Center");
                 else if (e.KeyCode == Keys.R) AirUp.setDirection("Right");
                 AirUp.setAirDirection();
             }
-            else if (AirDown.IsActive)
+            if (AirDown.IsActive)
             {
                 if (e.KeyCode == Keys.L) AirDown.setDirection("Left");
                 else if (e.KeyCode == Keys.C) AirDown.setDirection("Center");
                 else if (e.KeyCode == Keys.R) AirDown.setDirection("Right");
                 AirDown.setAirDirection();
             }
-            else if (e.KeyCode == Keys.OemPeriod && activeNotesButton().TrackBar_Size != 16)
+            if (!(activeNotesButton().NotesName == "BPM" || activeNotesButton().NotesName == "Speed"))
             {
-                activeNotesButton().TrackBar_Size++;
-                activeNotesButton().trackBar1_Scroll(sender, e);
+                if (e.KeyCode == Keys.OemPeriod && activeNotesButton().TrackBar_Size != 16)
+                {
+                    activeNotesButton().TrackBar_Size++;
+                    activeNotesButton().trackBar1_Scroll(sender, e);
+                }
+                if (e.KeyCode == Keys.Oemcomma && activeNotesButton().TrackBar_Size != 1)
+                {
+                    activeNotesButton().TrackBar_Size--;
+                    activeNotesButton().trackBar1_Scroll(sender, e);
+                }
             }
-            else if (e.KeyCode == Keys.Oemcomma && activeNotesButton().TrackBar_Size != 1)
+            else
             {
-                activeNotesButton().TrackBar_Size--;
-                activeNotesButton().trackBar1_Scroll(sender, e);
+                /*
+                if (e.KeyCode == Keys.OemPeriod && e.Modifiers == Keys.Shift && activeNotesButton().NumUDValue != activeNotesButton().NumUDMax)
+                {
+                    activeNotesButton().NumUDValue++;
+                    activeNotesButton().numericUpDown1_ValueChanged(sender, e);
+                }
+                else if (e.KeyCode == Keys.Oemcomma && e.Modifiers == Keys.Shift && activeNotesButton().NumUDValue != activeNotesButton().NumUDMin)
+                {
+                    activeNotesButton().NumUDValue--;
+                    activeNotesButton().numericUpDown1_ValueChanged(sender, e);
+                }
+                //*/
+                if (e.KeyCode == Keys.OemPeriod && activeNotesButton().NumUDValue != activeNotesButton().NumUDMax)
+                {
+                    activeNotesButton().NumUDValue+=0.1m;
+                    activeNotesButton().numericUpDown1_ValueChanged(sender, e);
+                }
+                else if (e.KeyCode == Keys.Oemcomma && activeNotesButton().NumUDValue != activeNotesButton().NumUDMin)
+                {
+                    activeNotesButton().NumUDValue-=0.1m;
+                    activeNotesButton().numericUpDown1_ValueChanged(sender, e);
+                }
             }
             //MessageBox.Show(activeNotesButton().NotesName);
             setEditStatus(sender, e);
@@ -291,6 +334,8 @@ namespace NotesEditerforD
             else if (AirUp.IsActive) return AirUp;
             else if (AirDown.IsActive) return AirDown;
             else if (AirLine.IsActive) return AirLine;
+            else if (BPMButton.IsActive) return BPMButton;
+            else if (Speed.IsActive) return Speed;
             else return null;
         }
 
@@ -387,7 +432,51 @@ namespace NotesEditerforD
                 string[] noteData;
                 int indx, msIndex;
                 dataLine = sr.ReadLine();
-                if (dataLine == "dymsVersion:0.3")
+                if (dataLine == "dymsVersion:0.4")
+                {
+                    dymsDataVersion = "0.4";
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    songID = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    title = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    artist = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    designer = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    difficulty = int.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    playLevel = decimal.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split('=');
+                    wave = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    offset = decimal.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split('=');
+                    jacket = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    BPM = decimal.Parse(noteData[1]);
+                    BPMupdown.Value = BPM;
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    longNoteNumber = int.Parse(noteData[1]);
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split('=');
+                    exDir = noteData[1];
+                    dataLine = sr.ReadLine();
+                    noteData = dataLine.Split(':');
+                    isWhile = bool.Parse(noteData[1]);
+                }
+                else if (dataLine == "dymsVersion:0.3")
                 {
                     dymsDataVersion = "0.3";
                     dataLine = sr.ReadLine();
@@ -513,12 +602,24 @@ namespace NotesEditerforD
                 }
                 if (dymsDataVersion == "0.1") msIndex = 12;
                 else msIndex = 10;
+                bool flg = false;
                 while(sr.Peek() > -1)
                 {
                     dataLine = sr.ReadLine();
+                    if(dataLine == "#SpecialNotes") { flg = true; break; }
                     noteData = dataLine.Split(',');
                     indx = int.Parse(noteData[msIndex]);
                     scores2[indx].setNote(noteData, dymsDataVersion);
+                }
+                if (flg)
+                {
+                    while (sr.Peek() > -1)
+                    {
+                        dataLine = sr.ReadLine();
+                        noteData = dataLine.Split(',');
+                        indx = int.Parse(noteData[4]);
+                        scores2[indx].setSpecialNote(noteData);
+                    }
                 }
                 for (int i = 0; i < maxScore; i++) scores2[i].update();
                 setEdited(false);

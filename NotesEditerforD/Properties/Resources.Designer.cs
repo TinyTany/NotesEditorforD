@@ -353,6 +353,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap Speed {
+            get {
+                object obj = ResourceManager.GetObject("Speed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap Tap {
             get {
                 object obj = ResourceManager.GetObject("Tap", resourceCulture);

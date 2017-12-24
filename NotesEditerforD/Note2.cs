@@ -9,13 +9,14 @@ namespace NotesEditerforD
 {
     public class ShortNote
     {
-        public MusicScore2 musicscore;
+        private MusicScore2 musicscore;
         private Point position, startPosition, endPosition;
         private string noteStyle, airDirection;
         private ShortNote childNote, parentNote;
         private bool isChildNote, isParentNote;
         private int longNoteNumber, noteSize;
         private Point[] destPoints;//{ul, ur, ll}
+        private decimal specialValue;
         //*
         private Bitmap noteImage;
         //*/
@@ -37,6 +38,17 @@ namespace NotesEditerforD
             isParentNote = false;
             destPoints = new Point[3];
 
+            noteImage = setNoteImage();
+        }
+
+        public ShortNote(MusicScore2 _musicscore, Point _position, string _noteStyle, decimal _value)
+        {
+            musicscore = _musicscore;
+            position = _position;
+            noteStyle = _noteStyle;
+            specialValue = _value;
+            noteSize = 16;
+            destPoints = new Point[3];
             noteImage = setNoteImage();
         }
 
@@ -116,6 +128,12 @@ namespace NotesEditerforD
         {
             get { return this.longNoteNumber; }
             set { this.longNoteNumber = value; }
+        }
+
+        public decimal SpecialValue
+        {
+            get { return this.specialValue; }
+            set { this.specialValue = value; }
         }
 
         public Bitmap setNoteImage()
@@ -237,6 +255,9 @@ namespace NotesEditerforD
                     break;
                 case "BPM":
                     noteImage = Properties.Resources.BPM;
+                    break;
+                case "Speed":
+                    noteImage = Properties.Resources.Speed;
                     break;
                 default:
                     noteImage = Properties.Resources.Tap;

@@ -16,10 +16,12 @@ namespace NotesEditerforD
         private static int topMargin = 5, bottomMargin = 5, leftMargin = 20, rightMargin = 30;
         private int index;
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
+        private static decimal selectedBPM, selectedSpeed;
         private Point startPosition, endPosition;
         public Form1 form1;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> dummyNotes = new List<ShortNote>();
+        public List<ShortNote> specialNotes = new List<ShortNote>();
         private Bitmap storeImage;
         private ShortNote previewNote, previewLongNote, startNote;
         private MusicScore2 prevScore, nextScore;
@@ -95,6 +97,18 @@ namespace NotesEditerforD
             set { selectedEditStatus = value; }
         }
 
+        public static decimal SelectedBPM
+        {
+            get { return selectedBPM; }
+            set { selectedBPM = value; }
+        }
+
+        public static decimal SelectedSpeed
+        {
+            get { return selectedSpeed; }
+            set { selectedSpeed = value; }
+        }
+
         public static int TopMargin
         {
             get { return topMargin; }
@@ -157,6 +171,18 @@ namespace NotesEditerforD
             addNote(shortNote);
         }
 
+        public void setSpecialNote(string[] _noteData)
+        {
+            Point notePosition;
+            decimal specialValue;
+            string noteStyle;
+            notePosition = new Point(int.Parse(_noteData[1]), int.Parse(_noteData[2]));
+            noteStyle = _noteData[0];
+            specialValue = decimal.Parse(_noteData[3]);
+            ShortNote shortNote = new ShortNote(this, notePosition, noteStyle, specialValue);
+            specialNotes.Add(shortNote);
+        }
+
         private void this_MouseDown(object sender, MouseEventArgs e)
         {
             if(selectedEditStatus == "Add")
@@ -165,6 +191,20 @@ namespace NotesEditerforD
                 startPosition = locationize(e.Location);
                 if (selectedNoteStyle != "AirLine")
                 {
+                    if(selectedNoteStyle == "BPM")
+                    {
+                        shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedBPM);
+                        if(shortNote.NotePosition.Y != 2) specialNotes.Add(shortNote);
+                        update();
+                        return;
+                    }
+                    if(selectedNoteStyle == "Speed")
+                    {
+                        shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedSpeed);
+                        if (shortNote.NotePosition.Y != 2) specialNotes.Add(shortNote);
+                        update();
+                        return;
+                    }
                     shortNote = new ShortNote(this, locationize(e.Location), startPosition, startPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, -1);
                     //shortNotes.Add(shortNote);
                     addNote(shortNote);
@@ -197,8 +237,13 @@ namespace NotesEditerforD
                                 deleteNote(startNote);
                                 if (!form1.noSlideRelay)
                                 {
-                                    if (shortNotes.Count > i + 1)
-                                        deleteNote(shortNotes[i + 1]);
+                                    for (int j = shortNotes.Count - 1; j >= 0; j--)
+                                    {
+                                        if(shortNotes[j].NotePosition == locationize(e.Location) && shortNotes[j].NoteSize == selectedNoteSize && shortNotes[j].NoteStyle == "SlideTap")
+                                        {
+                                            deleteNote(shortNotes[j]);
+                                        }
+                                    }
                                 }
                                 break;
                             }
@@ -253,6 +298,19 @@ namespace NotesEditerforD
                         if (isMouseCollision(dummyNotes[i].DestPoints, e.Location))
                         {
                             deleteNote(dummyNotes[i]);
+                            flg = true;
+                            break;
+                        }
+                    }
+                }
+                if (!flg)
+                {
+                    for (int i = specialNotes.Count - 1; i >= 0; i--)
+                    {
+                        if (isMouseCollision(specialNotes[i].DestPoints, e.Location))
+                        {
+                            //deleteNote(specialNotes[i]);
+                            specialNotes.Remove(specialNotes[i]);
                             break;
                         }
                     }
@@ -508,6 +566,19 @@ namespace NotesEditerforD
         {
             storeImage = Properties.Resources.MusicScore;
             Graphics g = Graphics.FromImage(storeImage);
+            foreach (ShortNote _note in specialNotes)//BPMノーツ，Speedノーツを描画
+            {
+                if (_note.NoteStyle == "BPM")
+                {
+                    g.DrawImage(_note.NoteImage, _note.NotePosition);
+                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//BPM
+                }
+                else
+                {
+                    g.DrawImage(_note.NoteImage, _note.NotePosition);
+                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//Speed
+                }
+            }
             foreach (ShortNote _note in dummyNotes)//ダミーノーツを描画
             {
                 if (_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
@@ -583,6 +654,7 @@ namespace NotesEditerforD
         {
             shortNotes.Clear();
             dummyNotes.Clear();
+            specialNotes.Clear();
             update();
         }
 

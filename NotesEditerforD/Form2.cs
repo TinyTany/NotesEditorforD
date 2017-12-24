@@ -89,6 +89,7 @@ namespace NotesEditerforD
 
         public void susExport(string path)
         {
+            int Y;
             System.IO.StreamWriter sw = new System.IO.StreamWriter(path);
             Encoding.GetEncoding("UTF-8");
             sw.WriteLine("This file was exported by NotesEditorforD.");
@@ -102,10 +103,35 @@ namespace NotesEditerforD
             sw.WriteLine("#WAVE " + '"' + textBoxWAVE.Text + '"');
             sw.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
             sw.WriteLine("#JACKET " + '"' + textBoxJacket.Text + '"');
-            //sw.WriteLine("#BASEBPM " + BPMUpDown.Value);
+            sw.WriteLine();
             sw.WriteLine("#BPM01: " + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
-
+            sw.WriteLine();
+            sw.Write("#TIL00:\"");
+            for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].specialNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
+            for (measure = 0; measure <= lastScore; measure++)
+            {
+                foreach(ShortNote _note in form1.Scores2[measure].specialNotes)
+                {
+                    if(_note.NoteStyle == "Speed")
+                    {
+                        Y = (768 - (_note.NotePosition.Y - 2)) * 2;
+                        if (Y < 768)
+                        {
+                            if(checkBoxWhile.Checked) sw.Write(2 * measure + 1 + "'" + Y + ":" + _note.SpecialValue + ",");
+                            else sw.Write(2 * measure + "'" + Y + ":" + _note.SpecialValue + ",");
+                        }
+                        else
+                        {
+                            Y -= 768;
+                            if(checkBoxWhile.Checked) sw.Write(2 * (measure + 1) + "'" + Y + ":" + _note.SpecialValue + ",");
+                            else sw.Write(2 * measure + 1 + "'" + Y + ":" + _note.SpecialValue + ",");
+                        }
+                    }
+                }
+            }
+            sw.WriteLine("\"");
+            sw.WriteLine("#HISPEED 00");
             sw.WriteLine();
 
             for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].shortNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
@@ -178,7 +204,7 @@ namespace NotesEditerforD
                                 break;
                             case "HellTap":
                                 if (noteSize == 16) lane2[_X, _Y] = "4g";
-                                else lane1[_X, _Y] = "4" + noteSize.ToString("x");
+                                else lane2[_X, _Y] = "4" + noteSize.ToString("x");
                                 break;
                             default:
                                 break;
