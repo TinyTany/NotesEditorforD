@@ -134,7 +134,7 @@ namespace NotesEditerforD
             Point notePosition;
             int noteSize, longNoteNumber;
             string noteStyle, airDirection;
-            if(dymsVersion == "0.3")
+            if(dymsVersion == "0.3" || dymsVersion == "0.4")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
                 startPosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
