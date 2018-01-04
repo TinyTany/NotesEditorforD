@@ -52,6 +52,7 @@
             this.quitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BPMupdown = new System.Windows.Forms.NumericUpDown();
             this.labelBPM = new System.Windows.Forms.Label();
+            this.checkSlideRelay = new System.Windows.Forms.CheckBox();
             this.Tap = new NotesEditerforD.NotesButton();
             this.ExTap = new NotesEditerforD.NotesButton();
             this.Flick = new NotesEditerforD.NotesButton();
@@ -72,10 +73,9 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 33);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(22, 50);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 12);
+            this.label1.Size = new System.Drawing.Size(0, 18);
             this.label1.TabIndex = 1;
             // 
             // flowLayoutPanelNotesButton
@@ -93,10 +93,9 @@
             this.flowLayoutPanelNotesButton.Controls.Add(this.AirLine);
             this.flowLayoutPanelNotesButton.Controls.Add(this.BPMButton);
             this.flowLayoutPanelNotesButton.Controls.Add(this.Speed);
-            this.flowLayoutPanelNotesButton.Location = new System.Drawing.Point(7, 26);
-            this.flowLayoutPanelNotesButton.Margin = new System.Windows.Forms.Padding(2);
+            this.flowLayoutPanelNotesButton.Location = new System.Drawing.Point(12, 39);
             this.flowLayoutPanelNotesButton.Name = "flowLayoutPanelNotesButton";
-            this.flowLayoutPanelNotesButton.Size = new System.Drawing.Size(254, 848);
+            this.flowLayoutPanelNotesButton.Size = new System.Drawing.Size(423, 1272);
             this.flowLayoutPanelNotesButton.TabIndex = 2;
             // 
             // flowLayoutPanelEditStatus
@@ -104,18 +103,20 @@
             this.flowLayoutPanelEditStatus.Controls.Add(this.radioAdd);
             this.flowLayoutPanelEditStatus.Controls.Add(this.radioEdit);
             this.flowLayoutPanelEditStatus.Controls.Add(this.radioDelete);
-            this.flowLayoutPanelEditStatus.Location = new System.Drawing.Point(269, 26);
+            this.flowLayoutPanelEditStatus.Location = new System.Drawing.Point(448, 39);
+            this.flowLayoutPanelEditStatus.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.flowLayoutPanelEditStatus.Name = "flowLayoutPanelEditStatus";
-            this.flowLayoutPanelEditStatus.Size = new System.Drawing.Size(168, 22);
+            this.flowLayoutPanelEditStatus.Size = new System.Drawing.Size(280, 33);
             this.flowLayoutPanelEditStatus.TabIndex = 4;
             // 
             // radioAdd
             // 
             this.radioAdd.AutoSize = true;
             this.radioAdd.Checked = true;
-            this.radioAdd.Location = new System.Drawing.Point(3, 3);
+            this.radioAdd.Location = new System.Drawing.Point(5, 4);
+            this.radioAdd.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioAdd.Name = "radioAdd";
-            this.radioAdd.Size = new System.Drawing.Size(43, 16);
+            this.radioAdd.Size = new System.Drawing.Size(62, 22);
             this.radioAdd.TabIndex = 0;
             this.radioAdd.TabStop = true;
             this.radioAdd.Text = "Add";
@@ -125,9 +126,10 @@
             // radioEdit
             // 
             this.radioEdit.AutoSize = true;
-            this.radioEdit.Location = new System.Drawing.Point(52, 3);
+            this.radioEdit.Location = new System.Drawing.Point(77, 4);
+            this.radioEdit.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioEdit.Name = "radioEdit";
-            this.radioEdit.Size = new System.Drawing.Size(43, 16);
+            this.radioEdit.Size = new System.Drawing.Size(62, 22);
             this.radioEdit.TabIndex = 1;
             this.radioEdit.Text = "Edit";
             this.radioEdit.UseVisualStyleBackColor = true;
@@ -136,9 +138,10 @@
             // radioDelete
             // 
             this.radioDelete.AutoSize = true;
-            this.radioDelete.Location = new System.Drawing.Point(101, 3);
+            this.radioDelete.Location = new System.Drawing.Point(149, 4);
+            this.radioDelete.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.radioDelete.Name = "radioDelete";
-            this.radioDelete.Size = new System.Drawing.Size(56, 16);
+            this.radioDelete.Size = new System.Drawing.Size(82, 22);
             this.radioDelete.TabIndex = 2;
             this.radioDelete.Text = "Delete";
             this.radioDelete.UseVisualStyleBackColor = true;
@@ -147,9 +150,10 @@
             // labelBeat
             // 
             this.labelBeat.AutoSize = true;
-            this.labelBeat.Location = new System.Drawing.Point(587, 31);
+            this.labelBeat.Location = new System.Drawing.Point(978, 46);
+            this.labelBeat.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.labelBeat.Name = "labelBeat";
-            this.labelBeat.Size = new System.Drawing.Size(29, 12);
+            this.labelBeat.Size = new System.Drawing.Size(43, 18);
             this.labelBeat.TabIndex = 7;
             this.labelBeat.Text = "Beat";
             // 
@@ -168,9 +172,10 @@
             "96",
             "128",
             "192"});
-            this.comboBoxBeat.Location = new System.Drawing.Point(622, 26);
+            this.comboBoxBeat.Location = new System.Drawing.Point(1037, 39);
+            this.comboBoxBeat.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.comboBoxBeat.Name = "comboBoxBeat";
-            this.comboBoxBeat.Size = new System.Drawing.Size(46, 20);
+            this.comboBoxBeat.Size = new System.Drawing.Size(74, 26);
             this.comboBoxBeat.TabIndex = 8;
             this.comboBoxBeat.Text = "8";
             this.comboBoxBeat.SelectedIndexChanged += new System.EventHandler(this.comboBoxBeat_SelectedIndexChanged);
@@ -179,18 +184,20 @@
             // 
             this.flowLayoutPanelMusicScore.AutoScroll = true;
             this.flowLayoutPanelMusicScore.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.flowLayoutPanelMusicScore.Location = new System.Drawing.Point(269, 51);
+            this.flowLayoutPanelMusicScore.Location = new System.Drawing.Point(448, 76);
+            this.flowLayoutPanelMusicScore.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.flowLayoutPanelMusicScore.Name = "flowLayoutPanelMusicScore";
-            this.flowLayoutPanelMusicScore.Size = new System.Drawing.Size(1103, 823);
+            this.flowLayoutPanelMusicScore.Size = new System.Drawing.Size(1838, 1234);
             this.flowLayoutPanelMusicScore.TabIndex = 9;
             this.flowLayoutPanelMusicScore.WrapContents = false;
             // 
             // labelGrid
             // 
             this.labelGrid.AutoSize = true;
-            this.labelGrid.Location = new System.Drawing.Point(683, 31);
+            this.labelGrid.Location = new System.Drawing.Point(1138, 46);
+            this.labelGrid.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.labelGrid.Name = "labelGrid";
-            this.labelGrid.Size = new System.Drawing.Size(26, 12);
+            this.labelGrid.Size = new System.Drawing.Size(39, 18);
             this.labelGrid.TabIndex = 10;
             this.labelGrid.Text = "Grid";
             // 
@@ -201,9 +208,10 @@
             "4",
             "8",
             "16"});
-            this.comboBoxGrid.Location = new System.Drawing.Point(715, 26);
+            this.comboBoxGrid.Location = new System.Drawing.Point(1192, 39);
+            this.comboBoxGrid.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.comboBoxGrid.Name = "comboBoxGrid";
-            this.comboBoxGrid.Size = new System.Drawing.Size(46, 20);
+            this.comboBoxGrid.Size = new System.Drawing.Size(74, 26);
             this.comboBoxGrid.TabIndex = 11;
             this.comboBoxGrid.Text = "8";
             this.comboBoxGrid.SelectedIndexChanged += new System.EventHandler(this.comboBoxGrid_SelectedIndexChanged);
@@ -211,19 +219,22 @@
             // labelTotalNotes
             // 
             this.labelTotalNotes.AutoSize = true;
-            this.labelTotalNotes.Location = new System.Drawing.Point(782, 31);
+            this.labelTotalNotes.Location = new System.Drawing.Point(1303, 46);
+            this.labelTotalNotes.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.labelTotalNotes.Name = "labelTotalNotes";
-            this.labelTotalNotes.Size = new System.Drawing.Size(79, 12);
+            this.labelTotalNotes.Size = new System.Drawing.Size(116, 18);
             this.labelTotalNotes.TabIndex = 12;
             this.labelTotalNotes.Text = "Total notes : 0";
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1384, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(10, 3, 0, 3);
+            this.menuStrip1.Size = new System.Drawing.Size(2307, 35);
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -238,7 +249,7 @@
             this.quitMenuItem});
             this.fileMenuItem.Name = "fileMenuItem";
             this.fileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
-            this.fileMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.fileMenuItem.Size = new System.Drawing.Size(93, 29);
             this.fileMenuItem.Text = "ファイル(F)";
             this.fileMenuItem.Click += new System.EventHandler(this.fileMenuItem_Click);
             // 
@@ -247,7 +258,7 @@
             this.newMenuItem.Name = "newMenuItem";
             this.newMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
             this.newMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.newMenuItem.Size = new System.Drawing.Size(366, 30);
             this.newMenuItem.Text = "新規作成(N)";
             // 
             // openMenuItem
@@ -255,7 +266,7 @@
             this.openMenuItem.Name = "openMenuItem";
             this.openMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
             this.openMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.openMenuItem.Size = new System.Drawing.Size(366, 30);
             this.openMenuItem.Text = "開く(O)...";
             // 
             // saveAsMenuItem
@@ -264,7 +275,7 @@
             this.saveAsMenuItem.ShortcutKeyDisplayString = "";
             this.saveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-            this.saveAsMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.saveAsMenuItem.Size = new System.Drawing.Size(366, 30);
             this.saveAsMenuItem.Text = "名前をつけて保存(A)...";
             // 
             // saveMenuItem
@@ -272,21 +283,21 @@
             this.saveMenuItem.Name = "saveMenuItem";
             this.saveMenuItem.ShortcutKeyDisplayString = "Ctrl+S";
             this.saveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.saveMenuItem.Size = new System.Drawing.Size(366, 30);
             this.saveMenuItem.Text = "上書き保存(S)";
             // 
             // exportMenuItem
             // 
             this.exportMenuItem.Name = "exportMenuItem";
             this.exportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.exportMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.exportMenuItem.Size = new System.Drawing.Size(366, 30);
             this.exportMenuItem.Text = "エクスポート(X)...";
             // 
             // quitMenuItem
             // 
             this.quitMenuItem.Name = "quitMenuItem";
             this.quitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.quitMenuItem.Size = new System.Drawing.Size(366, 30);
             this.quitMenuItem.Text = "終了(Q)";
             // 
             // BPMupdown
@@ -297,7 +308,8 @@
             0,
             0,
             65536});
-            this.BPMupdown.Location = new System.Drawing.Point(503, 27);
+            this.BPMupdown.Location = new System.Drawing.Point(838, 40);
+            this.BPMupdown.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.BPMupdown.Maximum = new decimal(new int[] {
             300,
             0,
@@ -309,7 +321,7 @@
             0,
             0});
             this.BPMupdown.Name = "BPMupdown";
-            this.BPMupdown.Size = new System.Drawing.Size(66, 19);
+            this.BPMupdown.Size = new System.Drawing.Size(110, 25);
             this.BPMupdown.TabIndex = 14;
             this.BPMupdown.Value = new decimal(new int[] {
             120,
@@ -321,11 +333,23 @@
             // labelBPM
             // 
             this.labelBPM.AutoSize = true;
-            this.labelBPM.Location = new System.Drawing.Point(443, 31);
+            this.labelBPM.Location = new System.Drawing.Point(738, 46);
+            this.labelBPM.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
             this.labelBPM.Name = "labelBPM";
-            this.labelBPM.Size = new System.Drawing.Size(54, 12);
+            this.labelBPM.Size = new System.Drawing.Size(81, 18);
             this.labelBPM.TabIndex = 15;
             this.labelBPM.Text = "StartBPM";
+            // 
+            // checkSlideRelay
+            // 
+            this.checkSlideRelay.AutoSize = true;
+            this.checkSlideRelay.Location = new System.Drawing.Point(1459, 43);
+            this.checkSlideRelay.Name = "checkSlideRelay";
+            this.checkSlideRelay.Size = new System.Drawing.Size(236, 22);
+            this.checkSlideRelay.TabIndex = 16;
+            this.checkSlideRelay.Text = "Slide中継点を不可視にする";
+            this.checkSlideRelay.UseVisualStyleBackColor = true;
+            this.checkSlideRelay.Click += new System.EventHandler(this.checkSlideRelay_Click);
             // 
             // Tap
             // 
@@ -336,8 +360,8 @@
             this.Tap.IsActive = true;
             this.Tap.IsAir = false;
             this.Tap.IsNumUpDown = false;
-            this.Tap.Location = new System.Drawing.Point(1, 1);
-            this.Tap.Margin = new System.Windows.Forms.Padding(1);
+            this.Tap.Location = new System.Drawing.Point(2, 2);
+            this.Tap.Margin = new System.Windows.Forms.Padding(2);
             this.Tap.Name = "Tap";
             this.Tap.NotesName = "Tap";
             this.Tap.NumUDMax = new decimal(new int[] {
@@ -355,7 +379,7 @@
             0,
             0,
             0});
-            this.Tap.Size = new System.Drawing.Size(227, 97);
+            this.Tap.Size = new System.Drawing.Size(340, 144);
             this.Tap.TabIndex = 0;
             this.Tap.TrackBar_Size = 4;
             // 
@@ -368,8 +392,8 @@
             this.ExTap.IsActive = false;
             this.ExTap.IsAir = false;
             this.ExTap.IsNumUpDown = false;
-            this.ExTap.Location = new System.Drawing.Point(1, 100);
-            this.ExTap.Margin = new System.Windows.Forms.Padding(1);
+            this.ExTap.Location = new System.Drawing.Point(2, 150);
+            this.ExTap.Margin = new System.Windows.Forms.Padding(2);
             this.ExTap.Name = "ExTap";
             this.ExTap.NotesName = "ExTap";
             this.ExTap.NumUDMax = new decimal(new int[] {
@@ -387,7 +411,7 @@
             0,
             0,
             0});
-            this.ExTap.Size = new System.Drawing.Size(227, 97);
+            this.ExTap.Size = new System.Drawing.Size(340, 144);
             this.ExTap.TabIndex = 1;
             this.ExTap.TrackBar_Size = 4;
             // 
@@ -400,8 +424,8 @@
             this.Flick.IsActive = false;
             this.Flick.IsAir = false;
             this.Flick.IsNumUpDown = false;
-            this.Flick.Location = new System.Drawing.Point(1, 199);
-            this.Flick.Margin = new System.Windows.Forms.Padding(1);
+            this.Flick.Location = new System.Drawing.Point(2, 298);
+            this.Flick.Margin = new System.Windows.Forms.Padding(2);
             this.Flick.Name = "Flick";
             this.Flick.NotesName = "Flick";
             this.Flick.NumUDMax = new decimal(new int[] {
@@ -419,7 +443,7 @@
             0,
             0,
             0});
-            this.Flick.Size = new System.Drawing.Size(227, 97);
+            this.Flick.Size = new System.Drawing.Size(340, 144);
             this.Flick.TabIndex = 2;
             this.Flick.TrackBar_Size = 4;
             // 
@@ -432,8 +456,7 @@
             this.HellTap.IsActive = false;
             this.HellTap.IsAir = false;
             this.HellTap.IsNumUpDown = false;
-            this.HellTap.Location = new System.Drawing.Point(2, 299);
-            this.HellTap.Margin = new System.Windows.Forms.Padding(2);
+            this.HellTap.Location = new System.Drawing.Point(3, 447);
             this.HellTap.Name = "HellTap";
             this.HellTap.NotesName = "HellTap";
             this.HellTap.NumUDMax = new decimal(new int[] {
@@ -451,7 +474,7 @@
             0,
             0,
             0});
-            this.HellTap.Size = new System.Drawing.Size(227, 97);
+            this.HellTap.Size = new System.Drawing.Size(340, 144);
             this.HellTap.TabIndex = 3;
             this.HellTap.TrackBar_Size = 4;
             // 
@@ -464,8 +487,8 @@
             this.Hold.IsActive = false;
             this.Hold.IsAir = false;
             this.Hold.IsNumUpDown = false;
-            this.Hold.Location = new System.Drawing.Point(1, 399);
-            this.Hold.Margin = new System.Windows.Forms.Padding(1);
+            this.Hold.Location = new System.Drawing.Point(2, 596);
+            this.Hold.Margin = new System.Windows.Forms.Padding(2);
             this.Hold.Name = "Hold";
             this.Hold.NotesName = "Hold";
             this.Hold.NumUDMax = new decimal(new int[] {
@@ -483,7 +506,7 @@
             0,
             0,
             0});
-            this.Hold.Size = new System.Drawing.Size(227, 97);
+            this.Hold.Size = new System.Drawing.Size(340, 144);
             this.Hold.TabIndex = 4;
             this.Hold.TrackBar_Size = 4;
             // 
@@ -496,8 +519,8 @@
             this.Slide.IsActive = false;
             this.Slide.IsAir = false;
             this.Slide.IsNumUpDown = false;
-            this.Slide.Location = new System.Drawing.Point(1, 498);
-            this.Slide.Margin = new System.Windows.Forms.Padding(1);
+            this.Slide.Location = new System.Drawing.Point(2, 744);
+            this.Slide.Margin = new System.Windows.Forms.Padding(2);
             this.Slide.Name = "Slide";
             this.Slide.NotesName = "Slide";
             this.Slide.NumUDMax = new decimal(new int[] {
@@ -515,7 +538,7 @@
             0,
             0,
             0});
-            this.Slide.Size = new System.Drawing.Size(227, 97);
+            this.Slide.Size = new System.Drawing.Size(340, 144);
             this.Slide.TabIndex = 5;
             this.Slide.TrackBar_Size = 4;
             // 
@@ -528,8 +551,8 @@
             this.AirUp.IsActive = false;
             this.AirUp.IsAir = true;
             this.AirUp.IsNumUpDown = false;
-            this.AirUp.Location = new System.Drawing.Point(1, 597);
-            this.AirUp.Margin = new System.Windows.Forms.Padding(1);
+            this.AirUp.Location = new System.Drawing.Point(2, 892);
+            this.AirUp.Margin = new System.Windows.Forms.Padding(2);
             this.AirUp.Name = "AirUp";
             this.AirUp.NotesName = "AirUp";
             this.AirUp.NumUDMax = new decimal(new int[] {
@@ -547,7 +570,7 @@
             0,
             0,
             0});
-            this.AirUp.Size = new System.Drawing.Size(227, 97);
+            this.AirUp.Size = new System.Drawing.Size(340, 144);
             this.AirUp.TabIndex = 6;
             this.AirUp.TrackBar_Size = 4;
             // 
@@ -560,8 +583,8 @@
             this.AirDown.IsActive = false;
             this.AirDown.IsAir = true;
             this.AirDown.IsNumUpDown = false;
-            this.AirDown.Location = new System.Drawing.Point(1, 696);
-            this.AirDown.Margin = new System.Windows.Forms.Padding(1);
+            this.AirDown.Location = new System.Drawing.Point(2, 1040);
+            this.AirDown.Margin = new System.Windows.Forms.Padding(2);
             this.AirDown.Name = "AirDown";
             this.AirDown.NotesName = "AirDown";
             this.AirDown.NumUDMax = new decimal(new int[] {
@@ -579,7 +602,7 @@
             0,
             0,
             0});
-            this.AirDown.Size = new System.Drawing.Size(227, 97);
+            this.AirDown.Size = new System.Drawing.Size(340, 144);
             this.AirDown.TabIndex = 7;
             this.AirDown.TrackBar_Size = 4;
             // 
@@ -592,8 +615,8 @@
             this.AirLine.IsActive = false;
             this.AirLine.IsAir = false;
             this.AirLine.IsNumUpDown = false;
-            this.AirLine.Location = new System.Drawing.Point(1, 795);
-            this.AirLine.Margin = new System.Windows.Forms.Padding(1);
+            this.AirLine.Location = new System.Drawing.Point(2, 1188);
+            this.AirLine.Margin = new System.Windows.Forms.Padding(2);
             this.AirLine.Name = "AirLine";
             this.AirLine.NotesName = "AirLine";
             this.AirLine.NumUDMax = new decimal(new int[] {
@@ -611,7 +634,7 @@
             0,
             0,
             0});
-            this.AirLine.Size = new System.Drawing.Size(227, 97);
+            this.AirLine.Size = new System.Drawing.Size(340, 144);
             this.AirLine.TabIndex = 8;
             this.AirLine.TrackBar_Size = 4;
             // 
@@ -625,8 +648,7 @@
             this.BPMButton.IsActive = false;
             this.BPMButton.IsAir = false;
             this.BPMButton.IsNumUpDown = true;
-            this.BPMButton.Location = new System.Drawing.Point(2, 895);
-            this.BPMButton.Margin = new System.Windows.Forms.Padding(2);
+            this.BPMButton.Location = new System.Drawing.Point(3, 1337);
             this.BPMButton.Name = "BPMButton";
             this.BPMButton.NotesName = "BPM";
             this.BPMButton.NumUDMax = new decimal(new int[] {
@@ -644,7 +666,7 @@
             0,
             0,
             65536});
-            this.BPMButton.Size = new System.Drawing.Size(224, 97);
+            this.BPMButton.Size = new System.Drawing.Size(336, 143);
             this.BPMButton.TabIndex = 9;
             this.BPMButton.TrackBar_Size = 4;
             this.BPMButton.Visible = false;
@@ -658,8 +680,7 @@
             this.Speed.IsActive = false;
             this.Speed.IsAir = false;
             this.Speed.IsNumUpDown = true;
-            this.Speed.Location = new System.Drawing.Point(2, 996);
-            this.Speed.Margin = new System.Windows.Forms.Padding(2);
+            this.Speed.Location = new System.Drawing.Point(3, 1486);
             this.Speed.Name = "Speed";
             this.Speed.NotesName = "Speed";
             this.Speed.NumUDMax = new decimal(new int[] {
@@ -677,16 +698,17 @@
             0,
             0,
             65536});
-            this.Speed.Size = new System.Drawing.Size(224, 97);
+            this.Speed.Size = new System.Drawing.Size(336, 143);
             this.Speed.TabIndex = 10;
             this.Speed.TrackBar_Size = 4;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1384, 886);
+            this.ClientSize = new System.Drawing.Size(2307, 1329);
+            this.Controls.Add(this.checkSlideRelay);
             this.Controls.Add(this.labelBPM);
             this.Controls.Add(this.BPMupdown);
             this.Controls.Add(this.labelTotalNotes);
@@ -700,7 +722,6 @@
             this.Controls.Add(this.flowLayoutPanelMusicScore);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "NotesEditorforD";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -753,6 +774,7 @@
         private System.Windows.Forms.Label labelBPM;
         private NotesButton BPMButton;
         private NotesButton Speed;
+        private System.Windows.Forms.CheckBox checkSlideRelay;
     }
 }
 

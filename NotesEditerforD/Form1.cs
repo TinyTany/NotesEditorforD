@@ -28,6 +28,7 @@ namespace NotesEditerforD
         public Form1()
         {
             InitializeComponent();
+            checkSlideRelay.Checked = !noSlideRelay;
             comboBoxBeat.SelectedIndex = 1;
             MusicScore2.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
             for (int i = 0; i < maxScore; i++)
@@ -265,6 +266,7 @@ namespace NotesEditerforD
             else if (e.KeyCode == Keys.S)
             {
                 noSlideRelay = !noSlideRelay;
+                checkSlideRelay.Checked = !noSlideRelay;
             }
             if (AirUp.IsActive)
             {
@@ -337,6 +339,12 @@ namespace NotesEditerforD
             else if (BPMButton.IsActive) return BPMButton;
             else if (Speed.IsActive) return Speed;
             else return null;
+        }
+
+        private void checkSlideRelay_Click(object sender, EventArgs e)
+        {
+            noSlideRelay = !noSlideRelay;
+            this.ActiveControl = null;
         }
 
         private void fileMenuItem_Click(object sender, EventArgs e)

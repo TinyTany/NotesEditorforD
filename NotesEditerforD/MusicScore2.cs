@@ -23,7 +23,7 @@ namespace NotesEditerforD
         public List<ShortNote> dummyNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
         private Bitmap storeImage;
-        private ShortNote previewNote, previewLongNote, startNote;
+        private ShortNote previewNote, previewLongNote, startNote, selectedNote;
         private MusicScore2 prevScore, nextScore;
         public MusicScore2()
         {
@@ -129,12 +129,12 @@ namespace NotesEditerforD
             get { return rightMargin; }
         }
 
-        public void setNote(string[] _noteData , string dymsVersion)
+        public void setNote(string[] _noteData, string dymsVersion)
         {
             Point notePosition;
             int noteSize, longNoteNumber;
             string noteStyle, airDirection;
-            if(dymsVersion == "0.3" || dymsVersion == "0.4")
+            if (dymsVersion == "0.3" || dymsVersion == "0.4")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
                 startPosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
@@ -144,7 +144,7 @@ namespace NotesEditerforD
                 airDirection = _noteData[8];
                 longNoteNumber = int.Parse(_noteData[9]);
             }
-            else if(dymsVersion != "0.1")
+            else if (dymsVersion != "0.1")
             {
                 notePosition = new Point(int.Parse(_noteData[2]) + leftMargin - 5, int.Parse(_noteData[3]));
                 startPosition = new Point(int.Parse(_noteData[4]) + leftMargin - 5, int.Parse(_noteData[5]));
@@ -185,20 +185,20 @@ namespace NotesEditerforD
 
         private void this_MouseDown(object sender, MouseEventArgs e)
         {
-            if(selectedEditStatus == "Add")
+            if (selectedEditStatus == "Add")
             {
                 ShortNote shortNote;// = null;
                 startPosition = locationize(e.Location);
                 if (selectedNoteStyle != "AirLine")
                 {
-                    if(selectedNoteStyle == "BPM")
+                    if (selectedNoteStyle == "BPM")
                     {
                         shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedBPM);
-                        if(shortNote.NotePosition.Y != 2) specialNotes.Add(shortNote);
+                        if (shortNote.NotePosition.Y != 2) specialNotes.Add(shortNote);
                         update();
                         return;
                     }
-                    if(selectedNoteStyle == "Speed")
+                    if (selectedNoteStyle == "Speed")
                     {
                         shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedSpeed);
                         if (shortNote.NotePosition.Y != 2) specialNotes.Add(shortNote);
@@ -209,13 +209,13 @@ namespace NotesEditerforD
                     //shortNotes.Add(shortNote);
                     addNote(shortNote);
                     startNote = shortNote;
-                    if(selectedNoteStyle == "Hold")
+                    if (selectedNoteStyle == "Hold")
                     {
                         shortNote.LongNoteNumber = form1.LongNoteNumber;
                         tmpLongNoteNumber = shortNote.LongNoteNumber;
-                        foreach(ShortNote _note in shortNotes)
+                        foreach (ShortNote _note in shortNotes)
                         {
-                            if(_note.NotePosition == locationize(e.Location) && _note.NoteSize  == selectedNoteSize && _note.NoteStyle == "HoldEnd")
+                            if (_note.NotePosition == locationize(e.Location) && _note.NoteSize == selectedNoteSize && _note.NoteStyle == "HoldEnd")
                             {
                                 tmpLongNoteNumber = _note.LongNoteNumber;
                                 deleteNote(startNote);
@@ -229,7 +229,7 @@ namespace NotesEditerforD
                     {
                         shortNote.LongNoteNumber = form1.LongNoteNumber;
                         tmpLongNoteNumber = shortNote.LongNoteNumber;
-                        for(int i = shortNotes.Count - 1; i >= 0; i--)
+                        for (int i = shortNotes.Count - 1; i >= 0; i--)
                         {
                             if (shortNotes[i].EndPosition == locationize(e.Location) && shortNotes[i].NoteSize == selectedNoteSize && shortNotes[i].NoteStyle == "SlideLine")
                             {
@@ -239,7 +239,7 @@ namespace NotesEditerforD
                                 {
                                     for (int j = shortNotes.Count - 1; j >= 0; j--)
                                     {
-                                        if(shortNotes[j].NotePosition == locationize(e.Location) && shortNotes[j].NoteSize == selectedNoteSize && shortNotes[j].NoteStyle == "SlideTap")
+                                        if (shortNotes[j].NotePosition == locationize(e.Location) && shortNotes[j].NoteSize == selectedNoteSize && shortNotes[j].NoteStyle == "SlideTap")
                                         {
                                             deleteNote(shortNotes[j]);
                                         }
@@ -279,10 +279,10 @@ namespace NotesEditerforD
                 }
                 update();
             }
-            else if(selectedEditStatus == "Delete")
+            else if (selectedEditStatus == "Delete")
             {
                 bool flg = false;
-                for(int i = shortNotes.Count - 1; i >= 0; i--)
+                for (int i = shortNotes.Count - 1; i >= 0; i--)
                 {
                     if (isMouseCollision(shortNotes[i].DestPoints, e.Location))
                     {
@@ -316,87 +316,105 @@ namespace NotesEditerforD
                     }
                 }
             }
+            else if (selectedEditStatus == "Edit")
+            {
+                foreach(ShortNote _note in shortNotes.Reverse<ShortNote>())
+                {
+                    if(isMouseCollision(_note.DestPoints, e.Location))
+                    {
+                        selectedNote = _note; //MessageBox.Show("Hit");
+                        break;
+                    }
+                }
+            }
             form1.setEdited(true);
         }
 
         private void this_MouseMove(object sender, MouseEventArgs e)
         {
-            if (previewNote != null)
+            if(selectedEditStatus == "Add")
             {
-                previewNote.NotePosition = locationize(e.Location);
+                if (previewNote != null)
+                {
+                    previewNote.NotePosition = locationize(e.Location);
+                }
+                if (previewLongNote != null)
+                {
+                    if (selectedNoteStyle == "Hold")
+                    {
+                        previewNote.NotePosition = locationize(new Point(startNote.NotePosition.X, e.Y - 1));
+                    }
+                    else if (selectedNoteStyle == "Slide")
+                    {
+
+                    }
+                    else if (selectedNoteStyle == "AirLine")
+                    {
+                        previewNote.NotePosition = locationize(new Point(previewLongNote.StartPosition.X, e.Y - 1));
+                    }
+                    if (previewLongNote.StartPosition.Y > e.Y)
+                    {
+                        Cursor.Current = Cursors.Arrow;
+                        previewLongNote.EndPosition = locationize(e.Location);
+                    }
+                    else Cursor.Current = Cursors.No;
+                }
+                if (selectedEditStatus != "Add" && previewNote != null) previewNote = null;
+                else if (selectedEditStatus == "Add" && previewNote == null)//ショートカットキーによるAddモードへの変更時の処理
+                {
+                    if (selectedNoteStyle == "AirLine")
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                    }
+                    else
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                    }
+                }
+                else if (selectedEditStatus == "Add" && previewNote != null && previewNote.NoteStyle != selectedNoteStyle)//previewノーツにノーツスタイルを反映
+                {
+                    if (selectedNoteStyle == "AirLine")
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                    }
+                    else
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                    }
+                }
+                else if (selectedEditStatus == "Add" && previewNote != null && previewNote.AirDirection != selectedAirDirection)//previewノーツにAirの向きを反映
+                {
+                    if (selectedNoteStyle == "AirLine")
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                    }
+                    else
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                    }
+                }
+                else if (selectedEditStatus == "Add" && previewNote != null && previewNote.NoteSize != selectedNoteSize)//previewノーツにノーツサイズを反映
+                {
+                    if (selectedNoteStyle == "AirLine")
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
+                    }
+                    else
+                    {
+                        previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
+                    }
+                }
             }
-            if(previewLongNote != null)
+            else if(selectedEditStatus == "Edit")
             {
-                if (selectedNoteStyle == "Hold")
-                {
-                    previewNote.NotePosition = locationize(new Point(startNote.NotePosition.X, e.Y - 1));
-                }
-                else if (selectedNoteStyle == "Slide")
-                {
-                    
-                }
-                else if(selectedNoteStyle == "AirLine")
-                {
-                    previewNote.NotePosition = locationize(new Point(previewLongNote.StartPosition.X, e.Y - 1));
-                }
-                if (previewLongNote.StartPosition.Y > e.Y)
-                {
-                    Cursor.Current = Cursors.Arrow;
-                    previewLongNote.EndPosition = locationize(e.Location);
-                }
-                else Cursor.Current = Cursors.No;
-            }
-            if (selectedEditStatus != "Add" && previewNote != null) previewNote = null;
-            else if (selectedEditStatus == "Add" && previewNote == null)//ショートカットキーによるAddモードへの変更時の処理
-            {
-                if (selectedNoteStyle == "AirLine")
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
-                }
-                else
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
-                }
-            }
-            else if (selectedEditStatus == "Add" && previewNote != null && previewNote.NoteStyle != selectedNoteStyle)//previewノーツにノーツスタイルを反映
-            {
-                if (selectedNoteStyle == "AirLine")
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
-                }
-                else
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
-                }
-            }
-            else if (selectedEditStatus == "Add" && previewNote != null && previewNote.AirDirection != selectedAirDirection)//previewノーツにAirの向きを反映
-            {
-                if (selectedNoteStyle == "AirLine")
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
-                }
-                else
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
-                }
-            }
-            else if (selectedEditStatus == "Add" && previewNote != null && previewNote.NoteSize != selectedNoteSize)//previewノーツにノーツサイズを反映
-            {
-                if (selectedNoteStyle == "AirLine")
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "AirAction", selectedAirDirection, 0);
-                }
-                else
-                {
-                    previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
-                }
+                if (selectedNote != null) selectedNote.NotePosition = locationize(e.Location);
             }
             update();
         }
 
         private void this_MouseUp(object sender, MouseEventArgs e)
         {
-            if(selectedEditStatus == "Add")
+            if (selectedEditStatus == "Add")
             {
                 ShortNote shortNote;
                 endPosition = locationize(e.Location);
@@ -441,6 +459,7 @@ namespace NotesEditerforD
                 previewLongNote = null;
                 update();
             }
+            else if (selectedEditStatus == "Edit") selectedNote = null;
         }
 
         private void this_MouseEnter(object sender, EventArgs e)
