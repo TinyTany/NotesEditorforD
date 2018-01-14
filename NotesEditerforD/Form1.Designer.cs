@@ -93,10 +93,12 @@
             this.flowLayoutPanelNotesButton.Controls.Add(this.AirLine);
             this.flowLayoutPanelNotesButton.Controls.Add(this.BPMButton);
             this.flowLayoutPanelNotesButton.Controls.Add(this.Speed);
+            this.flowLayoutPanelNotesButton.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanelNotesButton.Location = new System.Drawing.Point(12, 39);
             this.flowLayoutPanelNotesButton.Name = "flowLayoutPanelNotesButton";
             this.flowLayoutPanelNotesButton.Size = new System.Drawing.Size(423, 1272);
             this.flowLayoutPanelNotesButton.TabIndex = 2;
+            this.flowLayoutPanelNotesButton.WrapContents = false;
             // 
             // flowLayoutPanelEditStatus
             // 
@@ -190,6 +192,7 @@
             this.flowLayoutPanelMusicScore.Size = new System.Drawing.Size(1838, 1234);
             this.flowLayoutPanelMusicScore.TabIndex = 9;
             this.flowLayoutPanelMusicScore.WrapContents = false;
+            this.flowLayoutPanelMusicScore.Paint += new System.Windows.Forms.PaintEventHandler(this.flowLayoutPanelMusicScore_Paint);
             // 
             // labelGrid
             // 

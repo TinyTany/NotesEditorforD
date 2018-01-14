@@ -59,20 +59,8 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="MusicScore.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MusicScore.Designer.cs">
-      <DependentUpon>MusicScore.cs</DependentUpon>
-    </Compile>
     <Compile Include="MusicScore2.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Note.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Note.Designer.cs">
-      <DependentUpon>Note.cs</DependentUpon>
     </Compile>
     <Compile Include="Note2.cs" />
     <Compile Include="NotesButton.cs">
@@ -95,12 +83,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MusicScore.resx">
-      <DependentUpon>MusicScore.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Note.resx">
-      <DependentUpon>Note.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NotesButton.resx">
       <DependentUpon>NotesButton.cs</DependentUpon>

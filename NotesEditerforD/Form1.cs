@@ -15,8 +15,7 @@ namespace NotesEditerforD
         MusicScore2 musicScore2;
         private static NotesButton prevNotesButton;
         private static SpecialButton prevSpecialButton;
-        private int maxScore = 100;
-        List<MusicScore> scores = new List<MusicScore>();
+        private int maxScore = 125;
         List<MusicScore2> scores2 = new List<MusicScore2>();
         private string songID, title, artist, designer, wave, jacket, exDir, appName, pathName, dymsDataVersion;
         private int difficulty, longNoteNumber;
@@ -183,11 +182,6 @@ namespace NotesEditerforD
             set { this.longNoteNumber = value; }
         }
 
-        public List<MusicScore> Scores
-        {
-            get { return this.scores; }
-        }
-
         public List<MusicScore2> Scores2
         {
             get { return this.scores2; }
@@ -323,6 +317,11 @@ namespace NotesEditerforD
             //MessageBox.Show(activeNotesButton().NotesName);
             setEditStatus(sender, e);
             //MessageBox.Show("KeyDown");
+        }
+
+        private void flowLayoutPanelMusicScore_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
         private NotesButton activeNotesButton()
@@ -679,16 +678,18 @@ namespace NotesEditerforD
             }
         }
 
+        /*
         public void setNote(int indx, Note note)
         {
             scores[indx].setNote(note);
-        }
+        }//*/
 
+        /*
         public void deleteNote(int indx, Note note)
         {
             note.Dispose();
             scores[indx].notes.Remove(note);
-        }
+        }//*/
 
         public void setTotalNotes()
         {

@@ -56,6 +56,7 @@ namespace NotesEditerforD
         public Bitmap NoteImage
         {
             get { return this.noteImage; }
+            set { this.noteImage = value; }
         }
         //*/
 
@@ -144,15 +145,15 @@ namespace NotesEditerforD
             switch (noteStyle)
             {
                 case "HoldLine":
-                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y == 0 ? 1 : startPosition.Y - endPosition.Y);
+                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
                     cm.Matrix33 = 0.9f;
                     break;
                 case "SlideLine":
-                    canvas = new Bitmap(Math.Abs(startPosition.X - endPosition.X) + noteSize * 10, startPosition.Y - endPosition.Y == 0 ? 1 : startPosition.Y - endPosition.Y);
+                    canvas = new Bitmap(Math.Abs(startPosition.X - endPosition.X) + noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
                     cm.Matrix33 = 0.9f;
                     break;
                 case "AirLine":
-                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y == 0 ? 1 : startPosition.Y - endPosition.Y);
+                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
                     cm.Matrix33 = 0.9f;
                     break;
                 case "AirUp":

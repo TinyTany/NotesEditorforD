@@ -23,7 +23,7 @@ namespace NotesEditerforD
         public List<ShortNote> dummyNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
         private Bitmap storeImage;
-        private ShortNote previewNote, previewLongNote, startNote, selectedNote;
+        private ShortNote previewNote, previewLongNote, startNote, selectedNote, selectedNote_prev, selectedNote_next;
         private MusicScore2 prevScore, nextScore;
         public MusicScore2()
         {
@@ -320,9 +320,25 @@ namespace NotesEditerforD
             {
                 foreach(ShortNote _note in shortNotes.Reverse<ShortNote>())
                 {
-                    if(isMouseCollision(_note.DestPoints, e.Location))
+                    if(_note.NoteStyle != "SlideLine" && _note.NoteStyle != "HoldLine" && _note.NoteStyle != "AirLine" && isMouseCollision(_note.DestPoints, e.Location))
                     {
                         selectedNote = _note; //MessageBox.Show("Hit");
+                        foreach(ShortNote __note in shortNotes)
+                        {
+                            if(__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.EndPosition == _note.NotePosition)
+                            {
+                                selectedNote_prev = __note;
+                                break;
+                            }
+                        }
+                        foreach (ShortNote __note in shortNotes)
+                        {
+                            if (__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.StartPosition == _note.NotePosition)
+                            {
+                                selectedNote_next = __note;
+                                break;
+                            }
+                        }
                         break;
                     }
                 }
@@ -408,6 +424,16 @@ namespace NotesEditerforD
             else if(selectedEditStatus == "Edit")
             {
                 if (selectedNote != null) selectedNote.NotePosition = locationize(e.Location);
+                if (selectedNote_prev != null)
+                {
+                    selectedNote_prev.EndPosition = locationize(e.Location);
+                    selectedNote_prev.NoteImage = selectedNote_prev.setNoteImage();
+                }
+                if (selectedNote_next != null)
+                {
+                    selectedNote_next.StartPosition = locationize(e.Location);
+                    selectedNote_next.NoteImage = selectedNote_next.setNoteImage();
+                }
             }
             update();
         }
@@ -459,7 +485,12 @@ namespace NotesEditerforD
                 previewLongNote = null;
                 update();
             }
-            else if (selectedEditStatus == "Edit") selectedNote = null;
+            else if (selectedEditStatus == "Edit")
+            {
+                selectedNote = null;
+                selectedNote_prev = null;
+                selectedNote_next = null;
+            }
         }
 
         private void this_MouseEnter(object sender, EventArgs e)
