@@ -45,7 +45,6 @@
             this.textBoxArtist = new System.Windows.Forms.TextBox();
             this.textBoxDesigner = new System.Windows.Forms.TextBox();
             this.difficultyComboBox = new System.Windows.Forms.ComboBox();
-            this.playLevelUpDown = new System.Windows.Forms.NumericUpDown();
             this.BPMUpDown = new System.Windows.Forms.NumericUpDown();
             this.textBoxID = new System.Windows.Forms.TextBox();
             this.textBoxWAVE = new System.Windows.Forms.TextBox();
@@ -57,9 +56,10 @@
             this.buttonexdir = new System.Windows.Forms.Button();
             this.textBoxExport = new System.Windows.Forms.TextBox();
             this.checkBoxWhile = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
+            this.playLevelUpDown = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // export
@@ -221,34 +221,6 @@
             this.difficultyComboBox.Size = new System.Drawing.Size(121, 20);
             this.difficultyComboBox.TabIndex = 16;
             // 
-            // playLevelUpDown
-            // 
-            this.playLevelUpDown.DecimalPlaces = 1;
-            this.playLevelUpDown.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.playLevelUpDown.Location = new System.Drawing.Point(527, 115);
-            this.playLevelUpDown.Maximum = new decimal(new int[] {
-            15,
-            0,
-            0,
-            0});
-            this.playLevelUpDown.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.playLevelUpDown.Name = "playLevelUpDown";
-            this.playLevelUpDown.Size = new System.Drawing.Size(121, 19);
-            this.playLevelUpDown.TabIndex = 17;
-            this.playLevelUpDown.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
             // BPMUpDown
             // 
             this.BPMUpDown.DecimalPlaces = 1;
@@ -386,11 +358,40 @@
             this.checkBoxWhile.Text = "開始時に1小節分の間を空ける";
             this.checkBoxWhile.UseVisualStyleBackColor = true;
             // 
+            // playLevelUpDown
+            // 
+            this.playLevelUpDown.DecimalPlaces = 1;
+            this.playLevelUpDown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.playLevelUpDown.Location = new System.Drawing.Point(528, 115);
+            this.playLevelUpDown.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            this.playLevelUpDown.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.playLevelUpDown.Name = "playLevelUpDown";
+            this.playLevelUpDown.Size = new System.Drawing.Size(120, 19);
+            this.playLevelUpDown.TabIndex = 30;
+            this.playLevelUpDown.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(660, 354);
+            this.Controls.Add(this.playLevelUpDown);
             this.Controls.Add(this.checkBoxWhile);
             this.Controls.Add(this.textBoxExport);
             this.Controls.Add(this.buttonexdir);
@@ -402,7 +403,6 @@
             this.Controls.Add(this.textBoxWAVE);
             this.Controls.Add(this.textBoxID);
             this.Controls.Add(this.BPMUpDown);
-            this.Controls.Add(this.playLevelUpDown);
             this.Controls.Add(this.difficultyComboBox);
             this.Controls.Add(this.textBoxDesigner);
             this.Controls.Add(this.textBoxArtist);
@@ -423,9 +423,9 @@
             this.Name = "Form2";
             this.Text = "エクスポート";
             this.Load += new System.EventHandler(this.Form2_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -450,7 +450,6 @@
         private System.Windows.Forms.TextBox textBoxArtist;
         private System.Windows.Forms.TextBox textBoxDesigner;
         private System.Windows.Forms.ComboBox difficultyComboBox;
-        private System.Windows.Forms.NumericUpDown playLevelUpDown;
         private System.Windows.Forms.NumericUpDown BPMUpDown;
         private System.Windows.Forms.TextBox textBoxID;
         private System.Windows.Forms.TextBox textBoxWAVE;
@@ -462,5 +461,6 @@
         private System.Windows.Forms.Button buttonexdir;
         private System.Windows.Forms.TextBox textBoxExport;
         private System.Windows.Forms.CheckBox checkBoxWhile;
+        private System.Windows.Forms.NumericUpDown playLevelUpDown;
     }
 }

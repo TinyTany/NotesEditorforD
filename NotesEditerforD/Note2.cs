@@ -12,8 +12,7 @@ namespace NotesEditerforD
         private MusicScore2 musicscore;
         private Point position, startPosition, endPosition;
         private string noteStyle, airDirection;
-        private ShortNote childNote, parentNote;
-        private bool isChildNote, isParentNote;
+        private ShortNote prevNote, nextNote;
         private int longNoteNumber, noteSize;
         private Point[] destPoints;//{ul, ur, ll}
         private decimal specialValue;
@@ -32,10 +31,8 @@ namespace NotesEditerforD
             airDirection = _airDirection;
             longNoteNumber = _longNoteNumber;
             //
-            childNote = null;
-            parentNote = null;
-            isChildNote = false;
-            isParentNote = false;
+            prevNote = null;
+            nextNote = null;
             destPoints = new Point[3];
 
             noteImage = setNoteImage();
@@ -60,28 +57,16 @@ namespace NotesEditerforD
         }
         //*/
 
-        public ShortNote ChildNote
+        public ShortNote PrevNote
         {
-            get { return this.childNote; }
-            set { this.childNote = value; }
+            get { return this.prevNote; }
+            set { this.prevNote = value; }
         }
 
-        public ShortNote ParentNote
+        public ShortNote NextNote
         {
-            get { return this.parentNote; }
-            set { this.parentNote = value; }
-        }
-
-        public bool IsChildNote
-        {
-            get { return this.isChildNote; }
-            set { this.isChildNote = value; }
-        }
-
-        public bool IsParentNote
-        {
-            get { return this.isParentNote; }
-            set { this.isParentNote = value; }
+            get { return this.nextNote; }
+            set { this.nextNote = value; }
         }
 
         public Point[] DestPoints
@@ -135,6 +120,11 @@ namespace NotesEditerforD
         {
             get { return this.specialValue; }
             set { this.specialValue = value; }
+        }
+
+        public void update()
+        {
+            noteImage = setNoteImage();
         }
 
         public Bitmap setNoteImage()
@@ -213,6 +203,9 @@ namespace NotesEditerforD
                     break;
                 case "SlideTap":
                     noteImage = Properties.Resources.SlideTap;
+                    break;
+                case "SlideRelay":
+                    noteImage = Properties.Resources.SlideRelay;
                     break;
                 case "AirAction":
                     noteImage = Properties.Resources.AirAction;

@@ -23,11 +23,11 @@ namespace NotesEditerforD
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
         private const string dymsVersion = "0.4", Version = "0.4a.1";
-        public bool noSlideRelay = false;
+        public bool slideRelay = false;
         public Form1()
         {
             InitializeComponent();
-            checkSlideRelay.Checked = !noSlideRelay;
+            checkSlideRelay.Checked = !slideRelay;
             comboBoxBeat.SelectedIndex = 1;
             MusicScore2.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
             for (int i = 0; i < maxScore; i++)
@@ -259,8 +259,8 @@ namespace NotesEditerforD
             else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
             else if (e.KeyCode == Keys.S)
             {
-                noSlideRelay = !noSlideRelay;
-                checkSlideRelay.Checked = !noSlideRelay;
+                slideRelay = !slideRelay;
+                checkSlideRelay.Checked = !slideRelay;
             }
             if (AirUp.IsActive)
             {
@@ -342,7 +342,7 @@ namespace NotesEditerforD
 
         private void checkSlideRelay_Click(object sender, EventArgs e)
         {
-            noSlideRelay = !noSlideRelay;
+            slideRelay = !slideRelay;
             this.ActiveControl = null;
         }
 

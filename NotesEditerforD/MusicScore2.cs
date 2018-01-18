@@ -18,6 +18,7 @@ namespace NotesEditerforD
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
         private static decimal selectedBPM, selectedSpeed;
         private Point startPosition, endPosition;
+        private bool addSlideRelayFlag;
         public Form1 form1;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> dummyNotes = new List<ShortNote>();
@@ -41,6 +42,7 @@ namespace NotesEditerforD
             previewLongNote = null;
             prevScore = null;
             nextScore = null;
+            addSlideRelayFlag = false;
 
             this.MouseDown += new MouseEventHandler(this_MouseDown);
             this.MouseMove += new MouseEventHandler(this_MouseMove);
@@ -129,7 +131,7 @@ namespace NotesEditerforD
             get { return rightMargin; }
         }
 
-        public void setNote(string[] _noteData, string dymsVersion)
+        public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
         {
             Point notePosition;
             int noteSize, longNoteNumber;
@@ -187,7 +189,7 @@ namespace NotesEditerforD
         {
             if (selectedEditStatus == "Add")
             {
-                ShortNote shortNote;// = null;
+                ShortNote shortNote;
                 startPosition = locationize(e.Location);
                 if (selectedNoteStyle != "AirLine")
                 {
@@ -206,7 +208,6 @@ namespace NotesEditerforD
                         return;
                     }
                     shortNote = new ShortNote(this, locationize(e.Location), startPosition, startPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, -1);
-                    //shortNotes.Add(shortNote);
                     addNote(shortNote);
                     startNote = shortNote;
                     if (selectedNoteStyle == "Hold")
@@ -235,31 +236,49 @@ namespace NotesEditerforD
                             {
                                 tmpLongNoteNumber = shortNotes[i].LongNoteNumber;
                                 deleteNote(startNote);
-                                if (!form1.noSlideRelay)
+                                if (!form1.slideRelay)//
                                 {
                                     for (int j = shortNotes.Count - 1; j >= 0; j--)
                                     {
                                         if (shortNotes[j].NotePosition == locationize(e.Location) && shortNotes[j].NoteSize == selectedNoteSize && shortNotes[j].NoteStyle == "SlideTap")
                                         {
-                                            deleteNote(shortNotes[j]);
+                                            //deleteNote(shortNotes[j]);
+                                            shortNotes[j].NoteStyle = "SlideRelay";
+                                            shortNotes[j].update();
                                         }
                                     }
                                 }
                                 break;
                             }
-                        }
-                        /*
-                        foreach (ShortNote _note in shortNotes)
-                        {
-                            if (_note.EndPosition == locationize(e.Location) && _note.NoteSize  == selectedNoteSize && _note.NoteStyle == "SlideLine")
+
+                            if(shortNotes[i].NoteStyle == "SlideLine" && shortNotes[i].NoteSize == selectedNoteSize && isMouseCollision(shortNotes[i].DestPoints, e.Location))
                             {
-                                tmpLongNoteNumber = _note.LongNoteNumber;
-                                deleteNote(startNote);
+                                ShortNote next = shortNotes[i];
+                                ShortNote prev = new ShortNote(this, next.NotePosition, next.StartPosition, locationize(e.Location), next.NoteSize, "SlideLine", "Center", next.LongNoteNumber);
+                                next.StartPosition = locationize(e.Location);
+                                //addNote(prev);
+                                shortNotes.Insert(i, prev);
+                                next.update();
+                                ShortNote slide;
+                                if (!form1.slideRelay)
+                                {
+                                    slide = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), next.NoteSize, "SlideRelay", "Center", next.LongNoteNumber);
+                                }
+                                else
+                                {
+                                    slide = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), next.NoteSize, "SlideTap", "Center", next.LongNoteNumber);
+                                }
+                                //addNote(slide);
+                                shortNotes.Insert(i+1, slide);
+                                selectedNote = slide;
+                                selectedNote_next = next;
+                                selectedNote_prev = prev;
+                                //previewNote = null; previewLongNote = null;
+                                addSlideRelayFlag = true;
                                 break;
                             }
                         }
-                        //*/
-                        previewLongNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, startPosition.Y - 1), selectedNoteSize, "SlideLine", selectedAirDirection, 0);
+                        if(!addSlideRelayFlag) previewLongNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, startPosition.Y - 1), selectedNoteSize, "SlideLine", selectedAirDirection, 0);
                     }
                     //addNote(shortNote);
                 }
@@ -282,22 +301,51 @@ namespace NotesEditerforD
             else if (selectedEditStatus == "Delete")
             {
                 bool flg = false;
-                for (int i = shortNotes.Count - 1; i >= 0; i--)
+                foreach (ShortNote _note in shortNotes.Reverse<ShortNote>())//普通のノーツ
                 {
-                    if (isMouseCollision(shortNotes[i].DestPoints, e.Location))
+                    if (isMouseCollision(_note.DestPoints, e.Location))
                     {
-                        deleteNote(shortNotes[i]);
+                        //System.Diagnostics.Debug.WriteLine(_note.NoteStyle + " " + _note.NotePosition + " " + _note.EndPosition);
+                        if (_note.NoteStyle == "HoldLine" || _note.NoteStyle == "SlideLine" || _note.NoteStyle == "AirLine") break;
+                        else if(_note.NoteStyle == "SlideTap" || _note.NoteStyle == "SlideRelay")
+                        {
+                            ShortNote prev = null, next = null;
+                            foreach (ShortNote _prev in shortNotes)
+                            {
+                                if(_prev.NoteStyle == "SlideLine" && _prev.LongNoteNumber == _note.LongNoteNumber && _prev.EndPosition == _note.NotePosition)
+                                {
+                                    prev = _prev;
+                                    break;
+                                }
+                            }
+                            foreach (ShortNote _next in shortNotes)
+                            {
+                                if (_next.NoteStyle == "SlideLine" && _next.LongNoteNumber == _note.LongNoteNumber && _next.StartPosition == _note.NotePosition)
+                                {
+                                    next = _next;
+                                    break;
+                                }
+                            }
+                            if(next != null)
+                            {
+                                prev.EndPosition = next.EndPosition;
+                                prev.update();
+                                deleteNote(next);
+                                deleteNote(_note);
+                            }
+                        }
+                        deleteNote(_note);
                         flg = true;
                         break;
                     }
                 }
                 if (!flg)
                 {
-                    for (int i = dummyNotes.Count - 1; i >= 0; i--)
+                    foreach (ShortNote _dummy in dummyNotes.Reverse<ShortNote>())//ダミーノーツ
                     {
-                        if (isMouseCollision(dummyNotes[i].DestPoints, e.Location))
+                        if (isMouseCollision(_dummy.DestPoints, e.Location))
                         {
-                            deleteNote(dummyNotes[i]);
+                            deleteNote(_dummy);
                             flg = true;
                             break;
                         }
@@ -305,12 +353,12 @@ namespace NotesEditerforD
                 }
                 if (!flg)
                 {
-                    for (int i = specialNotes.Count - 1; i >= 0; i--)
+                    foreach (ShortNote _special in specialNotes.Reverse<ShortNote>())//特殊ノーツ
                     {
-                        if (isMouseCollision(specialNotes[i].DestPoints, e.Location))
+                        if (isMouseCollision(_special.DestPoints, e.Location))
                         {
                             //deleteNote(specialNotes[i]);
-                            specialNotes.Remove(specialNotes[i]);
+                            specialNotes.Remove(_special);
                             break;
                         }
                     }
@@ -348,7 +396,7 @@ namespace NotesEditerforD
 
         private void this_MouseMove(object sender, MouseEventArgs e)
         {
-            if(selectedEditStatus == "Add")
+            if(selectedEditStatus == "Add" && !addSlideRelayFlag)
             {
                 if (previewNote != null)
                 {
@@ -366,7 +414,7 @@ namespace NotesEditerforD
                     }
                     else if (selectedNoteStyle == "AirLine")
                     {
-                        previewNote.NotePosition = locationize(new Point(previewLongNote.StartPosition.X, e.Y - 1));
+                        previewNote.NotePosition = locationize(new Point(previewNote.NotePosition.X, e.Y - 1));//locationize(new Point(previewLongNote.StartPosition.X, e.Y - 1));
                     }
                     if (previewLongNote.StartPosition.Y > e.Y)
                     {
@@ -421,18 +469,44 @@ namespace NotesEditerforD
                     }
                 }
             }
-            else if(selectedEditStatus == "Edit")
+            else if(selectedEditStatus == "Edit" || addSlideRelayFlag)
             {
-                if (selectedNote != null) selectedNote.NotePosition = locationize(e.Location);
+                if (selectedNote != null)
+                {
+
+                    if (selectedNote.NoteStyle == "Hold" || selectedNote.NoteStyle == "HoldEnd" || selectedNote.NoteStyle == "AirAction")
+                    {
+                        selectedNote.NotePosition = new Point(selectedNote.NotePosition.X, locationize(e.Location).Y);
+                    }
+                    else
+                    {
+                        selectedNote.NotePosition = locationize(e.Location);
+                    }
+                    fixBorder(selectedNote);
+                }
                 if (selectedNote_prev != null)
                 {
-                    selectedNote_prev.EndPosition = locationize(e.Location);
-                    selectedNote_prev.NoteImage = selectedNote_prev.setNoteImage();
+                    if (selectedNote.NoteStyle == "Hold" || selectedNote.NoteStyle == "HoldEnd" || selectedNote.NoteStyle == "AirAction")
+                    {
+                        selectedNote_prev.EndPosition = new Point(selectedNote_prev.EndPosition.X, locationize(e.Location).Y);
+                    }
+                    else
+                    {
+                        selectedNote_prev.EndPosition = locationize(e.Location);
+                    }
+                    selectedNote_prev.update();
                 }
                 if (selectedNote_next != null)
                 {
-                    selectedNote_next.StartPosition = locationize(e.Location);
-                    selectedNote_next.NoteImage = selectedNote_next.setNoteImage();
+                    if (selectedNote.NoteStyle == "Hold" || selectedNote.NoteStyle == "HoldEnd" || selectedNote.NoteStyle == "AirAction")
+                    {
+                        selectedNote_next.StartPosition = new Point(selectedNote_next.StartPosition.X, locationize(e.Location).Y);
+                    }
+                    else
+                    {
+                        selectedNote_next.StartPosition = locationize(e.Location);
+                    }
+                    selectedNote_next.update();
                 }
             }
             update();
@@ -452,7 +526,7 @@ namespace NotesEditerforD
                     case "Hold":
                         if (endPosition.Y < startPosition.Y)
                         {
-                            shortNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "HoldLine", selectedAirDirection, tmpLongNoteNumber);
+                            shortNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "HoldLine", selectedAirDirection, tmpLongNoteNumber);
                             addNote(shortNote);
                             shortNote = new ShortNote(this, new Point(startPosition.X, endPosition.Y), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "HoldEnd", selectedAirDirection, tmpLongNoteNumber);
                             addNote(shortNote);
@@ -461,7 +535,7 @@ namespace NotesEditerforD
                         else deleteNote(startNote);
                         break;
                     case "Slide":
-                        if (endPosition.Y < startPosition.Y)
+                        if (endPosition.Y < startPosition.Y && !addSlideRelayFlag)
                         {
                             shortNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "SlideLine", selectedAirDirection, tmpLongNoteNumber);
                             addNote(shortNote);
@@ -487,10 +561,12 @@ namespace NotesEditerforD
             }
             else if (selectedEditStatus == "Edit")
             {
-                selectedNote = null;
-                selectedNote_prev = null;
-                selectedNote_next = null;
+                
             }
+            if(selectedNote != null) selectedNote = null;
+            if(selectedNote_prev != null) selectedNote_prev = null;
+            if(selectedNote_next != null) selectedNote_next = null;
+            addSlideRelayFlag = false;
         }
 
         private void this_MouseEnter(object sender, EventArgs e)
@@ -520,83 +596,57 @@ namespace NotesEditerforD
 
         private void addNote(ShortNote shortNote)//, string position)
         {
-            /*
-            if(position == "Start")
+            fixBorder(shortNote);
+            shortNotes.Add(shortNote);
+        }
+
+        private void fixBorder(ShortNote shortNote)
+        {
+            if (shortNote.NotePosition.Y == 770 && prevScore != null && shortNote.PrevNote == null && shortNote.NextNote == null)
             {
-                if (shortNote.StartPosition.Y == 770 && prevScore != null && selectedNoteStyle != "AirLine")
-                {
-                    ShortNote childShortNote = new ShortNote(prevScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
-                    childShortNote.StartPosition = new Point(childShortNote.StartPosition.X, childShortNote.StartPosition.Y - 768);
-                    childShortNote.EndPosition = new Point(childShortNote.EndPosition.X, childShortNote.EndPosition.Y - 768);
-                    childShortNote.NotePosition = new Point(childShortNote.NotePosition.X, childShortNote.NotePosition.Y - 768);
-                    childShortNote.IsChildNote = true;
-                    childShortNote.ParentNote = shortNote;
-                    shortNote.IsParentNote = true;
-                    shortNote.ChildNote = childShortNote;
-                    shortNotes.Add(shortNote);
-                    prevScore.dummyNotes.Add(childShortNote);
-                    prevScore.update();
-                }
-                else if (shortNote.StartPosition.Y == 2 && nextScore != null && SelectedNoteStyle != "AirLine")
-                {
-                    ShortNote parentShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
-                    parentShortNote.StartPosition = new Point(parentShortNote.StartPosition.X, parentShortNote.StartPosition.Y + 768);
-                    parentShortNote.EndPosition = new Point(parentShortNote.EndPosition.X, parentShortNote.EndPosition.Y + 768);
-                    parentShortNote.NotePosition = new Point(parentShortNote.NotePosition.X, parentShortNote.NotePosition.Y + 768);
-                    parentShortNote.IsParentNote = true;
-                    parentShortNote.ChildNote = shortNote;
-                    shortNote.IsChildNote = true;
-                    shortNote.ParentNote = parentShortNote;
-                    nextScore.shortNotes.Add(parentShortNote);
-                    dummyNotes.Add(shortNote);
-                    nextScore.update();
-                }
-                else
-                {
-                    shortNotes.Add(shortNote);
-                }
+                ShortNote prevShortNote = new ShortNote(prevScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
+                prevShortNote.StartPosition = new Point(prevShortNote.StartPosition.X, prevShortNote.StartPosition.Y - 768);
+                prevShortNote.EndPosition = new Point(prevShortNote.EndPosition.X, prevShortNote.EndPosition.Y - 768);
+                prevShortNote.NotePosition = new Point(prevShortNote.NotePosition.X, prevShortNote.NotePosition.Y - 768);
+                prevShortNote.NextNote = shortNote;
+                shortNote.PrevNote = prevShortNote;
+                prevScore.shortNotes.Add(prevShortNote);
+                prevScore.update();
             }
-            //*/
-            //else if(position == "End")
-            //{
-                if (shortNote.EndPosition.Y == 770 && prevScore != null)
-                {
-                    ShortNote childShortNote = new ShortNote(prevScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
-                    childShortNote.StartPosition = new Point(childShortNote.StartPosition.X, childShortNote.StartPosition.Y - 768);
-                    childShortNote.EndPosition = new Point(childShortNote.EndPosition.X, childShortNote.EndPosition.Y - 768);
-                    childShortNote.NotePosition = new Point(childShortNote.NotePosition.X, childShortNote.NotePosition.Y - 768);
-                    childShortNote.IsChildNote = true;
-                    childShortNote.ParentNote = shortNote;
-                    shortNote.IsParentNote = true;
-                    shortNote.ChildNote = childShortNote;
-                    shortNotes.Add(shortNote);
-                    prevScore.dummyNotes.Add(childShortNote);
-                    prevScore.update();
-                }
-                else if (shortNote.EndPosition.Y == 2 && nextScore != null)
-                {
-                    ShortNote parentShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
-                    parentShortNote.StartPosition = new Point(parentShortNote.StartPosition.X, parentShortNote.StartPosition.Y + 768);
-                    parentShortNote.EndPosition = new Point(parentShortNote.EndPosition.X, parentShortNote.EndPosition.Y + 768);
-                    parentShortNote.NotePosition = new Point(parentShortNote.NotePosition.X, parentShortNote.NotePosition.Y + 768);
-                    parentShortNote.IsParentNote = true;
-                    parentShortNote.ChildNote = shortNote;
-                    shortNote.IsChildNote = true;
-                    shortNote.ParentNote = parentShortNote;
-                    nextScore.shortNotes.Add(parentShortNote);
-                    dummyNotes.Add(shortNote);
-                    nextScore.update();
-                }
-                else
-                {
-                    shortNotes.Add(shortNote);
-                }
-            //}
-            //else
-            //{
-            //    shortNotes.Add(shortNote);
-            //}
-            
+            else if (shortNote.NotePosition.Y == 2 && nextScore != null && shortNote.PrevNote == null && shortNote.NextNote == null)
+            {
+                ShortNote nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
+                nextShortNote.StartPosition = new Point(nextShortNote.StartPosition.X, nextShortNote.StartPosition.Y + 768);
+                nextShortNote.EndPosition = new Point(nextShortNote.EndPosition.X, nextShortNote.EndPosition.Y + 768);
+                nextShortNote.NotePosition = new Point(nextShortNote.NotePosition.X, nextShortNote.NotePosition.Y + 768);
+                nextShortNote.PrevNote = shortNote;
+                shortNote.NextNote = nextShortNote;
+                nextScore.shortNotes.Add(nextShortNote);
+                nextScore.update();
+            }
+            if (shortNote.NotePosition.Y != 770 && shortNote.PrevNote != null)
+            {
+                prevScore.shortNotes.Remove(shortNote.PrevNote);
+                shortNote.PrevNote = null;
+                prevScore.update();
+            }
+            else if(shortNote.NotePosition.Y != 2 && shortNote.NextNote != null)
+            {
+                nextScore.shortNotes.Remove(shortNote.NextNote);
+                shortNote.NextNote = null;
+                nextScore.update();
+            }
+            if (shortNote.PrevNote != null)
+            {
+                shortNote.PrevNote.NotePosition = new Point(shortNote.NotePosition.X, shortNote.PrevNote.NotePosition.Y);
+                prevScore.update();
+            }
+            if (shortNote.NextNote != null)
+            {
+                shortNote.NextNote.NotePosition = new Point(shortNote.NotePosition.X, shortNote.NextNote.NotePosition.Y);
+                nextScore.update();
+            } 
+            return;
         }
 
         private bool isMouseCollision(Point[] _destPoints, Point e)
@@ -682,21 +732,17 @@ namespace NotesEditerforD
 
         private void deleteNote(ShortNote _note)
         {
-            if (_note.IsParentNote && prevScore != null)
+            if (_note.PrevNote != null && prevScore != null)
             {
-                prevScore.dummyNotes.Remove(_note.ChildNote);
-                shortNotes.Remove(_note);
+                prevScore.shortNotes.Remove(_note.PrevNote);
                 prevScore.update();
             }
-            else if(_note.IsChildNote && nextScore != null)
+            else if(_note.NextNote != null && nextScore != null)
             {
-                nextScore.shortNotes.Remove(_note.ParentNote);
-                dummyNotes.Remove(_note);
+                nextScore.shortNotes.Remove(_note.NextNote);
                 nextScore.update();
-            }else
-            {
-                shortNotes.Remove(_note);
             }
+            shortNotes.Remove(_note);
             update();
         }
 
