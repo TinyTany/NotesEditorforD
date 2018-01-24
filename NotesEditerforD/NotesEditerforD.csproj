@@ -90,6 +90,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="SpecialButton.resx">
       <DependentUpon>SpecialButton.cs</DependentUpon>
@@ -216,6 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SlideTap2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SlideCurve.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

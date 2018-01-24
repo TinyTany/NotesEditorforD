@@ -57,6 +57,7 @@
             this.textBoxExport = new System.Windows.Forms.TextBox();
             this.checkBoxWhile = new System.Windows.Forms.CheckBox();
             this.playLevelUpDown = new System.Windows.Forms.NumericUpDown();
+            this.textBoxWE = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
@@ -216,10 +217,11 @@
             "EXPERT",
             "MASTER",
             "WORLD\'S END"});
-            this.difficultyComboBox.Location = new System.Drawing.Point(527, 89);
+            this.difficultyComboBox.Location = new System.Drawing.Point(482, 89);
             this.difficultyComboBox.Name = "difficultyComboBox";
             this.difficultyComboBox.Size = new System.Drawing.Size(121, 20);
             this.difficultyComboBox.TabIndex = 16;
+            this.difficultyComboBox.SelectedIndexChanged += new System.EventHandler(this.difficultyComboBox_SelectedIndexChanged);
             // 
             // BPMUpDown
             // 
@@ -386,11 +388,20 @@
             0,
             0});
             // 
+            // textBoxWE
+            // 
+            this.textBoxWE.Enabled = false;
+            this.textBoxWE.Location = new System.Drawing.Point(609, 89);
+            this.textBoxWE.Name = "textBoxWE";
+            this.textBoxWE.Size = new System.Drawing.Size(39, 19);
+            this.textBoxWE.TabIndex = 31;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(660, 354);
+            this.Controls.Add(this.textBoxWE);
             this.Controls.Add(this.playLevelUpDown);
             this.Controls.Add(this.checkBoxWhile);
             this.Controls.Add(this.textBoxExport);
@@ -462,5 +473,6 @@
         private System.Windows.Forms.TextBox textBoxExport;
         private System.Windows.Forms.CheckBox checkBoxWhile;
         private System.Windows.Forms.NumericUpDown playLevelUpDown;
+        private System.Windows.Forms.TextBox textBoxWE;
     }
 }

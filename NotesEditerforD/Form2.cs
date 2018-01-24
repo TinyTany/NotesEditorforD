@@ -116,8 +116,16 @@ namespace NotesEditerforD
             sw.WriteLine("#TITLE " + '"' + textBoxTitle.Text + '"');
             sw.WriteLine("#ARTIST " + '"' + textBoxArtist.Text + '"');
             sw.WriteLine("#DESIGNER " + '"' + textBoxDesigner.Text + '"');
-            sw.WriteLine("#DIFFICULTY " + difficultyComboBox.SelectedIndex);
-            sw.WriteLine("#PLAYLEVEL " + level);
+            if(difficultyComboBox.SelectedIndex == 4)
+            {
+                sw.WriteLine("#DIFFICULTY " + difficultyComboBox.SelectedIndex + ":" + textBoxWE.Text);
+                sw.WriteLine("#PLAYLEVEL " + (int)playLevelUpDown.Value);
+            }
+            else
+            {
+                sw.WriteLine("#DIFFICULTY " + difficultyComboBox.SelectedIndex);
+                sw.WriteLine("#PLAYLEVEL " + level);
+            }
             sw.WriteLine("//SCORECONSTANT " + playLevelUpDown.Value);
             sw.WriteLine("#WAVE " + '"' + textBoxWAVE.Text + '"');
             sw.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
@@ -540,27 +548,31 @@ namespace NotesEditerforD
                                 if (noteSize == 16) longLane1[measure, _X, _Y, sgnindx] = "1g";
                                 else longLane1[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
                                 int longNoteNumber = note.LongNoteNumber;
-                                int startMeasure = measure, endMeasure = measure;
+                                int startMeasure = measure;//, endMeasure = measure;
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
                                     foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
                                     {
-                                        _X = (_note.EndPosition.X - (leftMargin + 1)) / 10;
-                                        _Y = maxBeatDevide - (_note.EndPosition.Y - 2) / (384 / maxBeatDevide);
+                                        _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
+                                        _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
                                         noteSize = _note.NoteSize;
-                                        if (_note.NoteStyle == "SlideLine" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
+                                        if (_note.NoteStyle == "SlideRelay" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
                                         {
                                             if (_Y < 0)
                                             {
                                                 _Y += maxBeatDevide;
                                                 if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "5g";
                                                 else longLane1[_measure, _X, _Y, sgnindx] = "5" + noteSize.ToString("x");
-                                                endMeasure = _measure;
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
                                             }
                                             else
                                             {
+                                                if (_Y >= maxBeatDevide) continue;
+                                                if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "5g";
+                                                else longLane2[_measure, _X, _Y, sgnindx] = "5" + noteSize.ToString("x");
+                                                /*
                                                 if (_Y == maxBeatDevide)
                                                 {
                                                     if (noteSize == 16) longLane1[_measure + 1, _X, 0, sgnindx] = "5g";
@@ -572,12 +584,13 @@ namespace NotesEditerforD
                                                     if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "5g";
                                                     else longLane2[_measure, _X, _Y, sgnindx] = "5" + noteSize.ToString("x");
                                                 }
-                                                endMeasure = _measure;
+                                                //*/
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
                                         }
-                                        _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
-                                        _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
+                                        //_X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
+                                        //_Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
                                         if (_note.NoteStyle == "SlideTap" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
                                         {
                                             if (_Y < 0)
@@ -585,7 +598,7 @@ namespace NotesEditerforD
                                                 _Y += maxBeatDevide;
                                                 if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane1[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
-                                                endMeasure = _measure;
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
                                             }
                                             else
@@ -593,13 +606,34 @@ namespace NotesEditerforD
                                                 if (_Y >= maxBeatDevide) continue;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
-                                                endMeasure = _measure;
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
                                         }
+                                        if (_note.NoteStyle == "SlideEnd" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
+                                        {
+                                            if (_Y < 0)
+                                            {
+                                                _Y += maxBeatDevide;
+                                                if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "2g";
+                                                else longLane1[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
+                                            }
+                                            else
+                                            {
+                                                if (_Y >= maxBeatDevide) continue;
+                                                if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "2g";
+                                                else longLane2[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
+                                            }
+                                            flg = true;
+                                        }
                                     }
-                                    //if (flg) break;
+                                    if (flg) break;
                                 }
+                                /*
                                 for (int i = form1.Scores2[endMeasure].shortNotes.Count - 1; i >= 0; i--)
                                 {
                                     if(form1.Scores2[endMeasure].shortNotes[i].NoteStyle == "SlideTap" && form1.Scores2[endMeasure].shortNotes[i].LongNoteNumber == longNoteNumber)
@@ -623,7 +657,7 @@ namespace NotesEditerforD
                                         }
                                         break;
                                     }
-                                }
+                                }//*/
                                 break;//
                             default:
                                 break;
@@ -637,90 +671,94 @@ namespace NotesEditerforD
                             case "Slide"://
                                 sgnindx++; if (sgnindx > 25) sgnindx = 0;
                                 //sgnindx = 0;
-                                //if (isUsedLane2[measure, sgnindx] && sgnindx < 25) { sgnindx++; continue; }
-                                if (noteSize == 16) longLane2[measure, _X, _Y, sgnindx] = "1g";
-                                else longLane2[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
+                                //if (isUsedLane1[measure, sgnindx] && sgnindx < 25) { sgnindx++; continue; }
+                                if (noteSize == 16) longLane1[measure, _X, _Y, sgnindx] = "1g";
+                                else longLane1[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
                                 int longNoteNumber = note.LongNoteNumber;
-                                int startMeasure = measure, endMeasure = measure;
+                                int startMeasure = measure;//, endMeasure = measure;
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
                                     foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
                                     {
-                                        _X = (_note.EndPosition.X - (leftMargin + 1)) / 10;
-                                        _Y = maxBeatDevide - (_note.EndPosition.Y - 2) / (384 / maxBeatDevide);
+                                        _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
+                                        _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
                                         noteSize = _note.NoteSize;
-                                        if (_note.NoteStyle == "SlideLine" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
+                                        if (_note.NoteStyle == "SlideRelay" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
                                         {
                                             if (_Y < 0)
                                             {
                                                 _Y += maxBeatDevide;
                                                 if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "5g";
                                                 else longLane1[_measure, _X, _Y, sgnindx] = "5" + noteSize.ToString("x");
-                                                endMeasure = _measure;
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
                                             }
                                             else
                                             {
-                                                if(_Y == maxBeatDevide)
+                                                if (_Y >= maxBeatDevide) continue;
+                                                if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "5g";
+                                                else longLane2[_measure, _X, _Y, sgnindx] = "5" + noteSize.ToString("x");
+                                                /*
+                                                if (_Y == maxBeatDevide)
                                                 {
                                                     if (noteSize == 16) longLane1[_measure + 1, _X, 0, sgnindx] = "5g";
                                                     else longLane1[_measure + 1, _X, 0, sgnindx] = "5" + noteSize.ToString("x");
                                                 }
                                                 else
                                                 {
+                                                    if (_Y >= maxBeatDevide) continue;
                                                     if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "5g";
                                                     else longLane2[_measure, _X, _Y, sgnindx] = "5" + noteSize.ToString("x");
                                                 }
-                                                endMeasure = _measure;
+                                                //*/
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
                                         }
-                                        _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
-                                        _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
-                                        if (_note.NoteStyle == "SlideTap" && _note.LongNoteNumber == longNoteNumber)//
+                                        //_X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
+                                        //_Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
+                                        if (_note.NoteStyle == "SlideTap" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
                                         {
                                             if (_Y < 0)
                                             {
                                                 _Y += maxBeatDevide;
                                                 if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane1[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
-                                                endMeasure = _measure;
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
                                             }
                                             else
                                             {
+                                                if (_Y >= maxBeatDevide) continue;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
-                                                endMeasure = _measure;
+                                                //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
                                         }
-                                    }
-                                    //if (flg) break;
-                                }
-                                for (int i = form1.Scores2[endMeasure].shortNotes.Count - 1; i >= 0; i--)
-                                {
-                                    if (form1.Scores2[endMeasure].shortNotes[i].NoteStyle == "SlideTap" && form1.Scores2[endMeasure].shortNotes[i].LongNoteNumber == longNoteNumber)
-                                    {
-                                        _X = (form1.Scores2[endMeasure].shortNotes[i].NotePosition.X - (leftMargin + 1)) / 10;
-                                        _Y = maxBeatDevide - (form1.Scores2[endMeasure].shortNotes[i].NotePosition.Y - 2) / (384 / maxBeatDevide);
-                                        noteSize = form1.Scores2[endMeasure].shortNotes[i].NoteSize;
-                                        if (_Y < 0)
+                                        if (_note.NoteStyle == "SlideEnd" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
                                         {
-                                            _Y += maxBeatDevide;
-                                            if (noteSize == 16) longLane1[endMeasure, _X, _Y, sgnindx] = "2g";
-                                            else longLane1[endMeasure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                            for (int j = startMeasure; j <= endMeasure; j++) isUsedLane1[j, sgnindx] = true;
+                                            if (_Y < 0)
+                                            {
+                                                _Y += maxBeatDevide;
+                                                if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "2g";
+                                                else longLane1[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
+                                            }
+                                            else
+                                            {
+                                                if (_Y >= maxBeatDevide) continue;
+                                                if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "2g";
+                                                else longLane2[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
+                                            }
+                                            flg = true;
                                         }
-                                        else
-                                        {
-                                            if (noteSize == 16) longLane2[endMeasure, _X, _Y, sgnindx] = "2g";
-                                            else longLane2[endMeasure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                            for (int j = startMeasure; j <= endMeasure; j++) isUsedLane2[j, sgnindx] = true;
-                                        }
-                                        break;
                                     }
+                                    if (flg) break;
                                 }
                                 break;//
                             default:
@@ -1106,6 +1144,12 @@ namespace NotesEditerforD
         private void artistLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void difficultyComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (difficultyComboBox.SelectedIndex == 4) textBoxWE.Enabled = true;
+            else textBoxWE.Enabled = false;
         }
 
         private bool isModified(string[,,,] lane, int measure, int i, int sgnindx)

@@ -202,11 +202,14 @@ namespace NotesEditerforD
                     noteImage = Properties.Resources.SlideLine;
                     break;
                 case "SlideTap":
+                    
+                case "SlideEnd":
                     noteImage = Properties.Resources.SlideTap;
                     break;
                 case "SlideRelay":
                     noteImage = Properties.Resources.SlideRelay;
                     break;
+                //case "AirEnd":
                 case "AirAction":
                     noteImage = Properties.Resources.AirAction;
                     break;
@@ -285,6 +288,7 @@ namespace NotesEditerforD
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
                     else _destPoints = new Point[3] { new Point(startPosition.X + 5 * noteSize - 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize + 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize - 3, startPosition.Y) };
                     break;
+                case "AirEnd":
                 case "AirAction":
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, 3) };
                     else _destPoints = new Point[3] { new Point(startPosition.X + 2, position.Y), new Point(startPosition.X + 10 * noteSize - 2, position.Y), new Point(startPosition.X + 2, position.Y + 3) };
