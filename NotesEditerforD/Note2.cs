@@ -209,6 +209,9 @@ namespace NotesEditerforD
                 case "SlideRelay":
                     noteImage = Properties.Resources.SlideRelay;
                     break;
+                case "SlideCurve":
+                    noteImage = Properties.Resources.SlideCurve;
+                    break;
                 //case "AirEnd":
                 case "AirAction":
                     noteImage = Properties.Resources.AirAction;

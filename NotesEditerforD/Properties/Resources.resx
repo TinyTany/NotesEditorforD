@@ -214,10 +214,10 @@
   <data name="Speed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Speed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SlideCurve" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SlideCurve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="SlideRelay" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SlideTap2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SlideCurve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SlideCurve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
