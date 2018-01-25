@@ -332,6 +332,7 @@ namespace NotesEditerforD
             else if (HellTap.IsActive) return HellTap;
             else if (Hold.IsActive) return Hold;
             else if (Slide.IsActive) return Slide;
+            else if (SlideCurve.IsActive) return SlideCurve;
             else if (AirUp.IsActive) return AirUp;
             else if (AirDown.IsActive) return AirDown;
             else if (AirLine.IsActive) return AirLine;

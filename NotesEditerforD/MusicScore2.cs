@@ -18,7 +18,7 @@ namespace NotesEditerforD
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
         private static decimal selectedBPM, selectedSpeed;
         private Point startPosition, endPosition;
-        private bool addSlideRelayFlag;
+        private bool addSlideRelayFlag, previewVisible;
         public Form1 form1;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> dummyNotes = new List<ShortNote>();
@@ -44,6 +44,7 @@ namespace NotesEditerforD
             prevScore = null;
             nextScore = null;
             addSlideRelayFlag = false;
+            previewVisible = true;
 
             this.MouseDown += new MouseEventHandler(this_MouseDown);
             this.MouseMove += new MouseEventHandler(this_MouseMove);
@@ -301,6 +302,22 @@ namespace NotesEditerforD
                         }
                         if(!addSlideRelayFlag) previewLongNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, startPosition.Y - 1), selectedNoteSize, "SlideLine", selectedAirDirection, 0);
                     }
+                    else if(selectedNoteStyle == "SlideCurve")
+                    {
+                        deleteNote(shortNote);
+                        foreach(ShortNote note in shortNotes.Reverse<ShortNote>())
+                        {
+                            if(note.NoteStyle == "SlideLine" && note.NoteSize == selectedNoteSize && isMouseCollision(note.DestPoints, e.Location))
+                            {
+                                shortNote = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), note.NoteSize, "SlideCurve", "Center", note.LongNoteNumber);
+                                addNote(shortNote);
+                                selectedNote = shortNote;
+                                addSlideRelayFlag = true;
+                                previewVisible = false;
+                                break;
+                            }
+                        }
+                    }
                     //addNote(shortNote);
                 }
                 else
@@ -445,7 +462,7 @@ namespace NotesEditerforD
                         selectedNote = _note; //MessageBox.Show("Hit");
                         foreach(ShortNote __note in shortNotes)
                         {
-                            if(__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.LongNoteNumber != -1 && __note.EndPosition == _note.NotePosition)
+                            if(__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.LongNoteNumber != -1 && __note.EndPosition == _note.NotePosition && _note.NoteStyle != "SlideCurve")
                             {
                                 selectedNote_prev = __note;
                                 break;
@@ -453,7 +470,7 @@ namespace NotesEditerforD
                         }
                         foreach (ShortNote __note in shortNotes)
                         {
-                            if (__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.LongNoteNumber != -1 && __note.StartPosition == _note.NotePosition)
+                            if (__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.LongNoteNumber != -1 && __note.StartPosition == _note.NotePosition && _note.NoteStyle != "SlideCurve")
                             {
                                 selectedNote_next = __note;
                                 break;
@@ -645,6 +662,7 @@ namespace NotesEditerforD
 
         private void this_MouseUp(object sender, MouseEventArgs e)
         {
+            previewVisible = true;
             if (selectedEditStatus == "Add")
             {
                 ShortNote shortNote;
@@ -861,7 +879,7 @@ namespace NotesEditerforD
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
             }
-            if (previewNote != null)//プレビュー用のノーツを描画
+            if (previewNote != null && previewVisible)//プレビュー用のノーツを描画
             {
                 if (previewNote.NoteStyle == "AirUp" || previewNote.NoteStyle == "AirDown") g.DrawImage(previewNote.NoteImage, new Point(previewNote.NotePosition.X, previewNote.NotePosition.Y - 32));
                 else g.DrawImage(previewNote.NoteImage, previewNote.NotePosition);

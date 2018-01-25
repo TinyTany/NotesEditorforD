@@ -541,12 +541,12 @@ namespace NotesEditerforD
                         _Y += maxBeatDevide;
                         switch (note.NoteStyle)
                         {
-                            case "Slide"://この内部ではlane1とlane2で同じコード
+                            case "Slide"://この内部ではlane1とlane2で同じコード、ではない
                                 sgnindx++; if (sgnindx > 25) sgnindx = 0;
                                 //sgnindx = 0;
                                 //if (isUsedLane1[measure, sgnindx] && sgnindx < 25) { sgnindx++; continue; }
-                                if (noteSize == 16) longLane1[measure, _X, _Y, sgnindx] = "1g";
-                                else longLane1[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
+                                if (noteSize == 16) longLane1[measure, _X, _Y, sgnindx] = "1g";//コピペ後は変更
+                                else longLane1[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");//コピペ後は変更
                                 int longNoteNumber = note.LongNoteNumber;
                                 int startMeasure = measure;//, endMeasure = measure;
                                 bool flg = false;
@@ -606,6 +606,25 @@ namespace NotesEditerforD
                                                 if (_Y >= maxBeatDevide) continue;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
+                                            }
+                                        }
+                                        if (_note.NoteStyle == "SlideCurve" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
+                                        {
+                                            if (_Y < 0)
+                                            {
+                                                _Y += maxBeatDevide;
+                                                if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "4g";
+                                                else longLane1[_measure, _X, _Y, sgnindx] = "4" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
+                                            }
+                                            else
+                                            {
+                                                if (_Y >= maxBeatDevide) continue;
+                                                if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "4g";
+                                                else longLane2[_measure, _X, _Y, sgnindx] = "4" + noteSize.ToString("x");
                                                 //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
@@ -672,8 +691,8 @@ namespace NotesEditerforD
                                 sgnindx++; if (sgnindx > 25) sgnindx = 0;
                                 //sgnindx = 0;
                                 //if (isUsedLane1[measure, sgnindx] && sgnindx < 25) { sgnindx++; continue; }
-                                if (noteSize == 16) longLane1[measure, _X, _Y, sgnindx] = "1g";
-                                else longLane1[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
+                                if (noteSize == 16) longLane2[measure, _X, _Y, sgnindx] = "1g";
+                                else longLane2[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
                                 int longNoteNumber = note.LongNoteNumber;
                                 int startMeasure = measure;//, endMeasure = measure;
                                 bool flg = false;
@@ -733,6 +752,25 @@ namespace NotesEditerforD
                                                 if (_Y >= maxBeatDevide) continue;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
+                                            }
+                                        }
+                                        if (_note.NoteStyle == "SlideCurve" && _note.LongNoteNumber == longNoteNumber)//lane1とlane2で同じ
+                                        {
+                                            if (_Y < 0)
+                                            {
+                                                _Y += maxBeatDevide;
+                                                if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "4g";
+                                                else longLane1[_measure, _X, _Y, sgnindx] = "4" + noteSize.ToString("x");
+                                                //endMeasure = _measure;
+                                                //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
+                                            }
+                                            else
+                                            {
+                                                if (_Y >= maxBeatDevide) continue;
+                                                if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "4g";
+                                                else longLane2[_measure, _X, _Y, sgnindx] = "4" + noteSize.ToString("x");
                                                 //endMeasure = _measure;
                                                 //for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
