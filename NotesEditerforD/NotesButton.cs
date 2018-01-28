@@ -15,7 +15,7 @@ namespace NotesEditerforD
         private string notesName = "";
         private Boolean isAir = true;
         private Boolean isActive = false;
-        private bool isNumUpDown;
+        private bool isNumUpDown, trackBarEnabled;
         [Bindable(true)]
         [SettingsBindable(true)]
         public string NotesName { get { return notesName; } set { notesName = value; } }
@@ -25,6 +25,7 @@ namespace NotesEditerforD
         public Boolean IsActive { get { return isActive; } set { isActive = value; } }
         public Image CImage { get { return notesPreview.Image; } set { notesPreview.Image = value; } }
         public bool IsNumUpDown { get { return isNumUpDown; } set { isNumUpDown = value; } }
+        public bool TrackBarEnabled { get { return trackBarEnabled; } set { trackBarEnabled = value; } }
 
 
         public NotesButton()
@@ -68,6 +69,7 @@ namespace NotesEditerforD
 
         private void NotesButton_Load(object sender, EventArgs e)
         {
+            if (!trackBarEnabled) trackBar_size.Enabled = false;
             if (isNumUpDown)
             {
                 trackBar_size.Enabled = false;

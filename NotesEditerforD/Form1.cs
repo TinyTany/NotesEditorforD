@@ -22,7 +22,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.4", Version = "0.4a.1";
+        private const string dymsVersion = "0.5", Version = "0.5";
         public bool slideRelay = false;
         public Form1()
         {
@@ -643,7 +643,7 @@ namespace NotesEditerforD
         {
             if(prevNotesButton == null)
             {
-                prevSpecialButton.notesButtonInactive();
+                //prevSpecialButton.notesButtonInactive();
                 prevNotesButton = notesButton;
             }
             if(notesButton != prevNotesButton)

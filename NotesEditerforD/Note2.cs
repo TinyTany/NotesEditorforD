@@ -212,7 +212,10 @@ namespace NotesEditerforD
                 case "SlideCurve":
                     noteImage = Properties.Resources.SlideCurve;
                     break;
-                //case "AirEnd":
+                case "AirBegin":
+                    noteImage = Properties.Resources.BPM;
+                    break;
+                case "AirEnd":
                 case "AirAction":
                     noteImage = Properties.Resources.AirAction;
                     break;
@@ -291,6 +294,7 @@ namespace NotesEditerforD
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
                     else _destPoints = new Point[3] { new Point(startPosition.X + 5 * noteSize - 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize + 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize - 3, startPosition.Y) };
                     break;
+                case "AirBegin":
                 case "AirEnd":
                 case "AirAction":
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, 3) };

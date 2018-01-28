@@ -333,6 +333,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap SlideCurvePreview {
+            get {
+                object obj = ResourceManager.GetObject("SlideCurvePreview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap SlideLine {
             get {
                 object obj = ResourceManager.GetObject("SlideLine", resourceCulture);

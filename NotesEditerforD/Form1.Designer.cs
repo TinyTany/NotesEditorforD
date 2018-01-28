@@ -59,12 +59,12 @@
             this.HellTap = new NotesEditerforD.NotesButton();
             this.Hold = new NotesEditerforD.NotesButton();
             this.Slide = new NotesEditerforD.NotesButton();
+            this.SlideCurve = new NotesEditerforD.NotesButton();
             this.AirUp = new NotesEditerforD.NotesButton();
             this.AirDown = new NotesEditerforD.NotesButton();
             this.AirLine = new NotesEditerforD.NotesButton();
             this.BPMButton = new NotesEditerforD.NotesButton();
             this.Speed = new NotesEditerforD.NotesButton();
-            this.SlideCurve = new NotesEditerforD.NotesButton();
             this.flowLayoutPanelNotesButton.SuspendLayout();
             this.flowLayoutPanelEditStatus.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -98,7 +98,7 @@
             this.flowLayoutPanelNotesButton.Controls.Add(this.Speed);
             this.flowLayoutPanelNotesButton.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanelNotesButton.Location = new System.Drawing.Point(7, 26);
-            this.flowLayoutPanelNotesButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.flowLayoutPanelNotesButton.Margin = new System.Windows.Forms.Padding(2);
             this.flowLayoutPanelNotesButton.Name = "flowLayoutPanelNotesButton";
             this.flowLayoutPanelNotesButton.Size = new System.Drawing.Size(254, 848);
             this.flowLayoutPanelNotesButton.TabIndex = 2;
@@ -230,7 +230,7 @@
             this.fileMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1372, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1384, 24);
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -338,7 +338,7 @@
             // 
             this.checkSlideRelay.AutoSize = true;
             this.checkSlideRelay.Location = new System.Drawing.Point(875, 29);
-            this.checkSlideRelay.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.checkSlideRelay.Margin = new System.Windows.Forms.Padding(2);
             this.checkSlideRelay.Name = "checkSlideRelay";
             this.checkSlideRelay.Size = new System.Drawing.Size(158, 16);
             this.checkSlideRelay.TabIndex = 16;
@@ -377,6 +377,7 @@
             this.Tap.Size = new System.Drawing.Size(227, 97);
             this.Tap.TabIndex = 0;
             this.Tap.TrackBar_Size = 4;
+            this.Tap.TrackBarEnabled = true;
             // 
             // ExTap
             // 
@@ -409,6 +410,7 @@
             this.ExTap.Size = new System.Drawing.Size(227, 97);
             this.ExTap.TabIndex = 1;
             this.ExTap.TrackBar_Size = 4;
+            this.ExTap.TrackBarEnabled = true;
             // 
             // Flick
             // 
@@ -441,6 +443,7 @@
             this.Flick.Size = new System.Drawing.Size(227, 97);
             this.Flick.TabIndex = 2;
             this.Flick.TrackBar_Size = 4;
+            this.Flick.TrackBarEnabled = true;
             // 
             // HellTap
             // 
@@ -473,6 +476,7 @@
             this.HellTap.Size = new System.Drawing.Size(227, 97);
             this.HellTap.TabIndex = 3;
             this.HellTap.TrackBar_Size = 4;
+            this.HellTap.TrackBarEnabled = true;
             // 
             // Hold
             // 
@@ -505,6 +509,7 @@
             this.Hold.Size = new System.Drawing.Size(227, 97);
             this.Hold.TabIndex = 4;
             this.Hold.TrackBar_Size = 4;
+            this.Hold.TrackBarEnabled = true;
             // 
             // Slide
             // 
@@ -537,6 +542,40 @@
             this.Slide.Size = new System.Drawing.Size(227, 97);
             this.Slide.TabIndex = 5;
             this.Slide.TrackBar_Size = 4;
+            this.Slide.TrackBarEnabled = true;
+            // 
+            // SlideCurve
+            // 
+            this.SlideCurve.AutoSize = true;
+            this.SlideCurve.BackColor = System.Drawing.SystemColors.Control;
+            this.SlideCurve.CImage = global::NotesEditerforD.Properties.Resources.SlideCurvePreview;
+            this.SlideCurve.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SlideCurve.IsActive = false;
+            this.SlideCurve.IsAir = false;
+            this.SlideCurve.IsNumUpDown = false;
+            this.SlideCurve.Location = new System.Drawing.Point(2, 596);
+            this.SlideCurve.Margin = new System.Windows.Forms.Padding(2);
+            this.SlideCurve.Name = "SlideCurve";
+            this.SlideCurve.NotesName = "SlideCurve";
+            this.SlideCurve.NumUDMax = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.SlideCurve.NumUDMin = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.SlideCurve.NumUDValue = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.SlideCurve.Size = new System.Drawing.Size(227, 97);
+            this.SlideCurve.TabIndex = 11;
+            this.SlideCurve.TrackBar_Size = 4;
+            this.SlideCurve.TrackBarEnabled = false;
             // 
             // AirUp
             // 
@@ -569,6 +608,7 @@
             this.AirUp.Size = new System.Drawing.Size(227, 97);
             this.AirUp.TabIndex = 6;
             this.AirUp.TrackBar_Size = 4;
+            this.AirUp.TrackBarEnabled = true;
             // 
             // AirDown
             // 
@@ -601,6 +641,7 @@
             this.AirDown.Size = new System.Drawing.Size(227, 97);
             this.AirDown.TabIndex = 7;
             this.AirDown.TrackBar_Size = 4;
+            this.AirDown.TrackBarEnabled = true;
             // 
             // AirLine
             // 
@@ -633,6 +674,7 @@
             this.AirLine.Size = new System.Drawing.Size(227, 97);
             this.AirLine.TabIndex = 8;
             this.AirLine.TrackBar_Size = 4;
+            this.AirLine.TrackBarEnabled = true;
             // 
             // BPMButton
             // 
@@ -666,6 +708,7 @@
             this.BPMButton.Size = new System.Drawing.Size(224, 97);
             this.BPMButton.TabIndex = 9;
             this.BPMButton.TrackBar_Size = 4;
+            this.BPMButton.TrackBarEnabled = false;
             this.BPMButton.Visible = false;
             // 
             // Speed
@@ -699,45 +742,14 @@
             this.Speed.Size = new System.Drawing.Size(224, 97);
             this.Speed.TabIndex = 10;
             this.Speed.TrackBar_Size = 4;
-            // 
-            // SlideCurve
-            // 
-            this.SlideCurve.AutoSize = true;
-            this.SlideCurve.BackColor = System.Drawing.SystemColors.Control;
-            this.SlideCurve.CImage = null;
-            this.SlideCurve.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SlideCurve.IsActive = false;
-            this.SlideCurve.IsAir = false;
-            this.SlideCurve.IsNumUpDown = false;
-            this.SlideCurve.Location = new System.Drawing.Point(2, 596);
-            this.SlideCurve.Margin = new System.Windows.Forms.Padding(2);
-            this.SlideCurve.Name = "SlideCurve";
-            this.SlideCurve.NotesName = "SlideCurve";
-            this.SlideCurve.NumUDMax = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.SlideCurve.NumUDMin = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.SlideCurve.NumUDValue = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.SlideCurve.Size = new System.Drawing.Size(227, 97);
-            this.SlideCurve.TabIndex = 11;
-            this.SlideCurve.TrackBar_Size = 4;
+            this.Speed.TrackBarEnabled = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(1384, 847);
+            this.ClientSize = new System.Drawing.Size(1384, 881);
             this.Controls.Add(this.checkSlideRelay);
             this.Controls.Add(this.labelBPM);
             this.Controls.Add(this.BPMupdown);
@@ -752,7 +764,7 @@
             this.Controls.Add(this.flowLayoutPanelMusicScore);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "NotesEditorforD";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
