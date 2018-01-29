@@ -139,6 +139,7 @@ namespace NotesEditerforD
             Point notePosition;
             int noteSize, longNoteNumber;
             string noteStyle, airDirection;
+            ShortNote shortNote;
             if (dymsVersion == "0.3" || dymsVersion == "0.4" || dymsVersion == "0.5")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
@@ -148,6 +149,12 @@ namespace NotesEditerforD
                 noteStyle = _noteData[0];
                 airDirection = _noteData[8];
                 longNoteNumber = int.Parse(_noteData[9]);
+                if(dymsVersion == "0.5")
+                {
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                    shortNotes.Add(shortNote);
+                    return;
+                }
             }
             else if (dymsVersion != "0.1")
             {
@@ -172,7 +179,7 @@ namespace NotesEditerforD
                 if (noteStyle == "AirAction") { noteSize += 1; notePosition.X -= 2; }
                 if (noteStyle == "AirUp" || noteStyle == "AirDown") notePosition.Y += 32;
             }
-            ShortNote shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+            shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
             addNote(shortNote);
             /*
             if(dymsVersion != "0.5" && shortNote.NoteStyle == "SlideLine")

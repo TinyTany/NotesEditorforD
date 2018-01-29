@@ -22,7 +22,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.5", Version = "0.5.1";
+        private const string dymsVersion = "0.5", Version = "0.5.2";
         public bool slideRelay = false;
         public Form1()
         {
@@ -444,7 +444,8 @@ namespace NotesEditerforD
                 dataLine = sr.ReadLine();
                 if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5")//バージョン変更時に必ず変更
                 {
-                    dymsDataVersion = "0.4";
+                    noteData = dataLine.Split(':');
+                    dymsDataVersion = noteData[1];
                     dataLine = sr.ReadLine();
                     noteData = dataLine.Split(':');
                     songID = noteData[1];
