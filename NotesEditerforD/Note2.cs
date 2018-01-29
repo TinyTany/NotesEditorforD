@@ -9,13 +9,13 @@ namespace NotesEditerforD
 {
     public class ShortNote
     {
-        public MusicScore2 musicscore;
+        private MusicScore2 musicscore;
         private Point position, startPosition, endPosition;
         private string noteStyle, airDirection;
-        private ShortNote childNote, parentNote;
-        private bool isChildNote, isParentNote;
+        private ShortNote prevNote, nextNote;
         private int longNoteNumber, noteSize;
         private Point[] destPoints;//{ul, ur, ll}
+        private decimal specialValue;
         //*
         private Bitmap noteImage;
         //*/
@@ -31,12 +31,21 @@ namespace NotesEditerforD
             airDirection = _airDirection;
             longNoteNumber = _longNoteNumber;
             //
-            childNote = null;
-            parentNote = null;
-            isChildNote = false;
-            isParentNote = false;
+            prevNote = null;
+            nextNote = null;
             destPoints = new Point[3];
 
+            noteImage = setNoteImage();
+        }
+
+        public ShortNote(MusicScore2 _musicscore, Point _position, string _noteStyle, decimal _value)
+        {
+            musicscore = _musicscore;
+            position = _position;
+            noteStyle = _noteStyle;
+            specialValue = _value;
+            noteSize = 16;
+            destPoints = new Point[3];
             noteImage = setNoteImage();
         }
 
@@ -44,31 +53,20 @@ namespace NotesEditerforD
         public Bitmap NoteImage
         {
             get { return this.noteImage; }
+            set { this.noteImage = value; }
         }
         //*/
 
-        public ShortNote ChildNote
+        public ShortNote PrevNote
         {
-            get { return this.childNote; }
-            set { this.childNote = value; }
+            get { return this.prevNote; }
+            set { this.prevNote = value; }
         }
 
-        public ShortNote ParentNote
+        public ShortNote NextNote
         {
-            get { return this.parentNote; }
-            set { this.parentNote = value; }
-        }
-
-        public bool IsChildNote
-        {
-            get { return this.isChildNote; }
-            set { this.isChildNote = value; }
-        }
-
-        public bool IsParentNote
-        {
-            get { return this.isParentNote; }
-            set { this.isParentNote = value; }
+            get { return this.nextNote; }
+            set { this.nextNote = value; }
         }
 
         public Point[] DestPoints
@@ -118,6 +116,17 @@ namespace NotesEditerforD
             set { this.longNoteNumber = value; }
         }
 
+        public decimal SpecialValue
+        {
+            get { return this.specialValue; }
+            set { this.specialValue = value; }
+        }
+
+        public void update()
+        {
+            noteImage = setNoteImage();
+        }
+
         public Bitmap setNoteImage()
         {
             System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
@@ -126,15 +135,15 @@ namespace NotesEditerforD
             switch (noteStyle)
             {
                 case "HoldLine":
-                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y == 0 ? 1 : startPosition.Y - endPosition.Y);
+                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
                     cm.Matrix33 = 0.9f;
                     break;
                 case "SlideLine":
-                    canvas = new Bitmap(Math.Abs(startPosition.X - endPosition.X) + noteSize * 10, startPosition.Y - endPosition.Y == 0 ? 1 : startPosition.Y - endPosition.Y);
+                    canvas = new Bitmap(Math.Abs(startPosition.X - endPosition.X) + noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
                     cm.Matrix33 = 0.9f;
                     break;
                 case "AirLine":
-                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y == 0 ? 1 : startPosition.Y - endPosition.Y);
+                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
                     cm.Matrix33 = 0.9f;
                     break;
                 case "AirUp":
@@ -160,7 +169,7 @@ namespace NotesEditerforD
             return canvas;
         }
         //*
-        private Bitmap setNoteImage(string _noteStyle)
+        public Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
         {
             Bitmap noteImage;
             switch (_noteStyle)
@@ -193,8 +202,20 @@ namespace NotesEditerforD
                     noteImage = Properties.Resources.SlideLine;
                     break;
                 case "SlideTap":
+                    
+                case "SlideEnd":
                     noteImage = Properties.Resources.SlideTap;
                     break;
+                case "SlideRelay":
+                    noteImage = Properties.Resources.SlideRelay;
+                    break;
+                case "SlideCurve":
+                    noteImage = Properties.Resources.SlideCurve;
+                    break;
+                case "AirBegin":
+                    noteImage = Properties.Resources.BPM;
+                    break;
+                case "AirEnd":
                 case "AirAction":
                     noteImage = Properties.Resources.AirAction;
                     break;
@@ -235,6 +256,12 @@ namespace NotesEditerforD
                             break;
                     }
                     break;
+                case "BPM":
+                    noteImage = Properties.Resources.BPM;
+                    break;
+                case "Speed":
+                    noteImage = Properties.Resources.Speed;
+                    break;
                 default:
                     noteImage = Properties.Resources.Tap;
                     break;
@@ -267,6 +294,8 @@ namespace NotesEditerforD
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
                     else _destPoints = new Point[3] { new Point(startPosition.X + 5 * noteSize - 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize + 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize - 3, startPosition.Y) };
                     break;
+                case "AirBegin":
+                case "AirEnd":
                 case "AirAction":
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, 3) };
                     else _destPoints = new Point[3] { new Point(startPosition.X + 2, position.Y), new Point(startPosition.X + 10 * noteSize - 2, position.Y), new Point(startPosition.X + 2, position.Y + 3) };

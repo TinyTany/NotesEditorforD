@@ -36,8 +36,10 @@
             this.radioC = new System.Windows.Forms.RadioButton();
             this.radioR = new System.Windows.Forms.RadioButton();
             this.notesPreview = new System.Windows.Forms.PictureBox();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_size)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.notesPreview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
             // label_notes
@@ -128,13 +130,24 @@
             // 
             // notesPreview
             // 
-            this.notesPreview.BackColor = System.Drawing.Color.White;
+            this.notesPreview.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.notesPreview.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.notesPreview.Cursor = System.Windows.Forms.Cursors.Hand;
             this.notesPreview.Location = new System.Drawing.Point(2, 11);
             this.notesPreview.Margin = new System.Windows.Forms.Padding(2);
             this.notesPreview.Name = "notesPreview";
             this.notesPreview.Size = new System.Drawing.Size(115, 83);
             this.notesPreview.TabIndex = 0;
             this.notesPreview.TabStop = false;
+            this.notesPreview.Click += new System.EventHandler(this.label_notes_Click);
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(124, 55);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(97, 19);
+            this.numericUpDown1.TabIndex = 8;
+            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
             // NotesButton
             // 
@@ -142,6 +155,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
+            this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.radioR);
             this.Controls.Add(this.radioC);
             this.Controls.Add(this.radioL);
@@ -150,12 +164,15 @@
             this.Controls.Add(this.trackBar_size);
             this.Controls.Add(this.label_notes);
             this.Controls.Add(this.notesPreview);
+            this.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "NotesButton";
             this.Size = new System.Drawing.Size(227, 105);
             this.Load += new System.EventHandler(this.NotesButton_Load);
+            this.Click += new System.EventHandler(this.label_notes_Click);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_size)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.notesPreview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -171,5 +188,6 @@
         private System.Windows.Forms.RadioButton radioL;
         private System.Windows.Forms.RadioButton radioC;
         private System.Windows.Forms.RadioButton radioR;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
     }
 }

@@ -15,6 +15,7 @@ namespace NotesEditerforD
         private string notesName = "";
         private Boolean isAir = true;
         private Boolean isActive = false;
+        private bool isNumUpDown, trackBarEnabled;
         [Bindable(true)]
         [SettingsBindable(true)]
         public string NotesName { get { return notesName; } set { notesName = value; } }
@@ -22,6 +23,10 @@ namespace NotesEditerforD
         public Boolean IsAir { get { return isAir; } set { isAir = value; } }
         [SettingsBindable(true)]
         public Boolean IsActive { get { return isActive; } set { isActive = value; } }
+        public Image CImage { get { return notesPreview.Image; } set { notesPreview.Image = value; } }
+        public bool IsNumUpDown { get { return isNumUpDown; } set { isNumUpDown = value; } }
+        public bool TrackBarEnabled { get { return trackBarEnabled; } set { trackBarEnabled = value; } }
+
 
         public NotesButton()
         {
@@ -29,28 +34,90 @@ namespace NotesEditerforD
             trackBar_size.Value = 4;
         }
 
-        private void trackBar1_Scroll(object sender, EventArgs e)
+        public int TrackBar_Size
         {
-            //最大値（16/16）、最小値（1/16）を設定
-            trackBar_size.Maximum = 16;
-            trackBar_size.Minimum = 1;
+            get { return trackBar_size.Value; }
+            set { trackBar_size.Value = value; }
+        }
 
-            //描写される目盛りの刻みを設定
-            trackBar_size.TickFrequency = 1;
+        public decimal NumUDMax
+        {
+            get { return numericUpDown1.Maximum; }
+            set { numericUpDown1.Maximum = value; }
+        }
 
-            //スライダーの移動量の設定
-            trackBar_size.SmallChange = 1;
-            trackBar_size.LargeChange = 4;
+        public decimal NumUDMin
+        {
+            get { return numericUpDown1.Minimum; }
+            set { numericUpDown1.Minimum = value; }
+        }
 
-            label_sizevalue.Text = trackBar_size.Value.ToString() + " /16";
+        public decimal NumUDValue
+        {
+            get { return numericUpDown1.Value; }
+            set { numericUpDown1.Value = value; }
+        }
 
-            if(isActive) MusicScore2.SelectedNoteSize = trackBar_size.Value;//ノーツボタンがアクティブなときにノーツサイズを指定
+        public void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            if (trackBar_size.Enabled)
+            {
+                label_sizevalue.Text = trackBar_size.Value.ToString() + " /16";
+                if (isActive) MusicScore2.SelectedNoteSize = trackBar_size.Value;//ノーツボタンがアクティブなときにノーツサイズを指定
+            }
         }
 
         private void NotesButton_Load(object sender, EventArgs e)
         {
+            if (!trackBarEnabled) trackBar_size.Enabled = false;
+            if (isNumUpDown)
+            {
+                trackBar_size.Enabled = false;
+                trackBar_size.Visible = false;
+            }
+            else
+            {
+                numericUpDown1.Enabled = false;
+                numericUpDown1.Visible = false;
+            }
             setNotesName(notesName);
             setRadioButton(isAir);
+            if(notesName == "BPM")
+            {
+                numericUpDown1.Maximum = 300;
+                numericUpDown1.Minimum = 30;
+                numericUpDown1.DecimalPlaces = 1;
+                numericUpDown1.Increment = 0.1m;
+                numericUpDown1.Value = 120.0m;
+                MusicScore2.SelectedBPM = numericUpDown1.Value;
+                label_size.Text = "";
+                label_sizevalue.Text = numericUpDown1.Value.ToString();
+            }
+            else if(notesName == "Speed")
+            {
+                numericUpDown1.Maximum = 10;
+                numericUpDown1.Minimum = -10;
+                numericUpDown1.DecimalPlaces = 1;
+                numericUpDown1.Increment = 0.1m;
+                numericUpDown1.Value = 1.0m;
+                MusicScore2.SelectedSpeed = numericUpDown1.Value;
+                label_size.Text = "";
+                label_sizevalue.Text = "x" + numericUpDown1.Value.ToString();
+            }
+        }
+
+        public void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            if(notesName == "BPM")
+            {
+                label_sizevalue.Text = numericUpDown1.Value.ToString();
+                MusicScore2.SelectedBPM = numericUpDown1.Value;
+            }
+            else if(notesName == "Speed")
+            {
+                label_sizevalue.Text = "x" + numericUpDown1.Value.ToString();
+                MusicScore2.SelectedSpeed = numericUpDown1.Value;
+            }
         }
 
         private void NotesButton_Click(object sender, EventArgs e)
@@ -71,7 +138,15 @@ namespace NotesEditerforD
             if (bol) this.radioC.Checked = true;
         }
 
-        private void setAirDirection()
+        public void setDirection(string direction)
+        {
+            if (direction == "Left") radioL.Checked = true;
+            else if (direction == "Center") radioC.Checked = true;
+            else if (direction == "Right") radioR.Checked = true;
+            else radioC.Checked = true;
+        }
+
+        public void setAirDirection()
         {
             if (radioR.Checked) MusicScore2.SelectedAirDirection = "Right";
             else if (radioL.Checked) MusicScore2.SelectedAirDirection = "Left";
@@ -91,12 +166,14 @@ namespace NotesEditerforD
 
         private void label_notes_Click(object sender, EventArgs e)
         {
-            this.BackColor = SystemColors.ActiveBorder;
-            MusicScore2.SelectedNoteSize = trackBar_size.Value;
-            MusicScore2.SelectedNoteStyle = notesName;
-            setAirDirection();
-            isActive = true;
+            //this.BackColor = SystemColors.ActiveBorder;
+            //MusicScore2.SelectedNoteSize = trackBar_size.Value;
+            //MusicScore2.SelectedNoteStyle = notesName;
+            //setAirDirection();
+            //isActive = true;
+            //notesButtonActive();
             Form1.activeNotesButton(this);
+            if (label_notes.Text == "BPM" || label_notes.Text == "Speed") MusicScore2.SelectedNoteSize = 16;
         }
 
         public void notesButtonActive()//for initialize only(maybe)
@@ -104,6 +181,7 @@ namespace NotesEditerforD
             this.BackColor = SystemColors.ActiveBorder;
             MusicScore2.SelectedNoteSize = trackBar_size.Value;
             MusicScore2.SelectedNoteStyle = notesName;
+            setAirDirection();
             isActive = true;
         }
 

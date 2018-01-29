@@ -59,20 +59,8 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="MusicScore.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MusicScore.Designer.cs">
-      <DependentUpon>MusicScore.cs</DependentUpon>
-    </Compile>
     <Compile Include="MusicScore2.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Note.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Note.Designer.cs">
-      <DependentUpon>Note.cs</DependentUpon>
     </Compile>
     <Compile Include="Note2.cs" />
     <Compile Include="NotesButton.cs">
@@ -89,23 +77,12 @@
     <Compile Include="SpecialButton.Designer.cs">
       <DependentUpon>SpecialButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="UserControl1.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
-    </Compile>
+    <Compile Include="SpecialNote.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MusicScore.resx">
-      <DependentUpon>MusicScore.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Note.resx">
-      <DependentUpon>Note.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NotesButton.resx">
       <DependentUpon>NotesButton.cs</DependentUpon>
@@ -117,9 +94,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SpecialButton.resx">
       <DependentUpon>SpecialButton.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -138,9 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\MusicScore.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EndAir.png" />
@@ -208,8 +179,53 @@
   <ItemGroup>
     <None Include="Resources\AirLine.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MusicScore.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\BPM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HoldPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SlidePreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TapPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AirUpCPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ExTapPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FlickPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HellTapPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AirDownCPreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AirLinePreview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Speed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SlideTap2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SlideCurve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SlideCurvePreview.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

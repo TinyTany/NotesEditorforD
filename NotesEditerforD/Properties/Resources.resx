@@ -181,4 +181,46 @@
   <data name="HellTap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\HellTap.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="AirDownCPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AirDownCPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AirLinePreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AirLinePreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="AirUpCPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\AirUpCPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BPM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BPM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ExTapPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExTapPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FlickPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\FlickPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HellTapPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HellTapPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HoldPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\HoldPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SlidePreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SlidePreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TapPreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TapPreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Speed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Speed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SlideRelay" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SlideTap2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SlideCurve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SlideCurve.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SlideCurvePreview" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SlideCurvePreview.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
