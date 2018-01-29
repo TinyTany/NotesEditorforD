@@ -450,8 +450,7 @@ namespace NotesEditerforD
                             else if (_note.NoteStyle == "Hold") style = "HoldEnd";
                             else style = "AirEnd";
                             bool isOver = false;
-                            MusicScore2 score = this;
-                            for (int i = 0; i < form1.MaxScore; i++)
+                            for (MusicScore2 score = this; score != null; score = score.nextScore)
                             {
                                 foreach (ShortNote __note in score.shortNotes.ToArray())
                                 {
@@ -459,10 +458,6 @@ namespace NotesEditerforD
                                     if (__note.LongNoteNumber == number) score.deleteNote(__note);
                                 }
                                 if (isOver) break; //{ MessageBox.Show("break!"); break; }
-                                else
-                                {
-                                    score = score.nextScore;
-                                }
                             }
                             break;
                         }
@@ -474,19 +469,15 @@ namespace NotesEditerforD
                             else if (_note.NoteStyle == "HoldEnd") style = "Hold";
                             else style = "AirBegin";
                             bool isOver = false;
-                            MusicScore2 score = this;
-                            for (int i = 0; i < form1.MaxScore; i++)
+                            for (MusicScore2 score = this; score != null; score = score.prevScore)
                             {
+                                if (score == null) break;
                                 foreach (ShortNote __note in score.shortNotes.ToArray())
                                 {
                                     if (__note.LongNoteNumber == number && __note.NoteStyle == style) isOver = true;
                                     if (__note.LongNoteNumber == number) score.deleteNote(__note);
                                 }
                                 if (isOver) break; //{ MessageBox.Show("Over!"); break; }
-                                else
-                                {
-                                    score = score.prevScore;
-                                }
                             }
                             break;
                         }

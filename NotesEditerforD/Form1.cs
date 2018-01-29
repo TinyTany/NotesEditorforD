@@ -22,7 +22,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.5", Version = "0.5";
+        private const string dymsVersion = "0.5", Version = "0.5.1";
         public bool slideRelay = false;
         public Form1()
         {
@@ -254,9 +254,11 @@ namespace NotesEditerforD
             else if (e.KeyCode == Keys.F4) { MusicScore2.SelectedNoteStyle = "HellTap"; activeNotesButton(HellTap); }
             else if (e.KeyCode == Keys.F5) { MusicScore2.SelectedNoteStyle = "Hold"; activeNotesButton(Hold); }
             else if (e.KeyCode == Keys.F6) { MusicScore2.SelectedNoteStyle = "Slide"; activeNotesButton(Slide); }
-            else if (e.KeyCode == Keys.F7) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
-            else if (e.KeyCode == Keys.F8) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
-            else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
+            else if (e.KeyCode == Keys.F7) { MusicScore2.SelectedNoteStyle = "SlideCurve"; activeNotesButton(SlideCurve); }
+            else if (e.KeyCode == Keys.F8) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
+            else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
+            else if (e.KeyCode == Keys.F10) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
+            else if (e.KeyCode == Keys.F11) { MusicScore2.SelectedNoteStyle = "Speed"; activeNotesButton(Speed); }
             else if (e.KeyCode == Keys.S)
             {
                 slideRelay = !slideRelay;
@@ -440,7 +442,7 @@ namespace NotesEditerforD
                 string[] noteData;
                 int indx, msIndex;
                 dataLine = sr.ReadLine();
-                if (dataLine == "dymsVersion:0.4")
+                if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5")//バージョン変更時に必ず変更
                 {
                     dymsDataVersion = "0.4";
                     dataLine = sr.ReadLine();
