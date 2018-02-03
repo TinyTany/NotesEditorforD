@@ -14,7 +14,6 @@ namespace NotesEditerforD
     {
         MusicScore2 musicScore2;
         private static NotesButton prevNotesButton;
-        private static SpecialButton prevSpecialButton;
         private int maxScore = 125;
         List<MusicScore2> scores2 = new List<MusicScore2>();
         private string songID, title, artist, designer, wave, jacket, exDir, appName, pathName, dymsDataVersion;
@@ -22,7 +21,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.5", Version = "0.5.3";
+        private const string dymsVersion = "0.5", Version = "0.5.4";
         public bool slideRelay = false;
         public Form1()
         {
@@ -42,7 +41,7 @@ namespace NotesEditerforD
             ///*
             scores2[0].NextScore = scores2[1];
             scores2[0].PrevScore = null;
-            for(int i = 1; i < maxScore - 1; i++)
+            for (int i = 1; i < maxScore - 1; i++)
             {
                 scores2[i].NextScore = scores2[i + 1];
                 scores2[i].PrevScore = scores2[i - 1];
@@ -68,7 +67,7 @@ namespace NotesEditerforD
             designer = "defaultDesigner";
             wave = "";
             jacket = "";
-            exDir = System.Environment.CurrentDirectory;
+            exDir = Environment.CurrentDirectory;
             difficulty = 0;
             playLevel = 1.0m;
             offset = 0.0m;
@@ -77,7 +76,7 @@ namespace NotesEditerforD
             fileName = "NewMusicScore.dyms";
             pathName = null;
             setEdited(false);
-            
+
             longNoteNumber = 0;
 
             //KeyDownEventはすべてにおいて発火する
@@ -85,6 +84,19 @@ namespace NotesEditerforD
             {
                 c.KeyDown += Form1_KeyDown;
             }
+
+            Tap._Form1 = this;
+            ExTap._Form1 = this;
+            Flick._Form1 = this;
+            HellTap._Form1 = this;
+            Hold._Form1 = this;
+            Slide._Form1 = this;
+            SlideCurve._Form1 = this;
+            AirUp._Form1 = this;
+            AirDown._Form1 = this;
+            AirLine._Form1 = this;
+            Speed._Form1 = this;
+            BPMButton._Form1 = this;
         }
 
         public decimal StartBPM
@@ -95,7 +107,7 @@ namespace NotesEditerforD
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
             if (!isEdited) return;
-            if(isNew) { object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e);  }
+            if (isNew) { object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e); }
             else
             {
                 saveScores(fileName);
@@ -307,12 +319,12 @@ namespace NotesEditerforD
                 //*/
                 if (e.KeyCode == Keys.OemPeriod && activeNotesButton().NumUDValue != activeNotesButton().NumUDMax)
                 {
-                    activeNotesButton().NumUDValue+=0.1m;
+                    activeNotesButton().NumUDValue += 0.1m;
                     activeNotesButton().numericUpDown1_ValueChanged(sender, e);
                 }
                 else if (e.KeyCode == Keys.Oemcomma && activeNotesButton().NumUDValue != activeNotesButton().NumUDMin)
                 {
-                    activeNotesButton().NumUDValue-=0.1m;
+                    activeNotesButton().NumUDValue -= 0.1m;
                     activeNotesButton().numericUpDown1_ValueChanged(sender, e);
                 }
             }
@@ -420,7 +432,7 @@ namespace NotesEditerforD
                     object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e);
                     return;
                 }
-                else if (result == DialogResult.Cancel) return; 
+                else if (result == DialogResult.Cancel) return;
             }
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.FileName = "default.dyms";
@@ -569,7 +581,7 @@ namespace NotesEditerforD
                     noteData = dataLine.Split(':');
                     longNoteNumber = int.Parse(noteData[1]);
                 }
-                else if(dataLine == "dymsVersion:0.2")
+                else if (dataLine == "dymsVersion:0.2")
                 {
                     dymsDataVersion = "0.2";
                     dataLine = sr.ReadLine();
@@ -614,10 +626,10 @@ namespace NotesEditerforD
                 if (dymsDataVersion == "0.1") msIndex = 12;
                 else msIndex = 10;
                 bool flg = false;
-                while(sr.Peek() > -1)
+                while (sr.Peek() > -1)
                 {
                     dataLine = sr.ReadLine();
-                    if(dataLine == "#SpecialNotes") { flg = true; break; }
+                    if (dataLine == "#SpecialNotes") { flg = true; break; }
                     noteData = dataLine.Split(',');
                     indx = int.Parse(noteData[msIndex]);
                     scores2[indx].setNote(noteData, dymsDataVersion);
@@ -642,21 +654,32 @@ namespace NotesEditerforD
             pathName = ofd.FileName;
         }
 
-        public static void activeNotesButton(NotesButton notesButton)
+        public void activeNotesButton(NotesButton notesButton)
         {
-            if(prevNotesButton == null)
+            if (prevNotesButton == null)
             {
-                //prevSpecialButton.notesButtonInactive();
                 prevNotesButton = notesButton;
             }
-            if(notesButton != prevNotesButton)
+            if (notesButton != prevNotesButton)
             {
                 prevNotesButton.notesButtonInactive();
                 prevNotesButton = notesButton;
             }
             notesButton.notesButtonActive();
+            /*
+            if(notesButton == BPMButton)
+            {
+                MusicScore2.SelectedBeat = 8;
+                comboBoxBeat.SelectedIndex = 1;
+                comboBoxBeat.Enabled = false;
+            }
+            else
+            {
+                comboBoxBeat.Enabled = true;
+            }//*/
         }
 
+        /*
         public static void activeNotesButton(SpecialButton notesButton)
         {
             if (prevNotesButton != null)
@@ -664,7 +687,7 @@ namespace NotesEditerforD
                 prevNotesButton.notesButtonInactive();
                 prevNotesButton = null;
             }
-        }
+        }//*/
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)//edt//
         {

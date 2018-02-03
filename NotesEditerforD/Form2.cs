@@ -131,11 +131,82 @@ namespace NotesEditerforD
             sw.WriteLine("#WAVEOFFSET " + offsetUpDown.Value);
             sw.WriteLine("#JACKET " + '"' + textBoxJacket.Text + '"');
             sw.WriteLine();
-            sw.WriteLine("#BPM01: " + BPMUpDown.Value);
+            //
+            for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].specialNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
+            //
+            sw.WriteLine("#BPM01:" + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
+            char[] numAlpha = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            int BPMNum = 2;//<=35
+            string[] BPMArr = new string[3001];
+            for (int i = 0; i < BPMArr.Count(); i++) BPMArr[i] = "00";
+            int BPMBeatDevide = 8;
+            BPMArr[(int)(BPMUpDown.Value * 10)] = "01";
+            string[] spLane1 = new string[BPMBeatDevide];
+            string[] spLane2 = new string[BPMBeatDevide];
+            string cur = "01";
+            for (measure = 0; measure <= lastScore; measure++)
+            {
+                for (int i = 0; i < BPMBeatDevide; i++) spLane1[i] = "00";//initialize lane
+                for (int i = 0; i < BPMBeatDevide; i++) spLane2[i] = "00";//initialize lane
+                foreach (ShortNote _note in form1.Scores2[measure].specialNotes)
+                {
+                    if (_note.NoteStyle == "BPM")
+                    {
+                        Y = BPMBeatDevide - (_note.NotePosition.Y - 2) / (384 / BPMBeatDevide);
+                        if (Y < 0)
+                        {
+                            Y += BPMBeatDevide;
+                            if (BPMArr[(int)(_note.SpecialValue * 10)] == "00")
+                            {
+                                BPMArr[(int)(_note.SpecialValue * 10)] = "0" + numAlpha[BPMNum];
+                                sw.WriteLine("#BPM0" + numAlpha[BPMNum] + ":" + _note.SpecialValue);
+                                BPMNum++;
+                            }
+                            spLane1[Y] = BPMArr[(int)(_note.SpecialValue * 10)].ToString().PadLeft(2, '0');
+                        }
+                        else
+                        {
+                            if (Y >= BPMBeatDevide) continue;
+                            if (BPMArr[(int)(_note.SpecialValue * 10)] == "00")
+                            {
+                                BPMArr[(int)(_note.SpecialValue * 10)] = "0" + numAlpha[BPMNum];
+                                sw.WriteLine("#BPM0" + numAlpha[BPMNum] + ":" + _note.SpecialValue);
+                                BPMNum++;
+                            }
+                            spLane2[Y] = BPMArr[(int)(_note.SpecialValue * 10)];
+                        }
+                    }
+                }
+                if(isBPMModified(spLane1, BPMBeatDevide)) for (int i = 0; i < BPMBeatDevide; i++)
+                {
+                    if (spLane1[i] == "00") spLane1[i] = cur;
+                    else if (spLane1[i] != cur) cur = spLane1[i];
+                }
+                if (isBPMModified(spLane2, BPMBeatDevide)) for (int i = 0; i < BPMBeatDevide; i++)
+                {
+                    if (spLane2[i] == "00") spLane2[i] = cur;
+                    else if (spLane2[i] != cur) cur = spLane2[i];
+                }
+                if (isBPMModified(spLane1, BPMBeatDevide))
+                {
+                    if (checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "08:");
+                    else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "08:");
+                    for (int j = 0; j < BPMBeatDevide; j++) { sw.Write(spLane1[j]); }
+                    sw.Write(Environment.NewLine);
+                }
+                if (isBPMModified(spLane2, BPMBeatDevide))
+                {
+                    if (checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "08:");
+                    else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "08:");
+                    for (int j = 0; j < BPMBeatDevide; j++) { sw.Write(spLane2[j]); }
+                    sw.Write(Environment.NewLine);
+                }
+            }
+            //
             sw.WriteLine();
             sw.Write("#TIL00:\"");
-            for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].specialNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
+            
             for (measure = 0; measure <= lastScore; measure++)
             {
                 foreach(ShortNote _note in form1.Scores2[measure].specialNotes)
@@ -164,7 +235,7 @@ namespace NotesEditerforD
             for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].shortNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
             string[,] lane1 = new string[16, maxBeatDevide];//lane, beat, odd
             string[,] lane2 = new string[16, maxBeatDevide];//lane, beat, even
-            char[] sign = new char[26] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};//ロングレーン用の識別子 最大zまで拡張可能
+            char[] sign = "abcdefghijklmnopqrstuvwxyz".ToCharArray();//ロングレーン用の識別子 最大zまで拡張可能
             int sgnindx = 0;//for LongLane
             bool[,] isUsedLane1 = new bool[lastScore + 1, sign.Length];
             bool[,] isUsedLane2 = new bool[lastScore + 1, sign.Length];
@@ -246,7 +317,7 @@ namespace NotesEditerforD
                         if(checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
                         else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
                         for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane1[i, j]); }
-                        sw.Write(System.Environment.NewLine);
+                        sw.Write(Environment.NewLine);
                     }
                 }
                 for (int i = 0; i < 16; i++)//even lane
@@ -256,7 +327,7 @@ namespace NotesEditerforD
                         if (checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
                         else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
                         for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane2[i, j]); }
-                        sw.Write(System.Environment.NewLine);
+                        sw.Write(Environment.NewLine);
                     }
                 }
                 ////////////////////////////////////////////////////////////↓Air
@@ -371,7 +442,7 @@ namespace NotesEditerforD
                         if(checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "5" + i.ToString("X") + ":");
                         else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "5" + i.ToString("X") + ":");
                         for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane1[i, j]); }
-                        sw.Write(System.Environment.NewLine);
+                        sw.Write(Environment.NewLine);
                     }
                 }
                 for (int i = 0; i < 16; i++)//even lane
@@ -381,7 +452,7 @@ namespace NotesEditerforD
                         if(checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "5" + i.ToString("X") + ":");
                         else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "5" + i.ToString("X") + ":");
                         for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane2[i, j]); }
-                        sw.Write(System.Environment.NewLine);
+                        sw.Write(Environment.NewLine);
                     }
                 }
             }
@@ -506,7 +577,7 @@ namespace NotesEditerforD
                             if(checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "2" + i.ToString("X") + sign[_sgnindx] + ":");
                             else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "2" + i.ToString("X") + sign[_sgnindx] + ":");
                             for (int j = 0; j < maxBeatDevide; j++) { sw.Write(longLane1[measure, i, j, _sgnindx]); }
-                            sw.Write(System.Environment.NewLine);
+                            sw.Write(Environment.NewLine);
                         }
                     }
                 }
@@ -519,7 +590,7 @@ namespace NotesEditerforD
                             if(checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "2" + i.ToString("X") + sign[_sgnindx] + ":");
                             else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "2" + i.ToString("X") + sign[_sgnindx] + ":");
                             for (int j = 0; j < maxBeatDevide; j++) { sw.Write(longLane2[measure, i, j, _sgnindx]); }
-                            sw.Write(System.Environment.NewLine);
+                            sw.Write(Environment.NewLine);
                         }
                     }
                 }
@@ -817,7 +888,7 @@ namespace NotesEditerforD
                             if(checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "3" + i.ToString("X") + sign[_sgnindx] + ":");
                             else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "3" + i.ToString("X") + sign[_sgnindx] + ":");
                             for (int j = 0; j < maxBeatDevide; j++) { sw.Write(longLane1[measure, i, j, _sgnindx]); }
-                            sw.Write(System.Environment.NewLine);
+                            sw.Write(Environment.NewLine);
                         }
                     }
                 }
@@ -830,7 +901,7 @@ namespace NotesEditerforD
                             if(checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "3" + i.ToString("X") + sign[_sgnindx] + ":");
                             else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "3" + i.ToString("X") + sign[_sgnindx] + ":");
                             for (int j = 0; j < maxBeatDevide; j++) { sw.Write(longLane2[measure, i, j, _sgnindx]); }
-                            sw.Write(System.Environment.NewLine);
+                            sw.Write(Environment.NewLine);
                         }
                     }
                 }
@@ -998,7 +1069,7 @@ namespace NotesEditerforD
                             if (checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "4" + i.ToString("X") + sign[_sgnindx] + ":");
                             else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "4" + i.ToString("X") + sign[_sgnindx] + ":");
                             for (int j = 0; j < maxBeatDevide; j++) { sw.Write(longLane1[measure, i, j, _sgnindx]); }
-                            sw.Write(System.Environment.NewLine);
+                            sw.Write(Environment.NewLine);
                         }
                     }
                 }
@@ -1011,7 +1082,7 @@ namespace NotesEditerforD
                             if (checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "4" + i.ToString("X") + sign[_sgnindx] + ":");
                             else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "4" + i.ToString("X") + sign[_sgnindx] + ":");
                             for (int j = 0; j < maxBeatDevide; j++) { sw.Write(longLane2[measure, i, j, _sgnindx]); }
-                            sw.Write(System.Environment.NewLine);
+                            sw.Write(Environment.NewLine);
                         }
                     }
                 }
@@ -1023,6 +1094,12 @@ namespace NotesEditerforD
         private bool isModified(string[,] lane, int i)
         {
             for (int j = 0; j < maxBeatDevide; j++) if (lane[i,j] != "00") return true;
+            return false;
+        }
+
+        private bool isBPMModified(string[] lane, int beatDevide)//for BPM
+        {
+            for (int j = 0; j < beatDevide; j++) if (lane[j] != "00") return true;
             return false;
         }
 

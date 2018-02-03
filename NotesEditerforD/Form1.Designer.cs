@@ -682,7 +682,6 @@
             this.BPMButton.BackColor = System.Drawing.SystemColors.Control;
             this.BPMButton.CImage = null;
             this.BPMButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.BPMButton.Enabled = false;
             this.BPMButton.IsActive = false;
             this.BPMButton.IsAir = false;
             this.BPMButton.IsNumUpDown = true;
@@ -709,7 +708,6 @@
             this.BPMButton.TabIndex = 9;
             this.BPMButton.TrackBar_Size = 4;
             this.BPMButton.TrackBarEnabled = false;
-            this.BPMButton.Visible = false;
             // 
             // Speed
             // 

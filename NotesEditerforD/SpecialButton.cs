@@ -45,7 +45,7 @@ namespace NotesEditerforD
         {
             this.BackColor = SystemColors.ActiveBorder;
             MusicScore2.SelectedNoteStyle = label1.Text;
-            Form1.activeNotesButton(this);
+            //Form1.activeNotesButton(this);
         }
 
         public void notesButtonInactive()

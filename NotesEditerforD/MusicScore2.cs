@@ -244,7 +244,7 @@ namespace NotesEditerforD
                 if (selectedNoteStyle == "BPM")
                 {
                     shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedBPM);
-                    if (shortNote.NotePosition.Y != 2) specialNotes.Add(shortNote);
+                    if (shortNote.NotePosition.Y != 2 && ((772 - shortNote.NotePosition.Y) - 2) % 48 == 0) specialNotes.Add(shortNote);
                     update();
                     return;
                 }
@@ -1060,7 +1060,7 @@ namespace NotesEditerforD
                 nextScore.shortNotes.Remove(_note.NextNote);
                 nextScore.update();
             }
-            if(_note.NotePosition.Y == 2)
+            if(_note.NotePosition.Y == 2 && nextScore != null)
             {
                 foreach(ShortNote __note in nextScore.shortNotes.Reverse<ShortNote>())
                 {
@@ -1072,7 +1072,7 @@ namespace NotesEditerforD
                     }
                 }
             }
-            else if(_note.NotePosition.Y == 770)
+            else if(_note.NotePosition.Y == 770 && prevScore != null)
             {
                 foreach (ShortNote __note in prevScore.shortNotes.Reverse<ShortNote>())
                 {

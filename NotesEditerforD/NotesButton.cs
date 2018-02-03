@@ -26,12 +26,19 @@ namespace NotesEditerforD
         public Image CImage { get { return notesPreview.Image; } set { notesPreview.Image = value; } }
         public bool IsNumUpDown { get { return isNumUpDown; } set { isNumUpDown = value; } }
         public bool TrackBarEnabled { get { return trackBarEnabled; } set { trackBarEnabled = value; } }
+        Form1 form1;
 
 
         public NotesButton()
         {
             InitializeComponent();
             trackBar_size.Value = 4;
+        }
+
+        public Form1 _Form1
+        {
+            get { return this.form1; }
+            set { this.form1 = value; }
         }
 
         public int TrackBar_Size
@@ -172,7 +179,7 @@ namespace NotesEditerforD
             //setAirDirection();
             //isActive = true;
             //notesButtonActive();
-            Form1.activeNotesButton(this);
+            form1.activeNotesButton(this);
             if (label_notes.Text == "BPM" || label_notes.Text == "Speed") MusicScore2.SelectedNoteSize = 16;
         }
 

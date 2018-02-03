@@ -403,6 +403,16 @@ namespace NotesEditerforD.Properties {
         /// <summary>
         ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
         /// </summary>
+        internal static System.Drawing.Bitmap TapPre {
+            get {
+                object obj = ResourceManager.GetObject("TapPre", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   型 System.Drawing.Bitmap のローカライズされたリソースを検索します。
+        /// </summary>
         internal static System.Drawing.Bitmap TapPreview {
             get {
                 object obj = ResourceManager.GetObject("TapPreview", resourceCulture);
