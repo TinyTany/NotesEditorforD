@@ -27,6 +27,10 @@ namespace NotesEditerforD
             bottomMargin = MusicScore2.BottomMargin;
             leftMargin = MusicScore2.LeftMargin;
             rightMargin = MusicScore2.RightMargin;
+
+            object sender = new object();
+            EventArgs e = new EventArgs();
+            previewButton_Click(sender, e);
         }
 
         public void loadExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool isWhile)
@@ -1122,6 +1126,43 @@ namespace NotesEditerforD
         {
             if (difficultyComboBox.SelectedIndex == 4) textBoxWE.Enabled = true;
             else textBoxWE.Enabled = false;
+        }
+
+        private void previewButton_Click(object sender, EventArgs e)
+        {
+            Bitmap canvas = new Bitmap(Properties.Resources.Black, 286, 396);
+            Bitmap jacket = Properties.Resources.noimage;
+            if(File.Exists(jacketPath)) jacket = new Bitmap(jacketPath);
+            Graphics g = Graphics.FromImage(canvas);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+            g.DrawImage(jacket, 40, 25, 210, 210);
+            switch (difficultyComboBox.SelectedIndex)
+            {
+                case 0://BASIC
+                    //previewBox.BackgroundImage = Properties.Resources.frameBasic;
+                    g.DrawImage(Properties.Resources.frameBasic, new Point(0, 0));
+                    break;
+                case 1://ADVANCED
+                    //previewBox.BackgroundImage = Properties.Resources.frameAdvanced;
+                    g.DrawImage(Properties.Resources.frameAdvanced, new Point(0, 0));
+                    break;
+                case 2://EXPERT
+                    //previewBox.BackgroundImage = Properties.Resources.frameExpert;
+                    g.DrawImage(Properties.Resources.frameExpert, new Point(0, 0));
+                    break;
+                case 3://MASTER
+                    //previewBox.BackgroundImage = Properties.Resources.frameMaster;
+                    g.DrawImage(Properties.Resources.frameMaster, new Point(0, 0));
+                    break;
+                case 4://WORLD'S END
+                    //previewBox.BackgroundImage = Properties.Resources.frameWE;
+                    g.DrawImage(Properties.Resources.frameWE, new Point(0, 0));
+                    break;
+                default:
+                    break;
+            }
+            previewBox.BackgroundImage = canvas;
+            g.Dispose();
         }
 
         private bool isModified(string[,,,] lane, int measure, int i, int sgnindx)

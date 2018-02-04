@@ -270,7 +270,8 @@ namespace NotesEditerforD
             else if (e.KeyCode == Keys.F8) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
             else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
             else if (e.KeyCode == Keys.F10) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
-            else if (e.KeyCode == Keys.F11) { MusicScore2.SelectedNoteStyle = "Speed"; activeNotesButton(Speed); }
+            else if (e.KeyCode == Keys.F11) { MusicScore2.SelectedNoteStyle = "BPM"; activeNotesButton(BPMButton); }
+            else if (e.KeyCode == Keys.F12) { MusicScore2.SelectedNoteStyle = "Speed"; activeNotesButton(Speed); }
             else if (e.KeyCode == Keys.S)
             {
                 slideRelay = !slideRelay;

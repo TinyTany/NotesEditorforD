@@ -58,14 +58,17 @@
             this.checkBoxWhile = new System.Windows.Forms.CheckBox();
             this.playLevelUpDown = new System.Windows.Forms.NumericUpDown();
             this.textBoxWE = new System.Windows.Forms.TextBox();
+            this.previewBox = new System.Windows.Forms.PictureBox();
+            this.previewButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewBox)).BeginInit();
             this.SuspendLayout();
             // 
             // export
             // 
-            this.export.Location = new System.Drawing.Point(492, 322);
+            this.export.Location = new System.Drawing.Point(411, 322);
             this.export.Name = "export";
             this.export.Size = new System.Drawing.Size(75, 23);
             this.export.TabIndex = 0;
@@ -75,7 +78,7 @@
             // 
             // cancel
             // 
-            this.cancel.Location = new System.Drawing.Point(573, 322);
+            this.cancel.Location = new System.Drawing.Point(492, 322);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(75, 23);
             this.cancel.TabIndex = 1;
@@ -86,7 +89,7 @@
             // titleLabel
             // 
             this.titleLabel.AutoSize = true;
-            this.titleLabel.Location = new System.Drawing.Point(335, 17);
+            this.titleLabel.Location = new System.Drawing.Point(254, 17);
             this.titleLabel.Name = "titleLabel";
             this.titleLabel.Size = new System.Drawing.Size(28, 12);
             this.titleLabel.TabIndex = 2;
@@ -96,7 +99,7 @@
             // artistLabel
             // 
             this.artistLabel.AutoSize = true;
-            this.artistLabel.Location = new System.Drawing.Point(335, 42);
+            this.artistLabel.Location = new System.Drawing.Point(254, 42);
             this.artistLabel.Name = "artistLabel";
             this.artistLabel.Size = new System.Drawing.Size(34, 12);
             this.artistLabel.TabIndex = 3;
@@ -106,7 +109,7 @@
             // designerLabel
             // 
             this.designerLabel.AutoSize = true;
-            this.designerLabel.Location = new System.Drawing.Point(335, 67);
+            this.designerLabel.Location = new System.Drawing.Point(254, 67);
             this.designerLabel.Name = "designerLabel";
             this.designerLabel.Size = new System.Drawing.Size(80, 12);
             this.designerLabel.TabIndex = 4;
@@ -115,7 +118,7 @@
             // difficultyLabel
             // 
             this.difficultyLabel.AutoSize = true;
-            this.difficultyLabel.Location = new System.Drawing.Point(335, 92);
+            this.difficultyLabel.Location = new System.Drawing.Point(254, 92);
             this.difficultyLabel.Name = "difficultyLabel";
             this.difficultyLabel.Size = new System.Drawing.Size(52, 12);
             this.difficultyLabel.TabIndex = 5;
@@ -124,7 +127,7 @@
             // levelLabel
             // 
             this.levelLabel.AutoSize = true;
-            this.levelLabel.Location = new System.Drawing.Point(335, 117);
+            this.levelLabel.Location = new System.Drawing.Point(254, 117);
             this.levelLabel.Name = "levelLabel";
             this.levelLabel.Size = new System.Drawing.Size(54, 12);
             this.levelLabel.TabIndex = 6;
@@ -133,7 +136,7 @@
             // songidLabel
             // 
             this.songidLabel.AutoSize = true;
-            this.songidLabel.Location = new System.Drawing.Point(335, 143);
+            this.songidLabel.Location = new System.Drawing.Point(254, 143);
             this.songidLabel.Name = "songidLabel";
             this.songidLabel.Size = new System.Drawing.Size(41, 12);
             this.songidLabel.TabIndex = 7;
@@ -142,7 +145,7 @@
             // waveLabel
             // 
             this.waveLabel.AutoSize = true;
-            this.waveLabel.Location = new System.Drawing.Point(335, 168);
+            this.waveLabel.Location = new System.Drawing.Point(254, 168);
             this.waveLabel.Name = "waveLabel";
             this.waveLabel.Size = new System.Drawing.Size(37, 12);
             this.waveLabel.TabIndex = 8;
@@ -151,7 +154,7 @@
             // offsetLabel
             // 
             this.offsetLabel.AutoSize = true;
-            this.offsetLabel.Location = new System.Drawing.Point(335, 196);
+            this.offsetLabel.Location = new System.Drawing.Point(254, 196);
             this.offsetLabel.Name = "offsetLabel";
             this.offsetLabel.Size = new System.Drawing.Size(87, 12);
             this.offsetLabel.TabIndex = 9;
@@ -160,7 +163,7 @@
             // jacketLabel
             // 
             this.jacketLabel.AutoSize = true;
-            this.jacketLabel.Location = new System.Drawing.Point(335, 222);
+            this.jacketLabel.Location = new System.Drawing.Point(254, 222);
             this.jacketLabel.Name = "jacketLabel";
             this.jacketLabel.Size = new System.Drawing.Size(40, 12);
             this.jacketLabel.TabIndex = 10;
@@ -169,7 +172,7 @@
             // bpmLabel
             // 
             this.bpmLabel.AutoSize = true;
-            this.bpmLabel.Location = new System.Drawing.Point(335, 250);
+            this.bpmLabel.Location = new System.Drawing.Point(254, 250);
             this.bpmLabel.Name = "bpmLabel";
             this.bpmLabel.Size = new System.Drawing.Size(54, 12);
             this.bpmLabel.TabIndex = 11;
@@ -186,7 +189,7 @@
             // 
             // textBoxTitle
             // 
-            this.textBoxTitle.Location = new System.Drawing.Point(435, 14);
+            this.textBoxTitle.Location = new System.Drawing.Point(354, 14);
             this.textBoxTitle.Name = "textBoxTitle";
             this.textBoxTitle.Size = new System.Drawing.Size(213, 19);
             this.textBoxTitle.TabIndex = 13;
@@ -194,7 +197,7 @@
             // 
             // textBoxArtist
             // 
-            this.textBoxArtist.Location = new System.Drawing.Point(435, 39);
+            this.textBoxArtist.Location = new System.Drawing.Point(354, 39);
             this.textBoxArtist.Name = "textBoxArtist";
             this.textBoxArtist.Size = new System.Drawing.Size(213, 19);
             this.textBoxArtist.TabIndex = 14;
@@ -202,7 +205,7 @@
             // 
             // textBoxDesigner
             // 
-            this.textBoxDesigner.Location = new System.Drawing.Point(435, 64);
+            this.textBoxDesigner.Location = new System.Drawing.Point(354, 64);
             this.textBoxDesigner.Name = "textBoxDesigner";
             this.textBoxDesigner.Size = new System.Drawing.Size(213, 19);
             this.textBoxDesigner.TabIndex = 15;
@@ -217,7 +220,7 @@
             "EXPERT",
             "MASTER",
             "WORLD\'S END"});
-            this.difficultyComboBox.Location = new System.Drawing.Point(482, 89);
+            this.difficultyComboBox.Location = new System.Drawing.Point(401, 89);
             this.difficultyComboBox.Name = "difficultyComboBox";
             this.difficultyComboBox.Size = new System.Drawing.Size(121, 20);
             this.difficultyComboBox.TabIndex = 16;
@@ -231,7 +234,7 @@
             0,
             0,
             65536});
-            this.BPMUpDown.Location = new System.Drawing.Point(528, 248);
+            this.BPMUpDown.Location = new System.Drawing.Point(447, 248);
             this.BPMUpDown.Maximum = new decimal(new int[] {
             300,
             0,
@@ -253,7 +256,7 @@
             // 
             // textBoxID
             // 
-            this.textBoxID.Location = new System.Drawing.Point(435, 140);
+            this.textBoxID.Location = new System.Drawing.Point(354, 140);
             this.textBoxID.Name = "textBoxID";
             this.textBoxID.Size = new System.Drawing.Size(213, 19);
             this.textBoxID.TabIndex = 19;
@@ -261,7 +264,7 @@
             // 
             // textBoxWAVE
             // 
-            this.textBoxWAVE.Location = new System.Drawing.Point(435, 165);
+            this.textBoxWAVE.Location = new System.Drawing.Point(354, 165);
             this.textBoxWAVE.Name = "textBoxWAVE";
             this.textBoxWAVE.ReadOnly = true;
             this.textBoxWAVE.Size = new System.Drawing.Size(184, 19);
@@ -269,7 +272,7 @@
             // 
             // textBoxJacket
             // 
-            this.textBoxJacket.Location = new System.Drawing.Point(435, 219);
+            this.textBoxJacket.Location = new System.Drawing.Point(354, 219);
             this.textBoxJacket.Name = "textBoxJacket";
             this.textBoxJacket.ReadOnly = true;
             this.textBoxJacket.Size = new System.Drawing.Size(184, 19);
@@ -278,7 +281,7 @@
             // buttonWave
             // 
             this.buttonWave.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.buttonWave.Location = new System.Drawing.Point(625, 165);
+            this.buttonWave.Location = new System.Drawing.Point(544, 165);
             this.buttonWave.Name = "buttonWave";
             this.buttonWave.Size = new System.Drawing.Size(23, 23);
             this.buttonWave.TabIndex = 22;
@@ -289,7 +292,7 @@
             // buttonJacket
             // 
             this.buttonJacket.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.buttonJacket.Location = new System.Drawing.Point(625, 219);
+            this.buttonJacket.Location = new System.Drawing.Point(544, 219);
             this.buttonJacket.Name = "buttonJacket";
             this.buttonJacket.Size = new System.Drawing.Size(23, 23);
             this.buttonJacket.TabIndex = 23;
@@ -305,7 +308,7 @@
             0,
             0,
             196608});
-            this.offsetUpDown.Location = new System.Drawing.Point(528, 194);
+            this.offsetUpDown.Location = new System.Drawing.Point(447, 194);
             this.offsetUpDown.Maximum = new decimal(new int[] {
             10,
             0,
@@ -323,7 +326,7 @@
             // labelexdir
             // 
             this.labelexdir.AutoSize = true;
-            this.labelexdir.Location = new System.Drawing.Point(335, 278);
+            this.labelexdir.Location = new System.Drawing.Point(254, 278);
             this.labelexdir.Name = "labelexdir";
             this.labelexdir.Size = new System.Drawing.Size(83, 12);
             this.labelexdir.TabIndex = 25;
@@ -332,7 +335,7 @@
             // buttonexdir
             // 
             this.buttonexdir.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.buttonexdir.Location = new System.Drawing.Point(625, 273);
+            this.buttonexdir.Location = new System.Drawing.Point(544, 273);
             this.buttonexdir.Name = "buttonexdir";
             this.buttonexdir.Size = new System.Drawing.Size(23, 23);
             this.buttonexdir.TabIndex = 26;
@@ -342,7 +345,7 @@
             // 
             // textBoxExport
             // 
-            this.textBoxExport.Location = new System.Drawing.Point(435, 275);
+            this.textBoxExport.Location = new System.Drawing.Point(354, 275);
             this.textBoxExport.Name = "textBoxExport";
             this.textBoxExport.ReadOnly = true;
             this.textBoxExport.Size = new System.Drawing.Size(184, 19);
@@ -353,7 +356,7 @@
             this.checkBoxWhile.AutoSize = true;
             this.checkBoxWhile.Checked = true;
             this.checkBoxWhile.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxWhile.Location = new System.Drawing.Point(476, 300);
+            this.checkBoxWhile.Location = new System.Drawing.Point(395, 300);
             this.checkBoxWhile.Name = "checkBoxWhile";
             this.checkBoxWhile.Size = new System.Drawing.Size(173, 16);
             this.checkBoxWhile.TabIndex = 29;
@@ -368,7 +371,7 @@
             0,
             0,
             65536});
-            this.playLevelUpDown.Location = new System.Drawing.Point(528, 115);
+            this.playLevelUpDown.Location = new System.Drawing.Point(447, 115);
             this.playLevelUpDown.Maximum = new decimal(new int[] {
             15,
             0,
@@ -391,16 +394,38 @@
             // textBoxWE
             // 
             this.textBoxWE.Enabled = false;
-            this.textBoxWE.Location = new System.Drawing.Point(609, 89);
+            this.textBoxWE.Location = new System.Drawing.Point(528, 89);
             this.textBoxWE.Name = "textBoxWE";
             this.textBoxWE.Size = new System.Drawing.Size(39, 19);
             this.textBoxWE.TabIndex = 31;
+            // 
+            // previewBox
+            // 
+            this.previewBox.BackgroundImage = global::NotesEditerforD.Properties.Resources.frameBasic;
+            this.previewBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.previewBox.Location = new System.Drawing.Point(12, 24);
+            this.previewBox.Name = "previewBox";
+            this.previewBox.Size = new System.Drawing.Size(230, 318);
+            this.previewBox.TabIndex = 32;
+            this.previewBox.TabStop = false;
+            // 
+            // previewButton
+            // 
+            this.previewButton.Location = new System.Drawing.Point(256, 322);
+            this.previewButton.Name = "previewButton";
+            this.previewButton.Size = new System.Drawing.Size(90, 23);
+            this.previewButton.TabIndex = 33;
+            this.previewButton.Text = "プレビュー更新";
+            this.previewButton.UseVisualStyleBackColor = true;
+            this.previewButton.Click += new System.EventHandler(this.previewButton_Click);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 354);
+            this.ClientSize = new System.Drawing.Size(579, 354);
+            this.Controls.Add(this.previewButton);
+            this.Controls.Add(this.previewBox);
             this.Controls.Add(this.textBoxWE);
             this.Controls.Add(this.playLevelUpDown);
             this.Controls.Add(this.checkBoxWhile);
@@ -437,6 +462,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.previewBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -474,5 +500,7 @@
         private System.Windows.Forms.CheckBox checkBoxWhile;
         private System.Windows.Forms.NumericUpDown playLevelUpDown;
         private System.Windows.Forms.TextBox textBoxWE;
+        private System.Windows.Forms.PictureBox previewBox;
+        private System.Windows.Forms.Button previewButton;
     }
 }

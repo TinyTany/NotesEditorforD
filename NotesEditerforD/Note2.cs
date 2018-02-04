@@ -159,6 +159,7 @@ namespace NotesEditerforD
             System.Drawing.Imaging.ImageAttributes ia = new System.Drawing.Imaging.ImageAttributes();
             ia.SetColorMatrix(cm);
             Graphics g = Graphics.FromImage(canvas);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             Bitmap _noteImage = setNoteImage(noteStyle);
             _noteImage.MakeTransparent(Color.Black);
             destPoints = setDestPoints("ShortNote");

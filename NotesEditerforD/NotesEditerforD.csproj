@@ -227,6 +227,27 @@
   <ItemGroup>
     <None Include="Resources\TapPre.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frameWE.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frameAdvanced.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frameBasic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frameExpert.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\frameMaster.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\noimage.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
