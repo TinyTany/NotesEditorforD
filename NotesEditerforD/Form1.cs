@@ -334,6 +334,13 @@ namespace NotesEditerforD
             //MessageBox.Show("KeyDown");
         }
 
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            flowLayoutPanelMusicScore.Width = this.Width - 297;
+            flowLayoutPanelMusicScore.Height = this.Height - 97;
+            flowLayoutPanelNotesButton.Height = this.Height - 72;
+        }
+
         private void flowLayoutPanelMusicScore_Paint(object sender, PaintEventArgs e)
         {
 

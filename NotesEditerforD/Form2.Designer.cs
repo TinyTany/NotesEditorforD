@@ -58,8 +58,14 @@
             this.checkBoxWhile = new System.Windows.Forms.CheckBox();
             this.playLevelUpDown = new System.Windows.Forms.NumericUpDown();
             this.textBoxWE = new System.Windows.Forms.TextBox();
-            this.previewBox = new System.Windows.Forms.PictureBox();
             this.previewButton = new System.Windows.Forms.Button();
+            this.previewBox = new System.Windows.Forms.PictureBox();
+            this.previewTitle = new System.Windows.Forms.Label();
+            this.previewLevel = new System.Windows.Forms.Label();
+            this.previewDesigner = new System.Windows.Forms.Label();
+            this.previewBPM = new System.Windows.Forms.Label();
+            this.previewArtist = new System.Windows.Forms.Label();
+            this.previewPlus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
@@ -399,16 +405,6 @@
             this.textBoxWE.Size = new System.Drawing.Size(39, 19);
             this.textBoxWE.TabIndex = 31;
             // 
-            // previewBox
-            // 
-            this.previewBox.BackgroundImage = global::NotesEditerforD.Properties.Resources.frameBasic;
-            this.previewBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.previewBox.Location = new System.Drawing.Point(12, 24);
-            this.previewBox.Name = "previewBox";
-            this.previewBox.Size = new System.Drawing.Size(230, 318);
-            this.previewBox.TabIndex = 32;
-            this.previewBox.TabStop = false;
-            // 
             // previewButton
             // 
             this.previewButton.Location = new System.Drawing.Point(256, 322);
@@ -419,11 +415,99 @@
             this.previewButton.UseVisualStyleBackColor = true;
             this.previewButton.Click += new System.EventHandler(this.previewButton_Click);
             // 
+            // previewBox
+            // 
+            this.previewBox.BackgroundImage = global::NotesEditerforD.Properties.Resources.frameBasic;
+            this.previewBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.previewBox.Location = new System.Drawing.Point(12, 24);
+            this.previewBox.Name = "previewBox";
+            this.previewBox.Size = new System.Drawing.Size(230, 318);
+            this.previewBox.TabIndex = 32;
+            this.previewBox.TabStop = false;
+            // 
+            // previewTitle
+            // 
+            this.previewTitle.BackColor = System.Drawing.Color.Transparent;
+            this.previewTitle.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.previewTitle.ForeColor = System.Drawing.Color.Black;
+            this.previewTitle.Location = new System.Drawing.Point(25, 254);
+            this.previewTitle.Name = "previewTitle";
+            this.previewTitle.Size = new System.Drawing.Size(202, 19);
+            this.previewTitle.TabIndex = 34;
+            this.previewTitle.Text = "label1";
+            this.previewTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // previewLevel
+            // 
+            this.previewLevel.BackColor = System.Drawing.Color.Transparent;
+            this.previewLevel.Font = new System.Drawing.Font("Arial Unicode MS", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.previewLevel.ForeColor = System.Drawing.Color.Black;
+            this.previewLevel.Location = new System.Drawing.Point(22, 217);
+            this.previewLevel.Name = "previewLevel";
+            this.previewLevel.Size = new System.Drawing.Size(40, 35);
+            this.previewLevel.TabIndex = 34;
+            this.previewLevel.Text = "14";
+            this.previewLevel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // previewDesigner
+            // 
+            this.previewDesigner.BackColor = System.Drawing.Color.Transparent;
+            this.previewDesigner.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.previewDesigner.ForeColor = System.Drawing.Color.White;
+            this.previewDesigner.Location = new System.Drawing.Point(94, 321);
+            this.previewDesigner.Name = "previewDesigner";
+            this.previewDesigner.Size = new System.Drawing.Size(93, 17);
+            this.previewDesigner.TabIndex = 34;
+            this.previewDesigner.Text = "label1";
+            this.previewDesigner.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // previewBPM
+            // 
+            this.previewBPM.BackColor = System.Drawing.Color.Transparent;
+            this.previewBPM.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.previewBPM.ForeColor = System.Drawing.Color.White;
+            this.previewBPM.Location = new System.Drawing.Point(209, 321);
+            this.previewBPM.Name = "previewBPM";
+            this.previewBPM.Size = new System.Drawing.Size(34, 17);
+            this.previewBPM.TabIndex = 34;
+            this.previewBPM.Text = "120";
+            this.previewBPM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // previewArtist
+            // 
+            this.previewArtist.BackColor = System.Drawing.Color.Transparent;
+            this.previewArtist.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.previewArtist.ForeColor = System.Drawing.Color.Black;
+            this.previewArtist.Location = new System.Drawing.Point(28, 272);
+            this.previewArtist.Name = "previewArtist";
+            this.previewArtist.Size = new System.Drawing.Size(198, 15);
+            this.previewArtist.TabIndex = 34;
+            this.previewArtist.Text = "label1";
+            this.previewArtist.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // previewPlus
+            // 
+            this.previewPlus.BackColor = System.Drawing.Color.Transparent;
+            this.previewPlus.Font = new System.Drawing.Font("Arial Unicode MS", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.previewPlus.ForeColor = System.Drawing.Color.Black;
+            this.previewPlus.Location = new System.Drawing.Point(49, 213);
+            this.previewPlus.Name = "previewPlus";
+            this.previewPlus.Size = new System.Drawing.Size(20, 20);
+            this.previewPlus.TabIndex = 34;
+            this.previewPlus.Text = "+";
+            this.previewPlus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 354);
+            this.Controls.Add(this.previewPlus);
+            this.Controls.Add(this.previewLevel);
+            this.Controls.Add(this.previewBPM);
+            this.Controls.Add(this.previewDesigner);
+            this.Controls.Add(this.previewArtist);
+            this.Controls.Add(this.previewTitle);
             this.Controls.Add(this.previewButton);
             this.Controls.Add(this.previewBox);
             this.Controls.Add(this.textBoxWE);
@@ -502,5 +586,11 @@
         private System.Windows.Forms.TextBox textBoxWE;
         private System.Windows.Forms.PictureBox previewBox;
         private System.Windows.Forms.Button previewButton;
+        private System.Windows.Forms.Label previewTitle;
+        private System.Windows.Forms.Label previewLevel;
+        private System.Windows.Forms.Label previewDesigner;
+        private System.Windows.Forms.Label previewBPM;
+        private System.Windows.Forms.Label previewArtist;
+        private System.Windows.Forms.Label previewPlus;
     }
 }

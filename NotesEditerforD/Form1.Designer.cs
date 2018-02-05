@@ -348,6 +348,7 @@
             // 
             // Tap
             // 
+            this.Tap._Form1 = null;
             this.Tap.AutoSize = true;
             this.Tap.BackColor = System.Drawing.SystemColors.Control;
             this.Tap.CImage = global::NotesEditerforD.Properties.Resources.TapPreview;
@@ -381,6 +382,7 @@
             // 
             // ExTap
             // 
+            this.ExTap._Form1 = null;
             this.ExTap.AutoSize = true;
             this.ExTap.BackColor = System.Drawing.SystemColors.Control;
             this.ExTap.CImage = global::NotesEditerforD.Properties.Resources.ExTapPreview;
@@ -414,6 +416,7 @@
             // 
             // Flick
             // 
+            this.Flick._Form1 = null;
             this.Flick.AutoSize = true;
             this.Flick.BackColor = System.Drawing.SystemColors.Control;
             this.Flick.CImage = global::NotesEditerforD.Properties.Resources.FlickPreview;
@@ -447,6 +450,7 @@
             // 
             // HellTap
             // 
+            this.HellTap._Form1 = null;
             this.HellTap.AutoSize = true;
             this.HellTap.BackColor = System.Drawing.SystemColors.Control;
             this.HellTap.CImage = global::NotesEditerforD.Properties.Resources.HellTapPreview;
@@ -480,6 +484,7 @@
             // 
             // Hold
             // 
+            this.Hold._Form1 = null;
             this.Hold.AutoSize = true;
             this.Hold.BackColor = System.Drawing.SystemColors.Control;
             this.Hold.CImage = global::NotesEditerforD.Properties.Resources.HoldPreview;
@@ -513,6 +518,7 @@
             // 
             // Slide
             // 
+            this.Slide._Form1 = null;
             this.Slide.AutoSize = true;
             this.Slide.BackColor = System.Drawing.SystemColors.Control;
             this.Slide.CImage = global::NotesEditerforD.Properties.Resources.SlidePreview;
@@ -546,6 +552,7 @@
             // 
             // SlideCurve
             // 
+            this.SlideCurve._Form1 = null;
             this.SlideCurve.AutoSize = true;
             this.SlideCurve.BackColor = System.Drawing.SystemColors.Control;
             this.SlideCurve.CImage = global::NotesEditerforD.Properties.Resources.SlideCurvePreview;
@@ -579,6 +586,7 @@
             // 
             // AirUp
             // 
+            this.AirUp._Form1 = null;
             this.AirUp.AutoSize = true;
             this.AirUp.BackColor = System.Drawing.SystemColors.Control;
             this.AirUp.CImage = global::NotesEditerforD.Properties.Resources.AirUpCPreview;
@@ -612,6 +620,7 @@
             // 
             // AirDown
             // 
+            this.AirDown._Form1 = null;
             this.AirDown.AutoSize = true;
             this.AirDown.BackColor = System.Drawing.SystemColors.Control;
             this.AirDown.CImage = global::NotesEditerforD.Properties.Resources.AirDownCPreview;
@@ -645,6 +654,7 @@
             // 
             // AirLine
             // 
+            this.AirLine._Form1 = null;
             this.AirLine.AutoSize = true;
             this.AirLine.BackColor = System.Drawing.SystemColors.Control;
             this.AirLine.CImage = global::NotesEditerforD.Properties.Resources.AirLinePreview;
@@ -678,6 +688,7 @@
             // 
             // BPMButton
             // 
+            this.BPMButton._Form1 = null;
             this.BPMButton.AutoSize = true;
             this.BPMButton.BackColor = System.Drawing.SystemColors.Control;
             this.BPMButton.CImage = null;
@@ -711,6 +722,7 @@
             // 
             // Speed
             // 
+            this.Speed._Form1 = null;
             this.Speed.AutoSize = true;
             this.Speed.BackColor = System.Drawing.SystemColors.Control;
             this.Speed.CImage = null;
@@ -768,6 +780,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.Resize += new System.EventHandler(this.Form1_Resize);
             this.flowLayoutPanelNotesButton.ResumeLayout(false);
             this.flowLayoutPanelNotesButton.PerformLayout();
             this.flowLayoutPanelEditStatus.ResumeLayout(false);

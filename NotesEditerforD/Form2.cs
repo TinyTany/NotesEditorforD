@@ -31,6 +31,25 @@ namespace NotesEditerforD
             object sender = new object();
             EventArgs e = new EventArgs();
             previewButton_Click(sender, e);
+
+            previewBox.Controls.Add(previewTitle);
+            previewBox.Controls.Add(previewArtist);
+            previewBox.Controls.Add(previewLevel);
+            previewBox.Controls.Add(previewDesigner);
+            previewBox.Controls.Add(previewBPM);
+            previewLevel.Controls.Add(previewPlus);
+            previewTitle.Top -= previewBox.Top;
+            previewTitle.Left -= previewBox.Left;
+            previewArtist.Top -= previewBox.Top;
+            previewArtist.Left -= previewBox.Left;
+            previewLevel.Top -= previewBox.Top;
+            previewLevel.Left -= previewBox.Left;
+            previewDesigner.Top -= previewBox.Top;
+            previewDesigner.Left -= previewBox.Left;
+            previewBPM.Top -= previewBox.Top;
+            previewBPM.Left -= previewBox.Left;
+            previewPlus.Top -= previewLevel.Top;
+            previewPlus.Left -= previewLevel.Left;
         }
 
         public void loadExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool isWhile)
@@ -1135,7 +1154,14 @@ namespace NotesEditerforD
             if(File.Exists(jacketPath)) jacket = new Bitmap(jacketPath);
             Graphics g = Graphics.FromImage(canvas);
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            g.DrawImage(jacket, 40, 25, 210, 210);
+            if(jacket.Width < jacket.Height)//縦長
+            {
+                g.DrawImage(jacket, 40 + (210 - jacket.Width * 210 / jacket.Height) / 2, 25, jacket.Width * 210 / jacket.Height, 210);
+            }
+            else//横長か正方形
+            {
+                g.DrawImage(jacket, 40, 25 + (210 - jacket.Height * 210 / jacket.Width) / 2, 210, jacket.Height * 210 / jacket.Width);
+            }
             switch (difficultyComboBox.SelectedIndex)
             {
                 case 0://BASIC
@@ -1161,6 +1187,7 @@ namespace NotesEditerforD
                 default:
                     break;
             }
+            
             previewBox.BackgroundImage = canvas;
             g.Dispose();
         }
