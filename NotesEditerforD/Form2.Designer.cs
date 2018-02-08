@@ -65,7 +65,6 @@
             this.previewDesigner = new System.Windows.Forms.Label();
             this.previewBPM = new System.Windows.Forms.Label();
             this.previewArtist = new System.Windows.Forms.Label();
-            this.previewPlus = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
@@ -485,24 +484,11 @@
             this.previewArtist.Text = "label1";
             this.previewArtist.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // previewPlus
-            // 
-            this.previewPlus.BackColor = System.Drawing.Color.Transparent;
-            this.previewPlus.Font = new System.Drawing.Font("Arial Unicode MS", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.previewPlus.ForeColor = System.Drawing.Color.Black;
-            this.previewPlus.Location = new System.Drawing.Point(49, 213);
-            this.previewPlus.Name = "previewPlus";
-            this.previewPlus.Size = new System.Drawing.Size(20, 20);
-            this.previewPlus.TabIndex = 34;
-            this.previewPlus.Text = "+";
-            this.previewPlus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 354);
-            this.Controls.Add(this.previewPlus);
             this.Controls.Add(this.previewLevel);
             this.Controls.Add(this.previewBPM);
             this.Controls.Add(this.previewDesigner);
@@ -591,6 +577,5 @@
         private System.Windows.Forms.Label previewDesigner;
         private System.Windows.Forms.Label previewBPM;
         private System.Windows.Forms.Label previewArtist;
-        private System.Windows.Forms.Label previewPlus;
     }
 }

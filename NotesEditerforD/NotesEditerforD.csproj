@@ -59,7 +59,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="MusicScore2.cs">
+    <Compile Include="MusicScore.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Note2.cs" />
@@ -71,6 +71,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreRoot.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SpecialButton.cs">
       <SubType>UserControl</SubType>
     </Compile>

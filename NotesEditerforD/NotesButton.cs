@@ -70,7 +70,7 @@ namespace NotesEditerforD
             if (trackBar_size.Enabled)
             {
                 label_sizevalue.Text = trackBar_size.Value.ToString() + " /16";
-                if (isActive) MusicScore2.SelectedNoteSize = trackBar_size.Value;//ノーツボタンがアクティブなときにノーツサイズを指定
+                if (isActive) MusicScore.SelectedNoteSize = trackBar_size.Value;//ノーツボタンがアクティブなときにノーツサイズを指定
             }
         }
 
@@ -96,7 +96,7 @@ namespace NotesEditerforD
                 numericUpDown1.DecimalPlaces = 1;
                 numericUpDown1.Increment = 0.1m;
                 numericUpDown1.Value = 120.0m;
-                MusicScore2.SelectedBPM = numericUpDown1.Value;
+                MusicScore.SelectedBPM = numericUpDown1.Value;
                 label_size.Text = "";
                 label_sizevalue.Text = numericUpDown1.Value.ToString();
             }
@@ -107,7 +107,7 @@ namespace NotesEditerforD
                 numericUpDown1.DecimalPlaces = 1;
                 numericUpDown1.Increment = 0.1m;
                 numericUpDown1.Value = 1.0m;
-                MusicScore2.SelectedSpeed = numericUpDown1.Value;
+                MusicScore.SelectedSpeed = numericUpDown1.Value;
                 label_size.Text = "";
                 label_sizevalue.Text = "x" + numericUpDown1.Value.ToString();
             }
@@ -118,12 +118,12 @@ namespace NotesEditerforD
             if(notesName == "BPM")
             {
                 label_sizevalue.Text = numericUpDown1.Value.ToString();
-                MusicScore2.SelectedBPM = numericUpDown1.Value;
+                MusicScore.SelectedBPM = numericUpDown1.Value;
             }
             else if(notesName == "Speed")
             {
                 label_sizevalue.Text = "x" + numericUpDown1.Value.ToString();
-                MusicScore2.SelectedSpeed = numericUpDown1.Value;
+                MusicScore.SelectedSpeed = numericUpDown1.Value;
             }
         }
 
@@ -155,9 +155,9 @@ namespace NotesEditerforD
 
         public void setAirDirection()
         {
-            if (radioR.Checked) MusicScore2.SelectedAirDirection = "Right";
-            else if (radioL.Checked) MusicScore2.SelectedAirDirection = "Left";
-            else MusicScore2.SelectedAirDirection = "Center";
+            if (radioR.Checked) MusicScore.SelectedAirDirection = "Right";
+            else if (radioL.Checked) MusicScore.SelectedAirDirection = "Left";
+            else MusicScore.SelectedAirDirection = "Center";
         }
 
         private void radioLCR_Click(object sender, EventArgs e)
@@ -180,14 +180,14 @@ namespace NotesEditerforD
             //isActive = true;
             //notesButtonActive();
             form1.activeNotesButton(this);
-            if (label_notes.Text == "BPM" || label_notes.Text == "Speed") MusicScore2.SelectedNoteSize = 16;
+            if (label_notes.Text == "BPM" || label_notes.Text == "Speed") MusicScore.SelectedNoteSize = 16;
         }
 
         public void notesButtonActive()//for initialize only(maybe)
         {
             this.BackColor = SystemColors.ActiveBorder;
-            MusicScore2.SelectedNoteSize = trackBar_size.Value;
-            MusicScore2.SelectedNoteStyle = notesName;
+            MusicScore.SelectedNoteSize = trackBar_size.Value;
+            MusicScore.SelectedNoteStyle = notesName;
             setAirDirection();
             isActive = true;
         }

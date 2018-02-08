@@ -14,19 +14,21 @@ namespace NotesEditerforD
     public partial class Form2 : Form
     {
         private Form1 form1;
+        private ScoreRoot sRoot;
         private int measure, lastScore;
         private static int maxBeatDevide = 192;
         private string wavePath, jacketPath;
         private int topMargin, bottomMargin, leftMargin, rightMargin;
-        public Form2(Form1 _form1)
+        public Form2(Form1 _form1, ScoreRoot _sRoot)
         {
             InitializeComponent();
             difficultyComboBox.SelectedIndex = 0;
             form1 = _form1;
-            topMargin = MusicScore2.TopMargin;
-            bottomMargin = MusicScore2.BottomMargin;
-            leftMargin = MusicScore2.LeftMargin;
-            rightMargin = MusicScore2.RightMargin;
+            sRoot = _sRoot;
+            topMargin = MusicScore.TopMargin;
+            bottomMargin = MusicScore.BottomMargin;
+            leftMargin = MusicScore.LeftMargin;
+            rightMargin = MusicScore.RightMargin;
 
             object sender = new object();
             EventArgs e = new EventArgs();
@@ -37,7 +39,6 @@ namespace NotesEditerforD
             previewBox.Controls.Add(previewLevel);
             previewBox.Controls.Add(previewDesigner);
             previewBox.Controls.Add(previewBPM);
-            previewLevel.Controls.Add(previewPlus);
             previewTitle.Top -= previewBox.Top;
             previewTitle.Left -= previewBox.Left;
             previewArtist.Top -= previewBox.Top;
@@ -48,8 +49,6 @@ namespace NotesEditerforD
             previewDesigner.Left -= previewBox.Left;
             previewBPM.Top -= previewBox.Top;
             previewBPM.Left -= previewBox.Left;
-            previewPlus.Top -= previewLevel.Top;
-            previewPlus.Left -= previewLevel.Left;
         }
 
         public void loadExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool isWhile)
@@ -155,7 +154,7 @@ namespace NotesEditerforD
             sw.WriteLine("#JACKET " + '"' + textBoxJacket.Text + '"');
             sw.WriteLine();
             //
-            for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].specialNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
+            for (lastScore = form1.MaxScore - 1; sRoot.Scores[lastScore].specialNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
             //
             sw.WriteLine("#BPM01:" + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
@@ -172,7 +171,7 @@ namespace NotesEditerforD
             {
                 for (int i = 0; i < BPMBeatDevide; i++) spLane1[i] = "00";//initialize lane
                 for (int i = 0; i < BPMBeatDevide; i++) spLane2[i] = "00";//initialize lane
-                foreach (ShortNote _note in form1.Scores2[measure].specialNotes)
+                foreach (ShortNote _note in sRoot.Scores[measure].specialNotes)
                 {
                     if (_note.NoteStyle == "BPM")
                     {
@@ -232,7 +231,7 @@ namespace NotesEditerforD
             
             for (measure = 0; measure <= lastScore; measure++)
             {
-                foreach(ShortNote _note in form1.Scores2[measure].specialNotes)
+                foreach(ShortNote _note in sRoot.Scores[measure].specialNotes)
                 {
                     if(_note.NoteStyle == "Speed")
                     {
@@ -255,7 +254,7 @@ namespace NotesEditerforD
             sw.WriteLine("#HISPEED 00");
             sw.WriteLine();
 
-            for (lastScore = form1.MaxScore - 1; form1.Scores2[lastScore].shortNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
+            for (lastScore = form1.MaxScore - 1; sRoot.Scores[lastScore].shortNotes.Count == 0; lastScore--) if (lastScore < 1) { lastScore = 0; break; }
             string[,] lane1 = new string[16, maxBeatDevide];//lane, beat, odd
             string[,] lane2 = new string[16, maxBeatDevide];//lane, beat, even
             char[] sign = "abcdefghijklmnopqrstuvwxyz".ToCharArray();//ロングレーン用の識別子 最大zまで拡張可能
@@ -277,7 +276,7 @@ namespace NotesEditerforD
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
 
-                foreach (ShortNote note in form1.Scores2[measure].shortNotes)//レーンを設定
+                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
                     _Y = maxBeatDevide - (note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -357,7 +356,7 @@ namespace NotesEditerforD
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
 
-                foreach (ShortNote note in form1.Scores2[measure].shortNotes)//レーンを設定
+                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
                     _Y = maxBeatDevide - (note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -482,7 +481,7 @@ namespace NotesEditerforD
             /////////////////////////////////////////////////↓Hold               
             for (measure = 0; measure <= lastScore; measure++)
             {
-                foreach (ShortNote note in form1.Scores2[measure].shortNotes)//レーンを設定
+                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
                     _Y = maxBeatDevide - (note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -503,7 +502,7 @@ namespace NotesEditerforD
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
-                                    foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
+                                    foreach (ShortNote _note in sRoot.Scores[_measure].shortNotes)
                                     {
                                         _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
                                         _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -553,7 +552,7 @@ namespace NotesEditerforD
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
-                                    foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
+                                    foreach (ShortNote _note in sRoot.Scores[_measure].shortNotes)
                                     {
                                         _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
                                         _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -625,7 +624,7 @@ namespace NotesEditerforD
 
             for (measure = 0; measure <= lastScore; measure++)
             {
-                foreach (ShortNote note in form1.Scores2[measure].shortNotes)//レーンを設定
+                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
                     _Y = maxBeatDevide - (note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -646,7 +645,7 @@ namespace NotesEditerforD
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
-                                    foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
+                                    foreach (ShortNote _note in sRoot.Scores[_measure].shortNotes)
                                     {
                                         _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
                                         _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -746,31 +745,6 @@ namespace NotesEditerforD
                                     }
                                     if (flg) break;
                                 }
-                                /*
-                                for (int i = form1.Scores2[endMeasure].shortNotes.Count - 1; i >= 0; i--)
-                                {
-                                    if(form1.Scores2[endMeasure].shortNotes[i].NoteStyle == "SlideTap" && form1.Scores2[endMeasure].shortNotes[i].LongNoteNumber == longNoteNumber)
-                                    {
-                                        _X = (form1.Scores2[endMeasure].shortNotes[i].NotePosition.X - (leftMargin + 1)) / 10;
-                                        _Y = maxBeatDevide - (form1.Scores2[endMeasure].shortNotes[i].NotePosition.Y - 2) / (384 / maxBeatDevide);
-                                        noteSize = form1.Scores2[endMeasure].shortNotes[i].NoteSize;
-                                        if (_Y < 0)
-                                        {
-                                            _Y += maxBeatDevide;
-                                            if (noteSize == 16) longLane1[endMeasure, _X, _Y, sgnindx] = "2g";
-                                            else longLane1[endMeasure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                            for (int j = startMeasure; j <= endMeasure; j++) isUsedLane1[j, sgnindx] = true;
-                                        }
-                                        else
-                                        {
-                                            if (_Y >= maxBeatDevide) continue;
-                                            if (noteSize == 16) longLane2[endMeasure, _X, _Y, sgnindx] = "2g";
-                                            else longLane2[endMeasure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                            for (int j = startMeasure; j <= endMeasure; j++) isUsedLane2[j, sgnindx] = true;
-                                        }
-                                        break;
-                                    }
-                                }//*/
                                 break;//
                             default:
                                 break;
@@ -792,7 +766,7 @@ namespace NotesEditerforD
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
-                                    foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
+                                    foreach (ShortNote _note in sRoot.Scores[_measure].shortNotes)
                                     {
                                         _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
                                         _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -936,7 +910,7 @@ namespace NotesEditerforD
             for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
             for (measure = 0; measure <= lastScore; measure++)
             {
-                foreach (ShortNote note in form1.Scores2[measure].shortNotes)//レーンを設定
+                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
                     _Y = maxBeatDevide - (note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -957,7 +931,7 @@ namespace NotesEditerforD
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
-                                    foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
+                                    foreach (ShortNote _note in sRoot.Scores[_measure].shortNotes)
                                     {
                                         _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
                                         _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);
@@ -1026,7 +1000,7 @@ namespace NotesEditerforD
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
-                                    foreach (ShortNote _note in form1.Scores2[_measure].shortNotes)
+                                    foreach (ShortNote _note in sRoot.Scores[_measure].shortNotes)
                                     {
                                         _X = (_note.NotePosition.X - (leftMargin + 1)) / 10;
                                         _Y = maxBeatDevide - (_note.NotePosition.Y - 2) / (384 / maxBeatDevide);

@@ -9,7 +9,7 @@ namespace NotesEditerforD
 {
     public class ShortNote
     {
-        private MusicScore2 musicscore;
+        private MusicScore musicscore;
         private Point position, startPosition, endPosition;
         private string noteStyle, airDirection;
         private ShortNote prevNote, nextNote;
@@ -20,7 +20,7 @@ namespace NotesEditerforD
         private Bitmap noteImage;
         //*/
 
-        public ShortNote(MusicScore2 _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
+        public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
         {
             musicscore = _musicscore;
             position = _position;
@@ -38,7 +38,7 @@ namespace NotesEditerforD
             noteImage = setNoteImage();
         }
 
-        public ShortNote(MusicScore2 _musicscore, Point _position, string _noteStyle, decimal _value)
+        public ShortNote(MusicScore _musicscore, Point _position, string _noteStyle, decimal _value)
         {
             musicscore = _musicscore;
             position = _position;
