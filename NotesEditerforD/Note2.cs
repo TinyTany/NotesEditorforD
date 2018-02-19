@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace NotesEditerforD
 {
@@ -11,10 +12,11 @@ namespace NotesEditerforD
     {
         private MusicScore musicscore;
         private Point position, startPosition, endPosition;
+        private PosInfo pos = new PosInfo();
         private string noteStyle, airDirection;
         private ShortNote prevNote, nextNote;
         private int longNoteNumber, noteSize;
-        private Point[] destPoints;//{ul, ur, ll}
+        private Point[] destPoints = new Point[3];//{ul, ur, ll}
         private decimal specialValue;
         //*
         private Bitmap noteImage;
@@ -33,7 +35,7 @@ namespace NotesEditerforD
             //
             prevNote = null;
             nextNote = null;
-            destPoints = new Point[3];
+            //destPoints = new Point[3];
 
             noteImage = setNoteImage();
         }
@@ -45,8 +47,78 @@ namespace NotesEditerforD
             noteStyle = _noteStyle;
             specialValue = _value;
             noteSize = 16;
-            destPoints = new Point[3];
+            //destPoints = new Point[3];
             noteImage = setNoteImage();
+        }
+        //相対座標用テスト
+        /*
+        public ShortNote(MusicScore _musicscore, PosInfo _pos, int _noteSize, string _noteStyle, string _airDirection)//Airノーツ
+        {
+            musicscore = _musicscore;
+            pos = _pos;
+            noteSize = _noteSize;
+            noteStyle = _noteStyle;
+            airDirection = _airDirection;
+            longNoteNumber = -1;
+        }
+
+        public ShortNote(MusicScore _musicscore, PosInfo _pos, int _noteSize, string _noteStyle, int _longnotesNumber)//ロングノーツ
+        {
+            musicscore = _musicscore;
+            pos = _pos;
+            noteSize = _noteSize;
+            noteStyle = _noteStyle;
+            airDirection = "Center";
+            longNoteNumber = _longnotesNumber;
+        }
+
+        public ShortNote(MusicScore _musicscore, PosInfo _pos, int _noteSize, string _noteStyle)//普通のショートノーツ(Airでもない)
+        {
+            musicscore = _musicscore;
+            pos = _pos;
+            noteSize = _noteSize;
+            noteStyle = _noteStyle;
+            airDirection = "Center";
+            longNoteNumber = -1;
+        }
+        //*/
+
+        public void setRelativePosition()
+        {
+            pos.X = (position.X - MusicScore.LeftMargin) / 10;
+            pos.Beat = MusicScore.SelectedBeat;
+            int localY = 778 - position.Y - MusicScore.BottomMargin;
+            if (localY < 386)//2*n+1小節
+            {
+                pos.Measure = 2 * musicscore.Index + 1;
+                pos.BeatNumber = localY / (384 / pos.Beat);
+            }
+            else//2*(n+1)小節
+            {
+                localY -= 386;
+                pos.Measure = 2 * musicscore.Index + 2;
+                pos.BeatNumber = localY / (384 / pos.Beat);
+            }
+            int beatGCD = GCD(pos.Beat, pos.BeatNumber);
+            pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;
+            //MessageBox.Show(pos.X + "\n" + pos.Measure + "(" + pos.BeatNumber + "/" + pos.Beat + ")");
+        }
+
+        private int GCD(int a, int b)
+        {
+            if (a == 0 || b == 0) return 1;
+            if (a < b)
+            {
+                int tmp = a; a = b; b = tmp;
+            }
+
+            int r = a % b;
+            while (r != 0)
+            {
+                a = b; b = r; r = a % b;
+            }
+
+            return b;
         }
 
         ///*
@@ -90,6 +162,12 @@ namespace NotesEditerforD
         {
             get { return this.position; }
             set { this.position = value; }
+        }
+
+        public PosInfo LocalPosition
+        {
+            get { return pos; }
+            set { pos = value; }
         }
 
         public Point StartPosition

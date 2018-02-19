@@ -276,6 +276,92 @@ namespace NotesEditerforD
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
 
+                int _beatLCM1 = beatLCM(sRoot.Scores[measure].shortNotes, 0);//譜面下
+                int _beatLCM2 = beatLCM(sRoot.Scores[measure].shortNotes, 1);//譜面上
+                lane1 = new string[16, _beatLCM1];
+                lane2 = new string[16, _beatLCM2];
+
+                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
+                {
+                    _X = note.LocalPosition.X;
+                    
+                    noteSize = note.NoteSize;
+                    if (note.LocalPosition.Measure % 2 != 0)//odd
+                    {
+                        _Y = note.LocalPosition.BeatNumber * _beatLCM1 / note.LocalPosition.Beat;
+                        switch (note.NoteStyle)
+                        {
+                            case "Tap":
+                                if (noteSize == 16) lane1[_X, _Y] = "1g";
+                                else lane1[_X, _Y] = "1" + noteSize.ToString("x");
+                                break;
+                            case "ExTap":
+                                if (noteSize == 16) lane1[_X, _Y] = "2g";
+                                else lane1[_X, _Y] = "2" + noteSize.ToString("x");
+                                break;
+                            case "Flick":
+                                if (noteSize == 16) lane1[_X, _Y] = "3g";
+                                else lane1[_X, _Y] = "3" + noteSize.ToString("x");
+                                break;
+                            case "HellTap":
+                                if (noteSize == 16) lane1[_X, _Y] = "4g";
+                                else lane1[_X, _Y] = "4" + noteSize.ToString("x");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        if (note.LocalPosition.Beat == note.LocalPosition.BeatNumber) continue;
+                        _Y = note.LocalPosition.BeatNumber * _beatLCM2 / note.LocalPosition.Beat;
+                        switch (note.NoteStyle)
+                        {
+                            case "Tap":
+                                if (noteSize == 16) lane2[_X, _Y] = "1g";
+                                else lane2[_X, _Y] = "1" + noteSize.ToString("x");
+                                break;
+                            case "ExTap":
+                                if (noteSize == 16) lane2[_X, _Y] = "2g";
+                                else lane2[_X, _Y] = "2" + noteSize.ToString("x");
+                                break;
+                            case "Flick":
+                                if (noteSize == 16) lane2[_X, _Y] = "3g";
+                                else lane2[_X, _Y] = "3" + noteSize.ToString("x");
+                                break;
+                            case "HellTap":
+                                if (noteSize == 16) lane2[_X, _Y] = "4g";
+                                else lane2[_X, _Y] = "4" + noteSize.ToString("x");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                for (int i = 0; i < 16; i++)//レーンを出力//odd lane
+                {
+                    if (isModified(lane1, i))
+                    {
+                        if (checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
+                        else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
+                        for (int j = 0; j < _beatLCM1; j++) { sw.Write(lane1[i, j]); }
+                        sw.Write(Environment.NewLine);
+                    }
+                }
+                for (int i = 0; i < 16; i++)//even lane
+                {
+                    if (isModified(lane2, i))
+                    {
+                        if (checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
+                        else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
+                        for (int j = 0; j < _beatLCM2; j++) { sw.Write(lane2[i, j]); }
+                        sw.Write(Environment.NewLine);
+                    }
+                }
+                /*
+                for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
+                for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
+
                 foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
@@ -351,7 +437,7 @@ namespace NotesEditerforD
                         for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane2[i, j]); }
                         sw.Write(Environment.NewLine);
                     }
-                }
+                }//*/
                 ////////////////////////////////////////////////////////////↓Air
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
@@ -1086,6 +1172,68 @@ namespace NotesEditerforD
             }
             //
             sw.Close();
+        }
+
+        private int beatLCM(List<ShortNote> _notes, int sign)
+        {
+            List<ShortNote> notes = new List<ShortNote>();
+            foreach(ShortNote note in _notes)
+            {
+                if(sign == 0)
+                {
+                    if(note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine" && 778 - note.NotePosition.Y - MusicScore.BottomMargin < 386)//譜面下側
+                    {
+                        notes.Add(note);
+                    }
+                }
+                else
+                {
+                    if (note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine" && 778 - note.NotePosition.Y - MusicScore.BottomMargin >= 386 && note.NotePosition.Y != 2)//譜面上側
+                    {
+                        notes.Add(note);
+                    }
+                }
+            }
+            return LCM(notes);
+        }
+
+        private int LCM(List<ShortNote> _notes)
+        {
+            int listSize = _notes.Count;
+            if (listSize == 1) return _notes[0].LocalPosition.BeatNumber == 0 ? 1 : _notes[0].LocalPosition.Beat;
+            if (listSize == 2)
+            {
+                if (_notes[0].LocalPosition.BeatNumber == 0 && _notes[1].LocalPosition.BeatNumber == 0) return 1;
+                else if (_notes[0].LocalPosition.BeatNumber == 0 && _notes[1].LocalPosition.BeatNumber != 0) return _notes[1].LocalPosition.Beat;
+                else if (_notes[0].LocalPosition.BeatNumber != 0 && _notes[1].LocalPosition.BeatNumber == 0) return _notes[0].LocalPosition.Beat;
+                return _notes[0].LocalPosition.Beat * _notes[1].LocalPosition.Beat / GCD(_notes[0].LocalPosition.Beat, _notes[1].LocalPosition.Beat);
+            }
+            else
+            {
+                return LCM2(LCM(_notes.Take(listSize/2).ToList<ShortNote>()), LCM(_notes.Skip(listSize/2).ToList<ShortNote>()));
+            }
+        }
+
+        private int LCM2(int a, int b)
+        {
+            return a * b / GCD(a, b);
+        }
+
+        private int GCD(int a, int b)
+        {
+            if (a == 0 || b == 0) return 1;
+            if (a < b)
+            {
+                int tmp = a; a = b; b = tmp;
+            }
+
+            int r = a % b;
+            while(r != 0)
+            {
+                a = b; b = r; r = a % b;
+            }
+
+            return b;
         }
 
         private bool isModified(string[,] lane, int i)

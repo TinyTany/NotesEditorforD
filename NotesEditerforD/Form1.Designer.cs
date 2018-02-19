@@ -31,18 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanelNotesButton = new System.Windows.Forms.FlowLayoutPanel();
-            this.Tap = new NotesEditerforD.NotesButton();
-            this.ExTap = new NotesEditerforD.NotesButton();
-            this.Flick = new NotesEditerforD.NotesButton();
-            this.HellTap = new NotesEditerforD.NotesButton();
-            this.Hold = new NotesEditerforD.NotesButton();
-            this.Slide = new NotesEditerforD.NotesButton();
-            this.SlideCurve = new NotesEditerforD.NotesButton();
-            this.AirUp = new NotesEditerforD.NotesButton();
-            this.AirDown = new NotesEditerforD.NotesButton();
-            this.AirLine = new NotesEditerforD.NotesButton();
-            this.BPMButton = new NotesEditerforD.NotesButton();
-            this.Speed = new NotesEditerforD.NotesButton();
             this.flowLayoutPanelEditStatus = new System.Windows.Forms.FlowLayoutPanel();
             this.radioAdd = new System.Windows.Forms.RadioButton();
             this.radioEdit = new System.Windows.Forms.RadioButton();
@@ -65,6 +53,18 @@
             this.BPMupdown = new System.Windows.Forms.NumericUpDown();
             this.labelBPM = new System.Windows.Forms.Label();
             this.checkSlideRelay = new System.Windows.Forms.CheckBox();
+            this.Tap = new NotesEditerforD.NotesButton();
+            this.ExTap = new NotesEditerforD.NotesButton();
+            this.Flick = new NotesEditerforD.NotesButton();
+            this.HellTap = new NotesEditerforD.NotesButton();
+            this.Hold = new NotesEditerforD.NotesButton();
+            this.Slide = new NotesEditerforD.NotesButton();
+            this.SlideCurve = new NotesEditerforD.NotesButton();
+            this.AirUp = new NotesEditerforD.NotesButton();
+            this.AirDown = new NotesEditerforD.NotesButton();
+            this.AirLine = new NotesEditerforD.NotesButton();
+            this.BPMButton = new NotesEditerforD.NotesButton();
+            this.Speed = new NotesEditerforD.NotesButton();
             this.flowLayoutPanelNotesButton.SuspendLayout();
             this.flowLayoutPanelEditStatus.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -103,6 +103,252 @@
             this.flowLayoutPanelNotesButton.Size = new System.Drawing.Size(254, 848);
             this.flowLayoutPanelNotesButton.TabIndex = 2;
             this.flowLayoutPanelNotesButton.WrapContents = false;
+            // 
+            // flowLayoutPanelEditStatus
+            // 
+            this.flowLayoutPanelEditStatus.Controls.Add(this.radioAdd);
+            this.flowLayoutPanelEditStatus.Controls.Add(this.radioEdit);
+            this.flowLayoutPanelEditStatus.Controls.Add(this.radioDelete);
+            this.flowLayoutPanelEditStatus.Location = new System.Drawing.Point(269, 26);
+            this.flowLayoutPanelEditStatus.Name = "flowLayoutPanelEditStatus";
+            this.flowLayoutPanelEditStatus.Size = new System.Drawing.Size(168, 22);
+            this.flowLayoutPanelEditStatus.TabIndex = 4;
+            // 
+            // radioAdd
+            // 
+            this.radioAdd.AutoSize = true;
+            this.radioAdd.Checked = true;
+            this.radioAdd.Location = new System.Drawing.Point(3, 3);
+            this.radioAdd.Name = "radioAdd";
+            this.radioAdd.Size = new System.Drawing.Size(43, 16);
+            this.radioAdd.TabIndex = 0;
+            this.radioAdd.TabStop = true;
+            this.radioAdd.Text = "Add";
+            this.radioAdd.UseVisualStyleBackColor = true;
+            this.radioAdd.Click += new System.EventHandler(this.setEditStatus);
+            // 
+            // radioEdit
+            // 
+            this.radioEdit.AutoSize = true;
+            this.radioEdit.Location = new System.Drawing.Point(52, 3);
+            this.radioEdit.Name = "radioEdit";
+            this.radioEdit.Size = new System.Drawing.Size(43, 16);
+            this.radioEdit.TabIndex = 1;
+            this.radioEdit.Text = "Edit";
+            this.radioEdit.UseVisualStyleBackColor = true;
+            this.radioEdit.Click += new System.EventHandler(this.setEditStatus);
+            // 
+            // radioDelete
+            // 
+            this.radioDelete.AutoSize = true;
+            this.radioDelete.Location = new System.Drawing.Point(101, 3);
+            this.radioDelete.Name = "radioDelete";
+            this.radioDelete.Size = new System.Drawing.Size(56, 16);
+            this.radioDelete.TabIndex = 2;
+            this.radioDelete.Text = "Delete";
+            this.radioDelete.UseVisualStyleBackColor = true;
+            this.radioDelete.Click += new System.EventHandler(this.setEditStatus);
+            // 
+            // labelBeat
+            // 
+            this.labelBeat.AutoSize = true;
+            this.labelBeat.Location = new System.Drawing.Point(587, 31);
+            this.labelBeat.Name = "labelBeat";
+            this.labelBeat.Size = new System.Drawing.Size(29, 12);
+            this.labelBeat.TabIndex = 7;
+            this.labelBeat.Text = "Beat";
+            // 
+            // comboBoxBeat
+            // 
+            this.comboBoxBeat.FormattingEnabled = true;
+            this.comboBoxBeat.Items.AddRange(new object[] {
+            "4",
+            "8",
+            "9",
+            "10",
+            "12",
+            "14",
+            "15",
+            "16",
+            "24",
+            "32",
+            "48",
+            "64",
+            "96",
+            "128",
+            "192"});
+            this.comboBoxBeat.Location = new System.Drawing.Point(622, 26);
+            this.comboBoxBeat.Name = "comboBoxBeat";
+            this.comboBoxBeat.Size = new System.Drawing.Size(46, 20);
+            this.comboBoxBeat.TabIndex = 8;
+            this.comboBoxBeat.Text = "8";
+            this.comboBoxBeat.SelectedIndexChanged += new System.EventHandler(this.comboBoxBeat_SelectedIndexChanged);
+            // 
+            // flowLayoutPanelMusicScore
+            // 
+            this.flowLayoutPanelMusicScore.AutoScroll = true;
+            this.flowLayoutPanelMusicScore.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.flowLayoutPanelMusicScore.Location = new System.Drawing.Point(269, 51);
+            this.flowLayoutPanelMusicScore.Name = "flowLayoutPanelMusicScore";
+            this.flowLayoutPanelMusicScore.Size = new System.Drawing.Size(1103, 823);
+            this.flowLayoutPanelMusicScore.TabIndex = 9;
+            this.flowLayoutPanelMusicScore.Visible = false;
+            this.flowLayoutPanelMusicScore.WrapContents = false;
+            // 
+            // labelGrid
+            // 
+            this.labelGrid.AutoSize = true;
+            this.labelGrid.Location = new System.Drawing.Point(683, 31);
+            this.labelGrid.Name = "labelGrid";
+            this.labelGrid.Size = new System.Drawing.Size(26, 12);
+            this.labelGrid.TabIndex = 10;
+            this.labelGrid.Text = "Grid";
+            // 
+            // comboBoxGrid
+            // 
+            this.comboBoxGrid.FormattingEnabled = true;
+            this.comboBoxGrid.Items.AddRange(new object[] {
+            "4",
+            "8",
+            "16"});
+            this.comboBoxGrid.Location = new System.Drawing.Point(715, 26);
+            this.comboBoxGrid.Name = "comboBoxGrid";
+            this.comboBoxGrid.Size = new System.Drawing.Size(46, 20);
+            this.comboBoxGrid.TabIndex = 11;
+            this.comboBoxGrid.Text = "8";
+            this.comboBoxGrid.SelectedIndexChanged += new System.EventHandler(this.comboBoxGrid_SelectedIndexChanged);
+            // 
+            // labelTotalNotes
+            // 
+            this.labelTotalNotes.AutoSize = true;
+            this.labelTotalNotes.Location = new System.Drawing.Point(782, 31);
+            this.labelTotalNotes.Name = "labelTotalNotes";
+            this.labelTotalNotes.Size = new System.Drawing.Size(79, 12);
+            this.labelTotalNotes.TabIndex = 12;
+            this.labelTotalNotes.Text = "Total notes : 0";
+            // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1384, 24);
+            this.menuStrip1.TabIndex = 13;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileMenuItem
+            // 
+            this.fileMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newMenuItem,
+            this.openMenuItem,
+            this.saveAsMenuItem,
+            this.saveMenuItem,
+            this.exportMenuItem,
+            this.quitMenuItem});
+            this.fileMenuItem.Name = "fileMenuItem";
+            this.fileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
+            this.fileMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.fileMenuItem.Text = "ファイル(F)";
+            this.fileMenuItem.Click += new System.EventHandler(this.fileMenuItem_Click);
+            // 
+            // newMenuItem
+            // 
+            this.newMenuItem.Name = "newMenuItem";
+            this.newMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
+            this.newMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.newMenuItem.Text = "新規作成(N)";
+            // 
+            // openMenuItem
+            // 
+            this.openMenuItem.Name = "openMenuItem";
+            this.openMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
+            this.openMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.openMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.openMenuItem.Text = "開く(O)...";
+            // 
+            // saveAsMenuItem
+            // 
+            this.saveAsMenuItem.Name = "saveAsMenuItem";
+            this.saveAsMenuItem.ShortcutKeyDisplayString = "";
+            this.saveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.S)));
+            this.saveAsMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.saveAsMenuItem.Text = "名前をつけて保存(A)...";
+            // 
+            // saveMenuItem
+            // 
+            this.saveMenuItem.Name = "saveMenuItem";
+            this.saveMenuItem.ShortcutKeyDisplayString = "Ctrl+S";
+            this.saveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.saveMenuItem.Text = "上書き保存(S)";
+            // 
+            // exportMenuItem
+            // 
+            this.exportMenuItem.Name = "exportMenuItem";
+            this.exportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.exportMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.exportMenuItem.Text = "エクスポート(X)...";
+            // 
+            // quitMenuItem
+            // 
+            this.quitMenuItem.Name = "quitMenuItem";
+            this.quitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.quitMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.quitMenuItem.Text = "終了(Q)";
+            // 
+            // BPMupdown
+            // 
+            this.BPMupdown.DecimalPlaces = 1;
+            this.BPMupdown.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.BPMupdown.Location = new System.Drawing.Point(503, 27);
+            this.BPMupdown.Maximum = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.BPMupdown.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.BPMupdown.Name = "BPMupdown";
+            this.BPMupdown.Size = new System.Drawing.Size(66, 19);
+            this.BPMupdown.TabIndex = 14;
+            this.BPMupdown.Value = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            this.BPMupdown.ValueChanged += new System.EventHandler(this.BPMupdown_ValueChanged);
+            // 
+            // labelBPM
+            // 
+            this.labelBPM.AutoSize = true;
+            this.labelBPM.Location = new System.Drawing.Point(443, 31);
+            this.labelBPM.Name = "labelBPM";
+            this.labelBPM.Size = new System.Drawing.Size(54, 12);
+            this.labelBPM.TabIndex = 15;
+            this.labelBPM.Text = "StartBPM";
+            // 
+            // checkSlideRelay
+            // 
+            this.checkSlideRelay.AutoSize = true;
+            this.checkSlideRelay.Location = new System.Drawing.Point(875, 29);
+            this.checkSlideRelay.Margin = new System.Windows.Forms.Padding(2);
+            this.checkSlideRelay.Name = "checkSlideRelay";
+            this.checkSlideRelay.Size = new System.Drawing.Size(158, 16);
+            this.checkSlideRelay.TabIndex = 16;
+            this.checkSlideRelay.Text = "Slide中継点を不可視にする";
+            this.checkSlideRelay.UseVisualStyleBackColor = true;
+            this.checkSlideRelay.Click += new System.EventHandler(this.checkSlideRelay_Click);
             // 
             // Tap
             // 
@@ -511,248 +757,6 @@
             this.Speed.TabIndex = 10;
             this.Speed.TrackBar_Size = 4;
             this.Speed.TrackBarEnabled = false;
-            // 
-            // flowLayoutPanelEditStatus
-            // 
-            this.flowLayoutPanelEditStatus.Controls.Add(this.radioAdd);
-            this.flowLayoutPanelEditStatus.Controls.Add(this.radioEdit);
-            this.flowLayoutPanelEditStatus.Controls.Add(this.radioDelete);
-            this.flowLayoutPanelEditStatus.Location = new System.Drawing.Point(269, 26);
-            this.flowLayoutPanelEditStatus.Name = "flowLayoutPanelEditStatus";
-            this.flowLayoutPanelEditStatus.Size = new System.Drawing.Size(168, 22);
-            this.flowLayoutPanelEditStatus.TabIndex = 4;
-            // 
-            // radioAdd
-            // 
-            this.radioAdd.AutoSize = true;
-            this.radioAdd.Checked = true;
-            this.radioAdd.Location = new System.Drawing.Point(3, 3);
-            this.radioAdd.Name = "radioAdd";
-            this.radioAdd.Size = new System.Drawing.Size(43, 16);
-            this.radioAdd.TabIndex = 0;
-            this.radioAdd.TabStop = true;
-            this.radioAdd.Text = "Add";
-            this.radioAdd.UseVisualStyleBackColor = true;
-            this.radioAdd.Click += new System.EventHandler(this.setEditStatus);
-            // 
-            // radioEdit
-            // 
-            this.radioEdit.AutoSize = true;
-            this.radioEdit.Location = new System.Drawing.Point(52, 3);
-            this.radioEdit.Name = "radioEdit";
-            this.radioEdit.Size = new System.Drawing.Size(43, 16);
-            this.radioEdit.TabIndex = 1;
-            this.radioEdit.Text = "Edit";
-            this.radioEdit.UseVisualStyleBackColor = true;
-            this.radioEdit.Click += new System.EventHandler(this.setEditStatus);
-            // 
-            // radioDelete
-            // 
-            this.radioDelete.AutoSize = true;
-            this.radioDelete.Location = new System.Drawing.Point(101, 3);
-            this.radioDelete.Name = "radioDelete";
-            this.radioDelete.Size = new System.Drawing.Size(56, 16);
-            this.radioDelete.TabIndex = 2;
-            this.radioDelete.Text = "Delete";
-            this.radioDelete.UseVisualStyleBackColor = true;
-            this.radioDelete.Click += new System.EventHandler(this.setEditStatus);
-            // 
-            // labelBeat
-            // 
-            this.labelBeat.AutoSize = true;
-            this.labelBeat.Location = new System.Drawing.Point(587, 31);
-            this.labelBeat.Name = "labelBeat";
-            this.labelBeat.Size = new System.Drawing.Size(29, 12);
-            this.labelBeat.TabIndex = 7;
-            this.labelBeat.Text = "Beat";
-            // 
-            // comboBoxBeat
-            // 
-            this.comboBoxBeat.FormattingEnabled = true;
-            this.comboBoxBeat.Items.AddRange(new object[] {
-            "4",
-            "8",
-            "12",
-            "16",
-            "24",
-            "32",
-            "48",
-            "64",
-            "96",
-            "128",
-            "192"});
-            this.comboBoxBeat.Location = new System.Drawing.Point(622, 26);
-            this.comboBoxBeat.Name = "comboBoxBeat";
-            this.comboBoxBeat.Size = new System.Drawing.Size(46, 20);
-            this.comboBoxBeat.TabIndex = 8;
-            this.comboBoxBeat.Text = "8";
-            this.comboBoxBeat.SelectedIndexChanged += new System.EventHandler(this.comboBoxBeat_SelectedIndexChanged);
-            // 
-            // flowLayoutPanelMusicScore
-            // 
-            this.flowLayoutPanelMusicScore.AutoScroll = true;
-            this.flowLayoutPanelMusicScore.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.flowLayoutPanelMusicScore.Location = new System.Drawing.Point(269, 51);
-            this.flowLayoutPanelMusicScore.Name = "flowLayoutPanelMusicScore";
-            this.flowLayoutPanelMusicScore.Size = new System.Drawing.Size(1103, 823);
-            this.flowLayoutPanelMusicScore.TabIndex = 9;
-            this.flowLayoutPanelMusicScore.Visible = false;
-            this.flowLayoutPanelMusicScore.WrapContents = false;
-            // 
-            // labelGrid
-            // 
-            this.labelGrid.AutoSize = true;
-            this.labelGrid.Location = new System.Drawing.Point(683, 31);
-            this.labelGrid.Name = "labelGrid";
-            this.labelGrid.Size = new System.Drawing.Size(26, 12);
-            this.labelGrid.TabIndex = 10;
-            this.labelGrid.Text = "Grid";
-            // 
-            // comboBoxGrid
-            // 
-            this.comboBoxGrid.FormattingEnabled = true;
-            this.comboBoxGrid.Items.AddRange(new object[] {
-            "4",
-            "8",
-            "16"});
-            this.comboBoxGrid.Location = new System.Drawing.Point(715, 26);
-            this.comboBoxGrid.Name = "comboBoxGrid";
-            this.comboBoxGrid.Size = new System.Drawing.Size(46, 20);
-            this.comboBoxGrid.TabIndex = 11;
-            this.comboBoxGrid.Text = "8";
-            this.comboBoxGrid.SelectedIndexChanged += new System.EventHandler(this.comboBoxGrid_SelectedIndexChanged);
-            // 
-            // labelTotalNotes
-            // 
-            this.labelTotalNotes.AutoSize = true;
-            this.labelTotalNotes.Location = new System.Drawing.Point(782, 31);
-            this.labelTotalNotes.Name = "labelTotalNotes";
-            this.labelTotalNotes.Size = new System.Drawing.Size(79, 12);
-            this.labelTotalNotes.TabIndex = 12;
-            this.labelTotalNotes.Text = "Total notes : 0";
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1384, 24);
-            this.menuStrip1.TabIndex = 13;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fileMenuItem
-            // 
-            this.fileMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newMenuItem,
-            this.openMenuItem,
-            this.saveAsMenuItem,
-            this.saveMenuItem,
-            this.exportMenuItem,
-            this.quitMenuItem});
-            this.fileMenuItem.Name = "fileMenuItem";
-            this.fileMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F)));
-            this.fileMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.fileMenuItem.Text = "ファイル(F)";
-            this.fileMenuItem.Click += new System.EventHandler(this.fileMenuItem_Click);
-            // 
-            // newMenuItem
-            // 
-            this.newMenuItem.Name = "newMenuItem";
-            this.newMenuItem.ShortcutKeyDisplayString = "Ctrl+N";
-            this.newMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newMenuItem.Size = new System.Drawing.Size(254, 22);
-            this.newMenuItem.Text = "新規作成(N)";
-            // 
-            // openMenuItem
-            // 
-            this.openMenuItem.Name = "openMenuItem";
-            this.openMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
-            this.openMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openMenuItem.Size = new System.Drawing.Size(254, 22);
-            this.openMenuItem.Text = "開く(O)...";
-            // 
-            // saveAsMenuItem
-            // 
-            this.saveAsMenuItem.Name = "saveAsMenuItem";
-            this.saveAsMenuItem.ShortcutKeyDisplayString = "";
-            this.saveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-            this.saveAsMenuItem.Size = new System.Drawing.Size(254, 22);
-            this.saveAsMenuItem.Text = "名前をつけて保存(A)...";
-            // 
-            // saveMenuItem
-            // 
-            this.saveMenuItem.Name = "saveMenuItem";
-            this.saveMenuItem.ShortcutKeyDisplayString = "Ctrl+S";
-            this.saveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveMenuItem.Size = new System.Drawing.Size(254, 22);
-            this.saveMenuItem.Text = "上書き保存(S)";
-            // 
-            // exportMenuItem
-            // 
-            this.exportMenuItem.Name = "exportMenuItem";
-            this.exportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.exportMenuItem.Size = new System.Drawing.Size(254, 22);
-            this.exportMenuItem.Text = "エクスポート(X)...";
-            // 
-            // quitMenuItem
-            // 
-            this.quitMenuItem.Name = "quitMenuItem";
-            this.quitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.quitMenuItem.Size = new System.Drawing.Size(254, 22);
-            this.quitMenuItem.Text = "終了(Q)";
-            // 
-            // BPMupdown
-            // 
-            this.BPMupdown.DecimalPlaces = 1;
-            this.BPMupdown.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.BPMupdown.Location = new System.Drawing.Point(503, 27);
-            this.BPMupdown.Maximum = new decimal(new int[] {
-            300,
-            0,
-            0,
-            0});
-            this.BPMupdown.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.BPMupdown.Name = "BPMupdown";
-            this.BPMupdown.Size = new System.Drawing.Size(66, 19);
-            this.BPMupdown.TabIndex = 14;
-            this.BPMupdown.Value = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
-            this.BPMupdown.ValueChanged += new System.EventHandler(this.BPMupdown_ValueChanged);
-            // 
-            // labelBPM
-            // 
-            this.labelBPM.AutoSize = true;
-            this.labelBPM.Location = new System.Drawing.Point(443, 31);
-            this.labelBPM.Name = "labelBPM";
-            this.labelBPM.Size = new System.Drawing.Size(54, 12);
-            this.labelBPM.TabIndex = 15;
-            this.labelBPM.Text = "StartBPM";
-            // 
-            // checkSlideRelay
-            // 
-            this.checkSlideRelay.AutoSize = true;
-            this.checkSlideRelay.Location = new System.Drawing.Point(875, 29);
-            this.checkSlideRelay.Margin = new System.Windows.Forms.Padding(2);
-            this.checkSlideRelay.Name = "checkSlideRelay";
-            this.checkSlideRelay.Size = new System.Drawing.Size(158, 16);
-            this.checkSlideRelay.TabIndex = 16;
-            this.checkSlideRelay.Text = "Slide中継点を不可視にする";
-            this.checkSlideRelay.UseVisualStyleBackColor = true;
-            this.checkSlideRelay.Click += new System.EventHandler(this.checkSlideRelay_Click);
             // 
             // Form1
             // 

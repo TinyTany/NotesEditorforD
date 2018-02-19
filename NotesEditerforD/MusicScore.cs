@@ -340,6 +340,7 @@ namespace NotesEditerforD
 
                         if (shortNotes[i].NoteStyle == "SlideLine" && shortNotes[i].NoteSize == selectedNoteSize && isMouseCollision(shortNotes[i].DestPoints, e.Location))//間に節を追加
                         {
+                            if ((Control.ModifierKeys & Keys.Shift) != Keys.Shift) break;
                             deleteFlag = true;//deleteNote(startNote);
                             previewVisible = false;
                             ShortNote next = shortNotes[i];
@@ -385,6 +386,7 @@ namespace NotesEditerforD
                         }
                     }
                 }
+                shortNote.setRelativePosition();
                 if(!deleteFlag) addNote(shortNote);
                 update();
             }
@@ -1104,7 +1106,7 @@ namespace NotesEditerforD
             else noteX = ((p.X - leftMargin) / (10 * (16 / selectedGrid))) * (10 * (16 / selectedGrid)) + leftMargin;
             if (p.Y < topMargin) noteY = topMargin;
             else if (p.Y > 768 + topMargin) noteY = 768 + topMargin;
-            else noteY = 768 + topMargin + bottomMargin - ((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (2 * selectedBeat)) - topMargin;
+            else noteY = 768 + topMargin + bottomMargin - (int)(((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (double)(2 * selectedBeat))) - topMargin;
             noteX += 1; noteY += -3;//描写の都合上の位置調整
 
             return new Point(noteX, noteY);
@@ -1118,7 +1120,7 @@ namespace NotesEditerforD
             else noteX = ((p.X - leftMargin) / (10 * (16 / selectedGrid))) * (10 * (16 / selectedGrid)) + leftMargin;
             if (p.Y < topMargin) noteY = topMargin;
             else if (p.Y > 768 + topMargin) noteY = 768 + topMargin;
-            else noteY = 768 + topMargin + bottomMargin - ((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (2 * selectedBeat)) - topMargin;
+            else noteY = 768 + topMargin + bottomMargin - (int)(((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (double)(2 * selectedBeat))) - topMargin;
             noteX += 1; noteY += -3;//描写の都合上の位置調整
 
             return new Point(noteX, noteY);

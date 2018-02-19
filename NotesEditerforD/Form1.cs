@@ -127,7 +127,7 @@ namespace NotesEditerforD
             sfd.FileName = fileName;
             sfd.DefaultExt = ".dyz";
             sfd.Filter = "dyzファイル(NotesEditorforD) (.dyz)|*.dyz";
-            /*
+            //*
             sfd.DefaultExt = ".dyms";
             sfd.Filter = "dymsファイル(NotesEditorforD) (.dyms)|*.dyms";
             //*/
@@ -154,7 +154,7 @@ namespace NotesEditerforD
 
         private void saveScores(string path)
         {
-            serialize(path); return;
+            //serialize(path); return;
             int indx = 0;
             System.IO.StreamWriter sw = new System.IO.StreamWriter(path);
             sw.WriteLine("dymsVersion:" + dymsVersion);
