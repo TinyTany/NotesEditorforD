@@ -273,13 +273,12 @@ namespace NotesEditerforD
             for (measure = 0; measure <= lastScore; measure++)
             {
                 ////////////////////////////////////////////////↓Tap, ExTap, Flick, HellTap
-                for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
-                for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
-
                 int _beatLCM1 = beatLCM(sRoot.Scores[measure].shortNotes, 0);//譜面下
                 int _beatLCM2 = beatLCM(sRoot.Scores[measure].shortNotes, 1);//譜面上
                 lane1 = new string[16, _beatLCM1];
                 lane2 = new string[16, _beatLCM2];
+                for (int i = 0; i < 16; i++) for (int j = 0; j < _beatLCM1; j++) lane1[i, j] = "00";//initialize lane
+                for (int i = 0; i < 16; i++) for (int j = 0; j < _beatLCM2; j++) lane2[i, j] = "00";//initialize lane
 
                 foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
@@ -359,85 +358,6 @@ namespace NotesEditerforD
                     }
                 }
                 /*
-                for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
-                for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
-
-                foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
-                {
-                    _X = (note.NotePosition.X - (leftMargin + 1)) / 10;
-                    _Y = maxBeatDevide - (note.NotePosition.Y - 2) / (384 / maxBeatDevide);
-                    noteSize = note.NoteSize;
-                    if (_Y < 0)
-                    {
-                        _Y += maxBeatDevide;
-                        switch (note.NoteStyle)
-                        {
-                            case "Tap":
-                                if (noteSize == 16) lane1[_X, _Y] = "1g";
-                                else lane1[_X, _Y] = "1" + noteSize.ToString("x");
-                                break;
-                            case "ExTap":
-                                if (noteSize == 16) lane1[_X, _Y] = "2g";
-                                else lane1[_X, _Y] = "2" + noteSize.ToString("x");
-                                break;
-                            case "Flick":
-                                if (noteSize == 16) lane1[_X, _Y] = "3g";
-                                else lane1[_X, _Y] = "3" + noteSize.ToString("x");
-                                break;
-                            case "HellTap":
-                                if (noteSize == 16) lane1[_X, _Y] = "4g";
-                                else lane1[_X, _Y] = "4" + noteSize.ToString("x");
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (_Y >= maxBeatDevide) continue;
-                        switch (note.NoteStyle)
-                        {
-                            case "Tap":
-                                if (noteSize == 16) lane2[_X, _Y] = "1g";
-                                else lane2[_X, _Y] = "1" + noteSize.ToString("x");
-                                break;
-                            case "ExTap":
-                                if (noteSize == 16) lane2[_X, _Y] = "2g";
-                                else lane2[_X, _Y] = "2" + noteSize.ToString("x");
-                                break;
-                            case "Flick":
-                                if (noteSize == 16) lane2[_X, _Y] = "3g";
-                                else lane2[_X, _Y] = "3" + noteSize.ToString("x");
-                                break;
-                            case "HellTap":
-                                if (noteSize == 16) lane2[_X, _Y] = "4g";
-                                else lane2[_X, _Y] = "4" + noteSize.ToString("x");
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-                for (int i = 0; i < 16; i++)//レーンを出力//odd lane
-                {
-                    if (isModified(lane1, i))
-                    {
-                        if(checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
-                        else sw.Write("#" + (2 * measure).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
-                        for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane1[i, j]); }
-                        sw.Write(Environment.NewLine);
-                    }
-                }
-                for (int i = 0; i < 16; i++)//even lane
-                {
-                    if (isModified(lane2, i))
-                    {
-                        if (checkBoxWhile.Checked) sw.Write("#" + (2 * (measure + 1)).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
-                        else sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "1" + i.ToString("X") + ":");
-                        for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane2[i, j]); }
-                        sw.Write(Environment.NewLine);
-                    }
-                }//*/
                 ////////////////////////////////////////////////////////////↓Air
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane1[i, j] = "00";//initialize lane
                 for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) lane2[i, j] = "00";//initialize lane
@@ -562,7 +482,7 @@ namespace NotesEditerforD
                         for (int j = 0; j < maxBeatDevide; j++) { sw.Write(lane2[i, j]); }
                         sw.Write(Environment.NewLine);
                     }
-                }
+                }//*/
             }
             /////////////////////////////////////////////////↓Hold               
             for (measure = 0; measure <= lastScore; measure++)
@@ -1238,7 +1158,7 @@ namespace NotesEditerforD
 
         private bool isModified(string[,] lane, int i)
         {
-            for (int j = 0; j < maxBeatDevide; j++) if (lane[i,j] != "00") return true;
+            for (int j = 0; j < lane.GetLength(1); j++) if (lane[i,j] != "00") return true;
             return false;
         }
 
