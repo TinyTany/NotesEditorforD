@@ -152,6 +152,7 @@ namespace NotesEditerforD
                 if(dymsVersion == "0.5")
                 {
                     shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                    //shortNote.setRelativePosition();
                     shortNotes.Add(shortNote);
                     return;
                 }
@@ -180,28 +181,8 @@ namespace NotesEditerforD
                 if (noteStyle == "AirUp" || noteStyle == "AirDown") notePosition.Y += 32;
             }
             shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+            //shortNote.setRelativePosition();
             addNote(shortNote);
-            /*
-            if(dymsVersion != "0.5" && shortNote.NoteStyle == "SlideLine")
-            {
-                foreach(ShortNote note in shortNotes)
-                {
-                    if(note.LongNoteNumber == shortNote.LongNoteNumber && note.NotePosition == shortNote.StartPosition)
-                    {
-                        if(note.NoteStyle == "SlideEnd")
-                        {
-                            note.NoteStyle = "SlideRelay";
-                        }
-                        else if(note.NoteStyle == "Slide" || note.NoteStyle == "SlideTap")
-                        {
-                            
-                        }
-                        
-                        break;
-                    }
-                }
-            }
-            //*/
         }
 
         public void setSpecialNote(string[] _noteData)
@@ -213,6 +194,7 @@ namespace NotesEditerforD
             noteStyle = _noteData[0];
             specialValue = decimal.Parse(_noteData[3]);
             ShortNote shortNote = new ShortNote(this, notePosition, noteStyle, specialValue);
+            //shortNote.setRelativePosition();
             specialNotes.Add(shortNote);
         }
 
@@ -245,6 +227,7 @@ namespace NotesEditerforD
                 {
                     shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedBPM);
                     if (shortNote.NotePosition.Y != 2 && ((772 - shortNote.NotePosition.Y) - 2) % 48 == 0) specialNotes.Add(shortNote);
+                    //shortNote.setRelativePosition();
                     update();
                     return;
                 }
@@ -386,7 +369,7 @@ namespace NotesEditerforD
                         }
                     }
                 }
-                shortNote.setRelativePosition();
+                //shortNote.setRelativePosition();
                 if(!deleteFlag) addNote(shortNote);
                 update();
             }
@@ -787,11 +770,13 @@ namespace NotesEditerforD
                             shortNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "HoldLine", selectedAirDirection, tmpLongNoteNumber);
                             addNote(shortNote);
                             shortNote = new ShortNote(this, new Point(startPosition.X, endPosition.Y), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "HoldEnd", selectedAirDirection, tmpLongNoteNumber);
+                            //shortNote.setRelativePosition();
                             addNote(shortNote);
                             sRoot.LongNoteNumber++;
                         }
-                        else if(selectedNote != null)
+                        else if(selectedNote != null)//Holdが新たに生成されなかった時
                         {
+                            //selectedNote.setRelativePosition();
                             addNote(selectedNote);
                             selectedNote = null;
                             deleteNote(startNote);
@@ -804,6 +789,7 @@ namespace NotesEditerforD
                             shortNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "SlideLine", selectedAirDirection, tmpLongNoteNumber);
                             addNote(shortNote);
                             shortNote = new ShortNote(this, endPosition, startPosition, endPosition, selectedNoteSize, "SlideEnd", selectedAirDirection, tmpLongNoteNumber);
+                            //shortNote.setRelativePosition();
                             addNote(shortNote);
                             sRoot.LongNoteNumber++;
                         }
@@ -827,6 +813,7 @@ namespace NotesEditerforD
                             shortNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "AirLine", selectedAirDirection, tmpLongNoteNumber);
                             addNote(shortNote);
                             shortNote = new ShortNote(this, new Point(startPosition.X, endPosition.Y), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "AirEnd", selectedAirDirection, tmpLongNoteNumber);
+                            //shortNote.setRelativePosition();
                             addNote(shortNote);
                             sRoot.LongNoteNumber++;
                         }
@@ -1028,12 +1015,13 @@ namespace NotesEditerforD
             }
             if (previewLongNote != null)//プレビュー用ロングノーツを描画
             {
+                previewLongNote.update();
                 if (previewLongNote.NoteStyle == "SlideLine")
                 {
-                    if(previewLongNote.NotePosition.X >= previewNote.NotePosition.X) g.DrawImage(previewLongNote.setNoteImage(), previewNote.NotePosition);
-                    else g.DrawImage(previewLongNote.setNoteImage(), new Point(previewLongNote.StartPosition.X, previewNote.NotePosition.Y));
+                    if(previewLongNote.NotePosition.X >= previewNote.NotePosition.X) g.DrawImage(previewLongNote.NoteImage, previewNote.NotePosition);
+                    else g.DrawImage(previewLongNote.NoteImage, new Point(previewLongNote.StartPosition.X, previewNote.NotePosition.Y));
                 }
-                else g.DrawImage(previewLongNote.setNoteImage(), new Point(previewLongNote.StartPosition.X, previewLongNote.EndPosition.Y));
+                else g.DrawImage(previewLongNote.NoteImage, new Point(previewLongNote.StartPosition.X, previewLongNote.EndPosition.Y));
             }
             g.DrawString((2 * index + 1).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 768 - 5, 30, 10));//MeasureNumber
             g.DrawString((2 * (index + 1)).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 384 - 5, 30, 10));//MeasureNumber

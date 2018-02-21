@@ -22,6 +22,7 @@ namespace NotesEditerforD
         private Bitmap noteImage;
         //*/
 
+        //コンストラクタ
         public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
         {
             musicscore = _musicscore;
@@ -38,6 +39,7 @@ namespace NotesEditerforD
             //destPoints = new Point[3];
 
             noteImage = setNoteImage();
+            setRelativePosition();
         }
 
         public ShortNote(MusicScore _musicscore, Point _position, string _noteStyle, decimal _value)
@@ -48,42 +50,13 @@ namespace NotesEditerforD
             specialValue = _value;
             noteSize = 16;
             //destPoints = new Point[3];
+
             noteImage = setNoteImage();
+            setRelativePosition();
         }
-        //相対座標用テスト
-        /*
-        public ShortNote(MusicScore _musicscore, PosInfo _pos, int _noteSize, string _noteStyle, string _airDirection)//Airノーツ
-        {
-            musicscore = _musicscore;
-            pos = _pos;
-            noteSize = _noteSize;
-            noteStyle = _noteStyle;
-            airDirection = _airDirection;
-            longNoteNumber = -1;
-        }
+        //
 
-        public ShortNote(MusicScore _musicscore, PosInfo _pos, int _noteSize, string _noteStyle, int _longnotesNumber)//ロングノーツ
-        {
-            musicscore = _musicscore;
-            pos = _pos;
-            noteSize = _noteSize;
-            noteStyle = _noteStyle;
-            airDirection = "Center";
-            longNoteNumber = _longnotesNumber;
-        }
-
-        public ShortNote(MusicScore _musicscore, PosInfo _pos, int _noteSize, string _noteStyle)//普通のショートノーツ(Airでもない)
-        {
-            musicscore = _musicscore;
-            pos = _pos;
-            noteSize = _noteSize;
-            noteStyle = _noteStyle;
-            airDirection = "Center";
-            longNoteNumber = -1;
-        }
-        //*/
-
-        public void setRelativePosition()
+        private void setRelativePosition()
         {
             pos.X = (position.X - MusicScore.LeftMargin) / 10;
             pos.Beat = MusicScore.SelectedBeat;
@@ -121,6 +94,7 @@ namespace NotesEditerforD
             return b;
         }
 
+        /////////////////////////////////////////
         ///*
         public Bitmap NoteImage
         {
@@ -199,13 +173,16 @@ namespace NotesEditerforD
             get { return this.specialValue; }
             set { this.specialValue = value; }
         }
+        
+        
 
         public void update()
         {
             noteImage = setNoteImage();
+            setRelativePosition();
         }
 
-        public Bitmap setNoteImage()
+        private Bitmap setNoteImage()
         {
             System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
             cm.Matrix00 = 1; cm.Matrix11 = 1; cm.Matrix22 = 1; cm.Matrix33 = 1; cm.Matrix44 = 1;
@@ -248,7 +225,7 @@ namespace NotesEditerforD
             return canvas;
         }
         //*
-        public Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
+        private Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
         {
             Bitmap noteImage;
             switch (_noteStyle)
