@@ -21,7 +21,6 @@ namespace NotesEditerforD
         private bool addSlideRelayFlag, previewVisible;
         public ScoreRoot sRoot;
         public List<ShortNote> shortNotes = new List<ShortNote>();
-        public List<ShortNote> dummyNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
         private Bitmap storeImage;
         private ShortNote previewNote, previewLongNote, startNote, selectedNote, selectedNote_prev, selectedNote_next;
@@ -484,18 +483,6 @@ namespace NotesEditerforD
                 }
                 if (!flg)
                 {
-                    foreach (ShortNote _dummy in dummyNotes.Reverse<ShortNote>())//ダミーノーツ
-                    {
-                        if (isMouseCollision(_dummy.DestPoints, e.Location))
-                        {
-                            deleteNote(_dummy);
-                            flg = true;
-                            break;
-                        }
-                    }
-                }
-                if (!flg)
-                {
                     foreach (ShortNote _special in specialNotes.Reverse<ShortNote>())//特殊ノーツ
                     {
                         if (isMouseCollision(_special.DestPoints, e.Location))
@@ -630,6 +617,7 @@ namespace NotesEditerforD
                         selectedNote.NotePosition = locationize(e.Location, selectedNote.NoteSize);
                     }
                     fixBorder(selectedNote);
+                    selectedNote.update();
                 }
                 if (selectedNote_prev != null && selectedNote_next == null)
                 {
@@ -660,6 +648,7 @@ namespace NotesEditerforD
                     selectedNote_prev.NotePosition = selectedNote.NotePosition;
                     selectedNote_prev.update();
                     fixBorder(selectedNote_prev);
+                    selectedNote.update();
                     //fixBorder(selectedNote);
                 }
                 else if (selectedNote_next != null && selectedNote_prev == null)
@@ -691,6 +680,7 @@ namespace NotesEditerforD
                         selectedNote_next.update();
                     }
                     fixBorder(selectedNote_next);
+                    selectedNote.update();
                     //fixBorder(selectedNote);
                 }
                 else if (selectedNote_prev != null && selectedNote_next != null)
@@ -745,6 +735,7 @@ namespace NotesEditerforD
                     //fixBorder(selectedNote);
                     fixBorder(selectedNote_prev);
                     fixBorder(selectedNote_next);
+                    selectedNote.update();
                 }
             }
             else if (selectedEditStatus == "Delete" && previewNote != null) previewNote = null;
@@ -958,17 +949,6 @@ namespace NotesEditerforD
                     g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//Speed
                 }
             }
-            foreach (ShortNote _note in dummyNotes)//ダミーノーツを描画
-            {
-                if (_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
-                else if (_note.NoteStyle == "HoldLine" || _note.NoteStyle == "AirLine") g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
-                else if (_note.NoteStyle == "SlideLine")
-                {
-                    if (_note.StartPosition.X >= _note.EndPosition.X) g.DrawImage(_note.NoteImage, _note.EndPosition);
-                    else g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
-                }
-                else g.DrawImage(_note.NoteImage, _note.NotePosition);
-            }
             foreach (ShortNote _note in shortNotes)//普通のノーツを描画
             {
                 if(_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
@@ -1081,7 +1061,6 @@ namespace NotesEditerforD
         public void deleteAllNotes()
         {
             shortNotes.Clear();
-            dummyNotes.Clear();
             specialNotes.Clear();
             update();
         }

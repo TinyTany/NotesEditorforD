@@ -65,6 +65,7 @@
             this.previewDesigner = new System.Windows.Forms.Label();
             this.previewBPM = new System.Windows.Forms.Label();
             this.previewArtist = new System.Windows.Forms.Label();
+            this.previewWELevel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.BPMUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offsetUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.playLevelUpDown)).BeginInit();
@@ -484,11 +485,22 @@
             this.previewArtist.Text = "label1";
             this.previewArtist.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // previewWELevel
+            // 
+            this.previewWELevel.BackColor = System.Drawing.Color.Transparent;
+            this.previewWELevel.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.previewWELevel.ForeColor = System.Drawing.Color.Gold;
+            this.previewWELevel.Location = new System.Drawing.Point(18, 207);
+            this.previewWELevel.Name = "previewWELevel";
+            this.previewWELevel.Size = new System.Drawing.Size(209, 10);
+            this.previewWELevel.TabIndex = 35;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(579, 354);
+            this.Controls.Add(this.previewWELevel);
             this.Controls.Add(this.previewLevel);
             this.Controls.Add(this.previewBPM);
             this.Controls.Add(this.previewDesigner);
@@ -577,5 +589,6 @@
         private System.Windows.Forms.Label previewDesigner;
         private System.Windows.Forms.Label previewBPM;
         private System.Windows.Forms.Label previewArtist;
+        private System.Windows.Forms.Label previewWELevel;
     }
 }

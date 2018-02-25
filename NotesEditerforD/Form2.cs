@@ -39,6 +39,7 @@ namespace NotesEditerforD
             previewBox.Controls.Add(previewLevel);
             previewBox.Controls.Add(previewDesigner);
             previewBox.Controls.Add(previewBPM);
+            previewBox.Controls.Add(previewWELevel);
             previewTitle.Top -= previewBox.Top;
             previewTitle.Left -= previewBox.Left;
             previewArtist.Top -= previewBox.Top;
@@ -49,6 +50,8 @@ namespace NotesEditerforD
             previewDesigner.Left -= previewBox.Left;
             previewBPM.Top -= previewBox.Top;
             previewBPM.Left -= previewBox.Left;
+            previewWELevel.Top -= previewBox.Top;
+            previewWELevel.Left -= previewBox.Left;
         }
 
         public void loadExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool isWhile)
@@ -111,24 +114,7 @@ namespace NotesEditerforD
 
         public void susExport(string path)
         {
-            string level;
-            if (playLevelUpDown.Value < 7.7m) level = ((int)playLevelUpDown.Value).ToString();
-            else if (playLevelUpDown.Value < 8m) level = "7+";
-            else if (playLevelUpDown.Value < 8.7m) level = "8";
-            else if (playLevelUpDown.Value < 9m) level = "8+";
-            else if (playLevelUpDown.Value < 9.7m) level = "9";
-            else if (playLevelUpDown.Value < 10m) level = "9+";
-            else if (playLevelUpDown.Value < 10.7m) level = "10";
-            else if (playLevelUpDown.Value < 11m) level = "10+";
-            else if (playLevelUpDown.Value < 11.7m) level = "11";
-            else if (playLevelUpDown.Value < 12m) level = "11+";
-            else if (playLevelUpDown.Value < 12.7m) level = "12";
-            else if (playLevelUpDown.Value < 13m) level = "12+";
-            else if (playLevelUpDown.Value < 13.7m) level = "13";
-            else if (playLevelUpDown.Value < 14m) level = "13+";
-            else if (playLevelUpDown.Value < 14.7m) level = "14";
-            else if (playLevelUpDown.Value < 15m) level = "14+";
-            else level = "15";
+            string level = setLevel(playLevelUpDown.Value);
             int Y;
             System.IO.StreamWriter sw = new System.IO.StreamWriter(path);
             Encoding.GetEncoding("UTF-8");
@@ -1219,34 +1205,73 @@ namespace NotesEditerforD
             {
                 g.DrawImage(jacket, 40, 25 + (210 - jacket.Height * 210 / jacket.Width) / 2, 210, jacket.Height * 210 / jacket.Width);
             }
+            previewWELevel.Text = "";
             switch (difficultyComboBox.SelectedIndex)
             {
                 case 0://BASIC
                     //previewBox.BackgroundImage = Properties.Resources.frameBasic;
                     g.DrawImage(Properties.Resources.frameBasic, new Point(0, 0));
+                    previewLevel.Text = setLevel(playLevelUpDown.Value);
+                    if (previewLevel.Text.IndexOf("+") != -1)
+                    {
+                        previewLevel.Text = ((int)playLevelUpDown.Value).ToString();
+                        g.DrawString("+", new Font("ＭＳ ゴシック", 17, FontStyle.Bold), Brushes.Black, new Rectangle(43, 239, 30, 30));
+                    }
                     break;
                 case 1://ADVANCED
                     //previewBox.BackgroundImage = Properties.Resources.frameAdvanced;
                     g.DrawImage(Properties.Resources.frameAdvanced, new Point(0, 0));
+                    previewLevel.Text = setLevel(playLevelUpDown.Value);
+                    if (previewLevel.Text.IndexOf("+") != -1)
+                    {
+                        previewLevel.Text = ((int)playLevelUpDown.Value).ToString();
+                        g.DrawString("+", new Font("ＭＳ ゴシック", 17, FontStyle.Bold), Brushes.Black, new Rectangle(43, 239, 30, 30));
+                    }
                     break;
                 case 2://EXPERT
                     //previewBox.BackgroundImage = Properties.Resources.frameExpert;
                     g.DrawImage(Properties.Resources.frameExpert, new Point(0, 0));
+                    previewLevel.Text = setLevel(playLevelUpDown.Value);
+                    if (previewLevel.Text.IndexOf("+") != -1)
+                    {
+                        previewLevel.Text = ((int)playLevelUpDown.Value).ToString();
+                        g.DrawString("+", new Font("ＭＳ ゴシック", 17, FontStyle.Bold), Brushes.Black, new Rectangle(43, 239, 30, 30));
+                    }
                     break;
                 case 3://MASTER
                     //previewBox.BackgroundImage = Properties.Resources.frameMaster;
                     g.DrawImage(Properties.Resources.frameMaster, new Point(0, 0));
+                    previewLevel.Text = setLevel(playLevelUpDown.Value);
+                    if (previewLevel.Text.IndexOf("+") != -1)
+                    {
+                        previewLevel.Text = ((int)playLevelUpDown.Value).ToString();
+                        g.DrawString("+", new Font("ＭＳ ゴシック", 17, FontStyle.Bold), Brushes.Black, new Rectangle(43, 239, 30, 30));
+                    }
                     break;
                 case 4://WORLD'S END
                     //previewBox.BackgroundImage = Properties.Resources.frameWE;
                     g.DrawImage(Properties.Resources.frameWE, new Point(0, 0));
+                    previewLevel.Text = textBoxWE.Text;
+                    for (int i = 0; i < (int)playLevelUpDown.Value; i++) previewWELevel.Text += "☆";
                     break;
                 default:
                     break;
             }
             
             previewBox.BackgroundImage = canvas;
+            previewTitle.Text = textBoxTitle.Text;
+            previewArtist.Text = textBoxArtist.Text;
+            previewDesigner.Text = textBoxDesigner.Text;
+            previewBPM.Text = BPMUpDown.Value.ToString();
+            
             g.Dispose();
+        }
+
+        private string setLevel(decimal d)
+        {
+            string level = ((int)d).ToString();
+            if (d - (int)d >= 0.7m) level += "+";
+            return level;
         }
 
         private bool isModified(string[,,,] lane, int measure, int i, int sgnindx)
