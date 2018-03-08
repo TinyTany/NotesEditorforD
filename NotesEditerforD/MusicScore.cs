@@ -23,7 +23,7 @@ namespace NotesEditerforD
         private Point startPosition, endPosition;
         private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag;
         private Point rectSelectBegin, rectSelectEnd;
-        private RectSelect seRect;
+        private RectSelect seRect, cpRect;
         public ScoreRoot sRoot;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
@@ -31,6 +31,7 @@ namespace NotesEditerforD
         private ShortNote previewNote, previewLongNote, startNote, selectedNote, selectedNote_prev, selectedNote_next;
         private MusicScore prevScore, nextScore;
         private MouseButtons eyedropperMouseButton = MouseButtons.Right;
+        private ContextMenuStrip selectMenuStrip;
         
         public MusicScore()
         {
@@ -50,6 +51,13 @@ namespace NotesEditerforD
             nextScore = null;
             addSlideRelayFlag = false;
             previewVisible = true;
+            selectMenuStrip = new ContextMenuStrip();
+            selectMenuStrip.Items.Add("切り取り", null, new EventHandler(menuStripCut));
+            selectMenuStrip.Items.Add("コピー", null, new EventHandler(menuStripCopy));
+            selectMenuStrip.Items.Add("貼り付け", null, new EventHandler(menuStripPaste));
+            selectMenuStrip.Items.Add("削除", null, new EventHandler(menuStripRemove));
+            selectMenuStrip.Items.Add("左右反転", null, new EventHandler(menuStripHorInv));
+            
 
             this.MouseDown += new MouseEventHandler(this_MouseDown);
             this.MouseMove += new MouseEventHandler(this_MouseMove);
@@ -142,6 +150,57 @@ namespace NotesEditerforD
         {
             get { return storeImage; }
             set { storeImage = value; }
+        }
+
+        private void menuStripCut(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuStripCopy(object sender, EventArgs e)//sRootに渡す
+        {
+            foreach(ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツをコピーしてYankのリストにぶち込む
+            {
+                if(seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10, 5))) &&
+            note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine")
+                {
+                    sRoot.YankNotes.Add(
+                         new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+                }
+            }
+            foreach(ShortNote note in sRoot.YankNotes.ToList())//ロングノーツ系のやつは全体が含まれてるかチェック
+            {
+                if (note.LongNoteNumber == -1) continue;
+                if(shortNotes.Where
+                    (x => x.LongNoteNumber == note.LongNoteNumber && !(new string[] { "HoldLine", "SlideLine", "AirLine"}.Contains(x.NoteStyle))).Count()
+                    != sRoot.YankNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber).Count())//1譜面内でのロングノーツでの節が全て網羅されているか
+                {
+                    sRoot.YankNotes.RemoveAll(x => x.LongNoteNumber == note.LongNoteNumber);
+                }
+                else if (false) ;//始点と終点を共に含んでいるか
+            }
+            //Line系もYankNotesに入れる処理書け（ロングノーツの番号更新もしたりする）
+            sRoot.YankRect = new RectSelect(seRect.RectUL, seRect.RectDR, shortNotes);
+        }
+
+        private void menuStripPaste(object sender, EventArgs e)//sRootからもらう//詰める
+        {
+            shortNotes.AddRange(sRoot.YankNotes.ToList());
+            seRect = sRoot.YankRect;
+            seRect.SelectedNotes = sRoot.YankNotes;
+            seRect.move(new Point(21, 2));
+        }
+
+        private void menuStripRemove(object sender, EventArgs e)
+        {
+            //MessageBox.Show("aaa");
+            if (seRect != null) seRect.removeSelectedNotes();
+            else deleteAllNotes();
+        }
+
+        private void menuStripHorInv(object sender, EventArgs e)
+        {
+
         }
 
         public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
@@ -382,6 +441,7 @@ namespace NotesEditerforD
                 //shortNote.setRelativePosition();
                 if(!deleteFlag) addNote(shortNote);
                 update();
+                //MessageBox.Show(locationize(e.Location).ToString());
             }
             else if (selectedEditStatus == "Delete")
             {
@@ -509,7 +569,16 @@ namespace NotesEditerforD
             {
                 if (seRect != null && seRect.Rect.Contains(e.Location))
                 {
-                    seRectFlag = true;
+                    if (e.Button == MouseButtons.Right)
+                    {
+                        
+                        selectMenuStrip.Show(this, e.Location);
+                    }
+                    else seRectFlag = true;
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    selectMenuStrip.Show(this, e.Location);
                 }
                 bool hitFlag = false;
                 foreach(ShortNote _note in shortNotes.Reverse<ShortNote>())
@@ -537,7 +606,7 @@ namespace NotesEditerforD
                         break;
                     }
                 }
-                if (!hitFlag && !seRectFlag)//矩形選択
+                if (!hitFlag && !seRectFlag && e.Button == MouseButtons.Left)//矩形選択
                 {
                     rectSelectBegin = locationize(e.Location, 0); rectSelectEnd = rectSelectBegin;
                     seRect = new RectSelect(rectSelectBegin, rectSelectEnd, shortNotes);

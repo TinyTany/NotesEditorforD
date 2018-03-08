@@ -296,6 +296,7 @@ namespace NotesEditerforD
                 sRoot.slideRelayInv();
                 checkSlideRelay.Checked = !checkSlideRelay.Checked;
             }
+            if (e.KeyCode == Keys.Delete) { }
             if (AirUp.IsActive)
             {
                 if (e.KeyCode == Keys.L) AirUp.setDirection("Left");

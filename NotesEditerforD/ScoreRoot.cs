@@ -19,6 +19,8 @@ namespace NotesEditerforD
         private Form1 form1;
         private MusicScore musicScore;
         private List<MusicScore> scores = new List<MusicScore>();
+        private List<ShortNote> yankNotes = new List<ShortNote>();
+        private RectSelect yankRect;
         private static decimal BPM;
         public ScoreRoot(Form1 _form1, int maxScore, int _longNotesNumber, bool _slideRelay)
         {
@@ -101,6 +103,18 @@ namespace NotesEditerforD
         {
             get { return scores; }
             set { scores = value; }
+        }
+
+        public List<ShortNote> YankNotes
+        {
+            get { return yankNotes; }
+            set { yankNotes = value; }
+        }
+
+        public RectSelect YankRect
+        {
+            get { return yankRect; }
+            set { yankRect = value; }
         }
 
         public int LongNoteNumber
