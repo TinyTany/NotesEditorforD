@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace NotesEditerforD
 {
+    /// <summary>
+    /// ノーツそのもの
+    /// </summary>
     public class ShortNote
     {
         private MusicScore musicscore;

@@ -19,17 +19,18 @@ namespace NotesEditerforD
         private static NotesButton prevNotesButton;
         private int maxScore = 125;
         //List<MusicScore> scores2 = new List<MusicScore>();
-        private string songID, title, artist, designer, wave, jacket, exDir, appName, pathName, dymsDataVersion;
+        private string songID, title, artist, designer, wave, jacket, exDir, appName, pathName, dymsDataVersion, weStr;
         private int difficulty, longNoteNumber;
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.5", Version = "0.5.4";
+        private const string dymsVersion = "0.6", Version = "0.6a (unstable)";
         //public bool slideRelay = false;
         public Form1()
         {
             InitializeComponent();
             sRoot = new ScoreRoot(this, maxScore, 0, false);
+            ScoreRoot.StartBPM = BPM;
             this.Controls.Add(sRoot);
             sRoot.update();
             checkSlideRelay.Checked = true;
@@ -73,6 +74,7 @@ namespace NotesEditerforD
             designer = "defaultDesigner";
             wave = "";
             jacket = "";
+            weStr = "";
             exDir = Environment.CurrentDirectory;
             difficulty = 0;
             playLevel = 1.0m;
@@ -103,11 +105,6 @@ namespace NotesEditerforD
             AirLine._Form1 = this;
             Speed._Form1 = this;
             BPMButton._Form1 = this;
-        }
-
-        public decimal StartBPM
-        {
-            get { return BPM; }
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
@@ -163,7 +160,7 @@ namespace NotesEditerforD
             sw.WriteLine("ARTIST:" + artist);
             sw.WriteLine("DESIGNER:" + designer);
             sw.WriteLine("DIFFICULTY:" + difficulty);
-            sw.WriteLine("PLAYLEVEL:" + playLevel);
+            sw.WriteLine("PLAYLEVEL:" + playLevel + ":" + weStr);
             sw.WriteLine("WAVE=" + wave);
             sw.WriteLine("WAVEOFFSET:" + offset);
             sw.WriteLine("JACKET=" + jacket);
@@ -244,7 +241,7 @@ namespace NotesEditerforD
         private void exportMenuItem_Click(object sender, EventArgs e)
         {
             Form2 f = new Form2(this, sRoot);
-            f.loadExportData(songID, title, artist, designer, wave, jacket, difficulty, playLevel, BPM, exDir, offset, isWhile);
+            f.loadExportData(songID, title, artist, designer, wave, jacket, difficulty, playLevel, BPM, exDir, offset, isWhile, weStr);
             f.ShowDialog(this);
             setEdited(true);
         }
@@ -252,6 +249,7 @@ namespace NotesEditerforD
         private void BPMupdown_ValueChanged(object sender, EventArgs e)
         {
             BPM = BPMupdown.Value;
+            ScoreRoot.StartBPM = BPM;
             sRoot.Scores[0].update();
         }
 
@@ -386,7 +384,7 @@ namespace NotesEditerforD
 
         }
 
-        public void saveExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool _isWhile)
+        public void saveExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool _isWhile, string _weStr)
         {
             songID = _songID;
             title = _title;
@@ -400,6 +398,7 @@ namespace NotesEditerforD
             exDir = _exDir;
             offset = _offset;
             isWhile = _isWhile;
+            weStr = _weStr;
         }
 
         private void newMenuItem_Click(object sender, EventArgs e)//edt
@@ -422,6 +421,7 @@ namespace NotesEditerforD
             designer = "defaultDesigner";
             wave = "";
             jacket = "";
+            weStr = "";
             exDir = Environment.CurrentDirectory;
             difficulty = 0;
             playLevel = 1.0m;
@@ -463,7 +463,7 @@ namespace NotesEditerforD
                 string[] noteData;
                 int indx, msIndex;
                 dataLine = sr.ReadLine();
-                if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5")//バージョン変更時に必ず変更
+                if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5" || dataLine == "dymsVersion:0.6")//バージョン変更時に必ず変更
                 {
                     noteData = dataLine.Split(':');
                     dymsDataVersion = noteData[1];
@@ -485,6 +485,7 @@ namespace NotesEditerforD
                     dataLine = sr.ReadLine();
                     noteData = dataLine.Split(':');
                     playLevel = decimal.Parse(noteData[1]);
+                    if(noteData.Length == 3) weStr = noteData[2];
                     dataLine = sr.ReadLine();
                     noteData = dataLine.Split('=');
                     wave = noteData[1];

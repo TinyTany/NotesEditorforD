@@ -242,12 +242,12 @@
             65536});
             this.BPMUpDown.Location = new System.Drawing.Point(447, 248);
             this.BPMUpDown.Maximum = new decimal(new int[] {
-            300,
+            1000,
             0,
             0,
             0});
             this.BPMUpDown.Minimum = new decimal(new int[] {
-            30,
+            10,
             0,
             0,
             0});
@@ -446,7 +446,7 @@
             this.previewLevel.Name = "previewLevel";
             this.previewLevel.Size = new System.Drawing.Size(40, 35);
             this.previewLevel.TabIndex = 34;
-            this.previewLevel.Text = "14";
+            this.previewLevel.Text = "1";
             this.previewLevel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // previewDesigner

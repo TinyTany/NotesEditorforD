@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NotesEditerforD
 {
+    /// <summary>
+    /// 相対座標管理用のクラス
+    /// </summary>
     public class PosInfo
     {
         private int x, measure, beat, beatNumber;

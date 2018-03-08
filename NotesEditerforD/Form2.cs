@@ -54,7 +54,7 @@ namespace NotesEditerforD
             previewWELevel.Left -= previewBox.Left;
         }
 
-        public void loadExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool isWhile)
+        public void loadExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool isWhile, string _weStr)
         {
             textBoxID.Text = _songID;
             textBoxTitle.Text = _title;
@@ -70,11 +70,12 @@ namespace NotesEditerforD
             textBoxExport.Text = _exDir;
             offsetUpDown.Value = _offset;
             checkBoxWhile.Checked = isWhile;
+            textBoxWE.Text = _weStr;
         }
 
         private void export_Click(object sender, EventArgs e)
         {
-            form1.saveExportData(textBoxID.Text, textBoxTitle.Text, textBoxArtist.Text, textBoxDesigner.Text, wavePath, jacketPath, difficultyComboBox.SelectedIndex, playLevelUpDown.Value, BPMUpDown.Value, textBoxExport.Text, offsetUpDown.Value, checkBoxWhile.Checked);
+            form1.saveExportData(textBoxID.Text, textBoxTitle.Text, textBoxArtist.Text, textBoxDesigner.Text, wavePath, jacketPath, difficultyComboBox.SelectedIndex, playLevelUpDown.Value, BPMUpDown.Value, textBoxExport.Text, offsetUpDown.Value, checkBoxWhile.Checked, textBoxWE.Text);
             if (textBoxExport.Text.Length == 0) MessageBox.Show("保存先を選択してください");
             else if (textBoxTitle.Text.Length == 0) MessageBox.Show("タイトルを入力してください");
             else if (!File.Exists(wavePath) && textBoxWAVE.Text.Length != 0) MessageBox.Show("曲ファイルが見つかりません\nファイルを選択し直してください");
@@ -1282,7 +1283,7 @@ namespace NotesEditerforD
 
         private void cancel_Click(object sender, EventArgs e)
         {
-            form1.saveExportData(textBoxID.Text, textBoxTitle.Text, textBoxArtist.Text, textBoxDesigner.Text, textBoxWAVE.Text, textBoxJacket.Text, difficultyComboBox.SelectedIndex, playLevelUpDown.Value, BPMUpDown.Value, textBoxExport.Text, offsetUpDown.Value, checkBoxWhile.Checked);
+            form1.saveExportData(textBoxID.Text, textBoxTitle.Text, textBoxArtist.Text, textBoxDesigner.Text, textBoxWAVE.Text, textBoxJacket.Text, difficultyComboBox.SelectedIndex, playLevelUpDown.Value, BPMUpDown.Value, textBoxExport.Text, offsetUpDown.Value, checkBoxWhile.Checked, textBoxWE.Text);
             this.Dispose();
         }
 

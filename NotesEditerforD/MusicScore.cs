@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace NotesEditerforD
 {
+    /// <summary>
+    /// 譜面クラス
+    /// </summary>
     public class MusicScore : PictureBox
     {
         private static int selectedBeat, selectedGrid, selectedNoteSize, tmpLongNoteNumber;
@@ -18,7 +21,9 @@ namespace NotesEditerforD
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
         private static decimal selectedBPM, selectedSpeed;
         private Point startPosition, endPosition;
-        private bool addSlideRelayFlag, previewVisible;
+        private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag;
+        private Point rectSelectBegin, rectSelectEnd;
+        private RectSelect seRect;
         public ScoreRoot sRoot;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
@@ -131,6 +136,12 @@ namespace NotesEditerforD
         public static int RightMargin
         {
             get { return rightMargin; }
+        }
+
+        public Bitmap StoreImage
+        {
+            get { return storeImage; }
+            set { storeImage = value; }
         }
 
         public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
@@ -322,7 +333,7 @@ namespace NotesEditerforD
 
                         if (shortNotes[i].NoteStyle == "SlideLine" && shortNotes[i].NoteSize == selectedNoteSize && isMouseCollision(shortNotes[i].DestPoints, e.Location))//間に節を追加
                         {
-                            if ((Control.ModifierKeys & Keys.Shift) != Keys.Shift) break;
+                            if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift) break;
                             deleteFlag = true;//deleteNote(startNote);
                             previewVisible = false;
                             ShortNote next = shortNotes[i];
@@ -496,11 +507,17 @@ namespace NotesEditerforD
             }
             else if (selectedEditStatus == "Edit")
             {
+                if (seRect != null && seRect.Rect.Contains(e.Location))
+                {
+                    seRectFlag = true;
+                }
+                bool hitFlag = false;
                 foreach(ShortNote _note in shortNotes.Reverse<ShortNote>())
                 {
                     if(_note.NoteStyle != "SlideLine" && _note.NoteStyle != "HoldLine" && _note.NoteStyle != "AirLine" && isMouseCollision(_note.DestPoints, e.Location))
                     {
                         selectedNote = _note; //MessageBox.Show("Hit");
+                        hitFlag = true;
                         foreach(ShortNote __note in shortNotes)
                         {
                             if(__note != _note && __note.LongNoteNumber == _note.LongNoteNumber && __note.LongNoteNumber != -1 && __note.EndPosition == _note.NotePosition && _note.NoteStyle != "SlideCurve")
@@ -520,12 +537,33 @@ namespace NotesEditerforD
                         break;
                     }
                 }
+                if (!hitFlag && !seRectFlag)//矩形選択
+                {
+                    rectSelectBegin = locationize(e.Location, 0); rectSelectEnd = rectSelectBegin;
+                    seRect = new RectSelect(rectSelectBegin, rectSelectEnd, shortNotes);
+                    rectSelectFlag = true;
+                }
             }
             sRoot.setEdited(true);
         }
 
         private void this_MouseMove(object sender, MouseEventArgs e)
         {
+            if (rectSelectFlag)
+            {
+                seRect.RectDR = locationize(e.Location, 0);
+                seRect.update();
+                update();
+                return;
+            }
+            if (seRectFlag)
+            {
+                seRect.move(locationize(e.Location, seRect.rectSize));
+                update();
+                return;
+            }
+            if (seRect != null && seRect.Rect.Contains(e.Location)) Cursor = Cursors.SizeAll;
+            else Cursor = Cursors.Default;
             if (selectedEditStatus == "Add" && e.Button == eyedropperMouseButton) return;//スポイト機能使用時
             if (selectedEditStatus == "Add" && !addSlideRelayFlag)
             {
@@ -744,6 +782,17 @@ namespace NotesEditerforD
 
         private void this_MouseUp(object sender, MouseEventArgs e)
         {
+            if (rectSelectFlag)
+            {
+                rectSelectFlag = false;
+                //seRect.removeSelectedNotes();
+                return;
+            }
+            if (seRectFlag)
+            {
+                seRectFlag = false;
+                return;
+            }
             previewVisible = true;
             if (selectedEditStatus == "Add")
             {
@@ -860,12 +909,30 @@ namespace NotesEditerforD
             }
         }
 
+        private void this_KeyDown(object sender, KeyEventArgs e)
+        {
+            MessageBox.Show("Piyo");
+            if (e.KeyData == Keys.Delete && seRect != null)
+            {
+                seRect.removeSelectedNotes();
+                MessageBox.Show("Hoge");
+            } 
+        }
+
+        /// <summary>
+        /// ノーツをリストにぶち込みます
+        /// </summary>
+        /// <param name="shortNote">ぶち込みたいノーツ</param>
         private void addNote(ShortNote shortNote)//, string position)
         {
             fixBorder(shortNote);
             shortNotes.Add(shortNote);
         }
 
+        /// <summary>
+        /// 譜面上下境界での処理をがんばります
+        /// </summary>
+        /// <param name="shortNote">処理したいノーツ</param>
         private void fixBorder(ShortNote shortNote)
         {
             if (shortNote.NotePosition.Y == 770 && prevScore != null && shortNote.PrevNote == null && shortNote.NextNote == null)
@@ -919,6 +986,12 @@ namespace NotesEditerforD
             return;
         }
 
+        /// <summary>
+        /// マウスクリックとノーツの衝突判定をします
+        /// </summary>
+        /// <param name="_destPoints">ノーツの場所</param>
+        /// <param name="e">マウス</param>
+        /// <returns></returns>
         private bool isMouseCollision(Point[] _destPoints, Point e)
         {
             Point upperLeft = _destPoints[0], upperRight = _destPoints[1], lowerLeft = _destPoints[2];
@@ -932,10 +1005,16 @@ namespace NotesEditerforD
             return false;
         }
 
+        /// <summary>
+        /// いろいろと更新します
+        /// </summary>
         public void update()
         {
-            storeImage = Properties.Resources.MusicScore;
+            //storeImage = imageLN;
             Graphics g = Graphics.FromImage(storeImage);
+            /*
+            g.DrawImage(Properties.Resources.SlideLine, new Point[]{ new Point(10, 10), new Point(30, 10), new Point(40, 30) });
+            //*/
             foreach (ShortNote _note in specialNotes)//BPMノーツ，Speedノーツを描画
             {
                 if (_note.NoteStyle == "BPM")
@@ -959,6 +1038,7 @@ namespace NotesEditerforD
                     else g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
+                //if (_note.NoteStyle == "Slide") sRoot.setLongNote(_note, this);
                 if(_note.NoteStyle == "SlideCurve")//Bezier
                 {
                     Point prev = new Point(-1, 9999), next = new Point(-1, -9999);
@@ -1003,13 +1083,19 @@ namespace NotesEditerforD
                 }
                 else g.DrawImage(previewLongNote.NoteImage, new Point(previewLongNote.StartPosition.X, previewLongNote.EndPosition.Y));
             }
+            if (seRect != null)//矩形選択を描画
+            {
+                if (selectedEditStatus == "Edit") g.DrawRectangle(new Pen(Color.White), seRect.Rect);
+                else seRect = null;
+            }
             g.DrawString((2 * index + 1).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 768 - 5, 30, 10));//MeasureNumber
             g.DrawString((2 * (index + 1)).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 384 - 5, 30, 10));//MeasureNumber
-            //if(index == 0) g.DrawString(form1.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, 768 - 5, 50, 15));//BPM
+            if(index == 0) g.DrawString(ScoreRoot.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, 768 - 5, 50, 15));//BPM
             BackgroundImage = storeImage;
             g.Dispose();
             this.Refresh();
             sRoot.setTotalNotes();
+            storeImage = Properties.Resources.MusicScore;
         }
 
         public int Index
@@ -1065,6 +1151,11 @@ namespace NotesEditerforD
             update();
         }
 
+        /// <summary>
+        /// ノーツの座標pをグリッド上に指定します
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         private Point locationize(Point p)//通常
         {
             int noteX, noteY;
@@ -1079,6 +1170,13 @@ namespace NotesEditerforD
             return new Point(noteX, noteY);
         }
 
+        /// <summary>
+        /// ノーツサイズ(幅)を考慮したlocationize関数です
+        /// Editモードなどで主に使います
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="size">ノーツサイズ(1-16)</param>
+        /// <returns></returns>
         private Point locationize(Point p, int size)//EditModeなどで
         {
             int noteX, noteY;
@@ -1087,6 +1185,27 @@ namespace NotesEditerforD
             else noteX = ((p.X - leftMargin) / (10 * (16 / selectedGrid))) * (10 * (16 / selectedGrid)) + leftMargin;
             if (p.Y < topMargin) noteY = topMargin;
             else if (p.Y > 768 + topMargin) noteY = 768 + topMargin;
+            else noteY = 768 + topMargin + bottomMargin - (int)(((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (double)(2 * selectedBeat))) - topMargin;
+            noteX += 1; noteY += -3;//描写の都合上の位置調整
+
+            return new Point(noteX, noteY);
+        }
+
+        /// <summary>
+        /// 幅高さともに考慮したlocationize関数です
+        /// 矩形選択で使います
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="size">矩形サイズ</param>
+        /// <returns></returns>
+        private Point locationize(Point p, Size size)//矩形選択で
+        {
+            int noteX, noteY;
+            if (p.X > 160 + leftMargin - size.Width) noteX = 160 + leftMargin - size.Width;
+            else if (p.X < leftMargin) noteX = leftMargin;
+            else noteX = ((p.X - leftMargin) / (10 * (16 / selectedGrid))) * (10 * (16 / selectedGrid)) + leftMargin;
+            if (p.Y < topMargin) noteY = topMargin;
+            else if (p.Y > 768 + topMargin - size.Height) noteY = 768 + topMargin - size.Height;
             else noteY = 768 + topMargin + bottomMargin - (int)(((768 + bottomMargin - p.Y) / (768 / (2 * selectedBeat))) * (768 / (double)(2 * selectedBeat))) - topMargin;
             noteX += 1; noteY += -3;//描写の都合上の位置調整
 

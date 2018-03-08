@@ -310,12 +310,12 @@
             65536});
             this.BPMupdown.Location = new System.Drawing.Point(503, 27);
             this.BPMupdown.Maximum = new decimal(new int[] {
-            300,
+            1000,
             0,
             0,
             0});
             this.BPMupdown.Minimum = new decimal(new int[] {
-            30,
+            10,
             0,
             0,
             0});

@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace NotesEditerforD
 {
+    /// <summary>
+    /// 譜面をまとめるクラス
+    /// </summary>
     [Serializable()]
     public class ScoreRoot : FlowLayoutPanel
     {
@@ -16,6 +19,7 @@ namespace NotesEditerforD
         private Form1 form1;
         private MusicScore musicScore;
         private List<MusicScore> scores = new List<MusicScore>();
+        private static decimal BPM;
         public ScoreRoot(Form1 _form1, int maxScore, int _longNotesNumber, bool _slideRelay)
         {
             form1 = _form1;
@@ -56,6 +60,43 @@ namespace NotesEditerforD
             }
         }
 
+        //*//test
+        public void setLongNote(ShortNote note, MusicScore score)
+        {
+            Graphics g = Graphics.FromImage(score.StoreImage);
+            g.DrawImage(Properties.Resources.MusicScore, new Point(0, 0));
+            switch (note.NoteStyle)
+            {
+                case "Hold":
+
+                    break;
+                case "Slide":
+                    ShortNote lastNote = null; int lastIndex = -1;
+                    for (MusicScore cur = score; cur != null; cur = cur.NextScore)
+                    {
+                        g = Graphics.FromImage(cur.StoreImage);
+                        var notes = cur.shortNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber && x.NoteStyle != "SlideCurve" && x.NoteStyle != "SlideLine").OrderByDescending(x => x.NotePosition.Y).ToList();
+                        if (!notes.Any()) continue;
+                        if (lastNote != null) ;
+                        for (int i = 0; i < notes.Count() - 1; i++)
+                        {
+                            g.DrawImage(Properties.Resources.HoldLine, new Point[] { notes[i + 1].NotePosition, new Point(notes[i + 1].NotePosition.X + notes[i + 1].NoteSize * 10, notes[i + 1].NotePosition.Y), notes[i].NotePosition });
+                        }
+                        //cur.storeImage = _img; //cur.update();
+                        if (notes.Last().NoteStyle != "SlideEnd") { lastNote = notes.Last(); lastIndex = cur.Index; continue; }
+                        break;
+                    }
+                    break;
+                case "AirBegin":
+
+                    break;
+                default:
+                    break;
+            }
+            g.Dispose();
+        }
+        //*/
+
         public List<MusicScore> Scores
         {
             get { return scores; }
@@ -72,6 +113,12 @@ namespace NotesEditerforD
         {
             get { return slideRelay; }
             set { slideRelay = value; }
+        }
+
+        public static decimal StartBPM
+        {
+            get { return BPM; }
+            set { BPM = value; }
         }
 
         public void slideRelayInv()
