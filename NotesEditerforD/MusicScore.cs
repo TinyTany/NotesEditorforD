@@ -222,10 +222,19 @@ namespace NotesEditerforD
             seRect = new RectSelect(sRoot.YankRect.RectUL, sRoot.YankRect.RectDR, shortNotes);
             seRect.SelectedNotes = selectedNotes;
             seRect.move(new Point(21, 2));
+            seRect.IsPasted = true;
         }
 
         private void menuStripRemove(object sender, EventArgs e)//ロングノーツの消し方を真面目にやれ//やった
         {
+            if (seRect.IsPasted)
+            {
+                foreach(ShortNote note in shortNotes.ToArray())
+                {
+                    if (seRect.SelectedNotes.Contains(note)) deleteforLongNote(note); 
+                }
+                return;
+            }
             List<ShortNote> selectedNotes = new List<ShortNote>();
             foreach (ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツそのものをSelectedNotesのリストに（も）ぶち込む
             {
