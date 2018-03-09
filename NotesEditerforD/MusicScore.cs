@@ -197,7 +197,7 @@ namespace NotesEditerforD
             sRoot.YankRect = new RectSelect(seRect.RectUL, seRect.RectDR, shortNotes);
         }
 
-        private void menuStripPaste(object sender, EventArgs e)//sRootからもらう//詰める
+        private void menuStripPaste(object sender, EventArgs e)//sRootからもらう//詰める//詰めた
         {
             List<ShortNote> selectedNotes = new List<ShortNote>();
             foreach(ShortNote note in sRoot.YankNotes)
@@ -206,8 +206,8 @@ namespace NotesEditerforD
                          new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
             }
             //LongNotesNumber更新しろ
-            int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて無理やり実装する
-            foreach(ShortNote note in selectedNotes)
+            int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて乱暴に実装する
+            foreach(ShortNote note in selectedNotes)//しました
             {
                 if (note.LongNoteNumber == -1) continue;
                 if (num[note.LongNoteNumber] == -1)
@@ -233,7 +233,7 @@ namespace NotesEditerforD
 
         private void menuStripHorInv(object sender, EventArgs e)
         {
-
+            seRect.notesHorInv();
         }
 
         public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
