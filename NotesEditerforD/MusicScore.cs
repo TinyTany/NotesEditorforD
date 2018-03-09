@@ -159,7 +159,7 @@ namespace NotesEditerforD
         private void menuStripCut(object sender, EventArgs e)
         {
             menuStripCopy(sender, e);
-            menuStripRemove(sender, e);
+            //menuStripRemove(sender, e);
         }
 
         private void menuStripCopy(object sender, EventArgs e)//sRootに渡す
@@ -224,11 +224,21 @@ namespace NotesEditerforD
             seRect.move(new Point(21, 2));
         }
 
-        private void menuStripRemove(object sender, EventArgs e)
+        private void menuStripRemove(object sender, EventArgs e)//ロングノーツの消し方を真面目にやれ
         {
-            //MessageBox.Show("aaa");
-            if (seRect != null) seRect.removeSelectedNotes();
-            else deleteAllNotes();
+            List<ShortNote> selectedNotes = new List<ShortNote>();
+            foreach (ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツそのものをSelectedNotesのリストに（も）ぶち込む
+            {
+                if (seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10, 5))) &&
+            note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine")
+                {
+                    selectedNotes.Add(note);
+                }
+            }
+            foreach (ShortNote note in selectedNotes.ToArray())
+            {
+                deleteforLongNote(note);
+            }
         }
 
         private void menuStripHorInv(object sender, EventArgs e)
@@ -602,13 +612,13 @@ namespace NotesEditerforD
             {
                 if (seRect != null && seRect.Rect.Contains(e.Location))
                 {
-                    if (e.Button == MouseButtons.Right)//選択矩形内での右クリック
+                    if (e.Button == MouseButtons.Right)//選択矩形内での右クリックでコンテキストメニュー表示
                     {
                         for (int i = 0; i < stripItem.Count(); i++) stripItem[i].Enabled = true;
                         stripItem[2].Enabled = false;
                         selectMenuStrip.Show(this, e.Location);
                     }
-                    else seRectFlag = true;
+                    else { seRectFlag = true; }//それ以外では移動用フラグを立てる
                 }
                 else if (e.Button == MouseButtons.Right)//選択矩形以外での右クリック
                 {
@@ -642,6 +652,7 @@ namespace NotesEditerforD
                         break;
                     }
                 }
+                if (seRectFlag) selectedNote = null;//矩形選択移動のときは単ノーツ移動はさせない
                 if (!hitFlag && !seRectFlag && e.Button == MouseButtons.Left)//矩形選択
                 {
                     rectSelectBegin = locationize(e.Location, 0); rectSelectEnd = rectSelectBegin;
@@ -1014,14 +1025,21 @@ namespace NotesEditerforD
             }
         }
 
-        private void this_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// わからへん...（使わない多分）
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void this_KeyDown(object sender, KeyEventArgs e)//わからへん...（使わない多分）
         {
+            /*
             MessageBox.Show("Piyo");
             if (e.KeyData == Keys.Delete && seRect != null)
             {
                 seRect.removeSelectedNotes();
                 MessageBox.Show("Hoge");
             } 
+            //*/
         }
 
         /// <summary>
@@ -1209,6 +1227,11 @@ namespace NotesEditerforD
             set { index = value; }
         }
 
+        /// <summary>
+        /// shortNotesのリストから指定した_noteを消します
+        /// ロングノーツの節などの前後の処理などはなされません
+        /// </summary>
+        /// <param name="_note">消したいノーツ</param>
         private void deleteNote(ShortNote _note)
         {
             if (_note.PrevNote != null && prevScore != null)
@@ -1249,6 +1272,115 @@ namespace NotesEditerforD
             update();
         }
 
+        /// <summary>
+        /// ロングノーツの節が渡された場合でも前後のLineノーツの繋ぎ変えなどやってくれます
+        /// </summary>
+        /// <param name="_note">消したいノーツ</param>
+        private void deleteforLongNote(ShortNote _note)
+        {
+            if (_note.NoteStyle == "HoldLine" || _note.NoteStyle == "SlideLine" || _note.NoteStyle == "AirLine") return;
+            else if (_note.NoteStyle == "SlideTap" || _note.NoteStyle == "SlideRelay")
+            {
+                ShortNote prev = null, next = null;
+                foreach (ShortNote _prev in shortNotes)
+                {
+                    if (_prev.NoteStyle == "SlideLine" && _prev.LongNoteNumber == _note.LongNoteNumber && _prev.EndPosition == _note.NotePosition)
+                    {
+                        prev = _prev;
+                        break;
+                    }
+                }
+                foreach (ShortNote _next in shortNotes)
+                {
+                    if (_next.NoteStyle == "SlideLine" && _next.LongNoteNumber == _note.LongNoteNumber && _next.StartPosition == _note.NotePosition)
+                    {
+                        next = _next;
+                        break;
+                    }
+                }
+                if (next != null)
+                {
+                    prev.EndPosition = next.EndPosition;
+                    prev.update();
+                    deleteNote(next);
+                    deleteNote(_note);
+                }
+            }
+            else if (_note.NoteStyle == "AirAction")
+            {
+                ShortNote prev = null, next = null;
+                foreach (ShortNote _prev in shortNotes)
+                {
+                    if (_prev.NoteStyle == "AirLine" && _prev.LongNoteNumber == _note.LongNoteNumber && _prev.EndPosition == _note.NotePosition)
+                    {
+                        prev = _prev;
+                        break;
+                    }
+                }
+                foreach (ShortNote _next in shortNotes)
+                {
+                    if (_next.NoteStyle == "AirLine" && _next.LongNoteNumber == _note.LongNoteNumber && _next.StartPosition == _note.NotePosition)
+                    {
+                        next = _next;
+                        break;
+                    }
+                }
+                if (next != null)
+                {
+                    prev.EndPosition = next.EndPosition;
+                    prev.update();
+                    deleteNote(next);
+                    deleteNote(_note);
+                }
+            }
+            else if (_note.NoteStyle == "Slide" || _note.NoteStyle == "Hold" || _note.NoteStyle == "AirBegin")
+            {
+                int number = _note.LongNoteNumber;
+                if (number == -1) { deleteNote(_note); return; }
+                string style;
+                if (_note.NoteStyle == "Slide") style = "SlideEnd";
+                else if (_note.NoteStyle == "Hold") style = "HoldEnd";
+                else style = "AirEnd";
+                bool isOver = false;
+                for (MusicScore score = this; score != null; score = score.nextScore)
+                {
+                    foreach (ShortNote __note in score.shortNotes.ToArray())
+                    {
+                        if (__note.LongNoteNumber == number && __note.NoteStyle == style) isOver = true;
+                        if (__note.LongNoteNumber == number) score.deleteNote(__note);
+                    }
+                    if (isOver) break; //{ MessageBox.Show("break!"); break; }
+                }
+                return;
+            }
+            else if (_note.NoteStyle == "SlideEnd" || _note.NoteStyle == "HoldEnd" || _note.NoteStyle == "AirEnd")
+            {
+                int number = _note.LongNoteNumber;
+                if (number == -1) { deleteNote(_note); return; }
+                string style;
+                if (_note.NoteStyle == "SlideEnd") style = "Slide";
+                else if (_note.NoteStyle == "HoldEnd") style = "Hold";
+                else style = "AirBegin";
+                bool isOver = false;
+                for (MusicScore score = this; score != null; score = score.prevScore)
+                {
+                    if (score == null) break;
+                    foreach (ShortNote __note in score.shortNotes.ToArray())
+                    {
+                        if (__note.LongNoteNumber == number && __note.NoteStyle == style) isOver = true;
+                        if (__note.LongNoteNumber == number) score.deleteNote(__note);
+                    }
+                    if (isOver) break; //{ MessageBox.Show("Over!"); break; }
+                }
+                return;
+            }
+            deleteNote(_note);
+            return;
+        }
+
+        /// <summary>
+        /// とりあえず全部ノーツを消します
+        /// </summary>
         public void deleteAllNotes()
         {
             shortNotes.Clear();
