@@ -31,8 +31,9 @@ namespace NotesEditerforD
         private ShortNote previewNote, previewLongNote, startNote, selectedNote, selectedNote_prev, selectedNote_next;
         private MusicScore prevScore, nextScore;
         private MouseButtons eyedropperMouseButton = MouseButtons.Right;
-        private ContextMenuStrip selectMenuStrip;
-        
+        private ContextMenuStrip selectMenuStrip;//, scoreMenuStrip;
+        private ToolStripMenuItem[] stripItem;
+
         public MusicScore()
         {
             selectedBeat = 8;
@@ -52,12 +53,15 @@ namespace NotesEditerforD
             addSlideRelayFlag = false;
             previewVisible = true;
             selectMenuStrip = new ContextMenuStrip();
-            selectMenuStrip.Items.Add("切り取り", null, new EventHandler(menuStripCut));
-            selectMenuStrip.Items.Add("コピー", null, new EventHandler(menuStripCopy));
-            selectMenuStrip.Items.Add("貼り付け", null, new EventHandler(menuStripPaste));
-            selectMenuStrip.Items.Add("削除", null, new EventHandler(menuStripRemove));
-            selectMenuStrip.Items.Add("左右反転", null, new EventHandler(menuStripHorInv));
-            
+            stripItem = new ToolStripMenuItem[]
+            {
+                new ToolStripMenuItem("切り取り", null, new EventHandler(menuStripCut)),
+                new ToolStripMenuItem("コピー", null, new EventHandler(menuStripCopy)),
+                new ToolStripMenuItem("貼り付け", null, new EventHandler(menuStripPaste)),
+                new ToolStripMenuItem("削除", null, new EventHandler(menuStripRemove)),
+                new ToolStripMenuItem("左右反転", null, new EventHandler(menuStripHorInv))
+            };
+            selectMenuStrip.Items.AddRange(stripItem);
 
             this.MouseDown += new MouseEventHandler(this_MouseDown);
             this.MouseMove += new MouseEventHandler(this_MouseMove);
@@ -179,15 +183,22 @@ namespace NotesEditerforD
                 }
                 else if (false) ;//始点と終点を共に含んでいるか
             }
-            //Line系もYankNotesに入れる処理書け（ロングノーツの番号更新もしたりする）
+            //Line系もYankNotesに入れる処理書け
             sRoot.YankRect = new RectSelect(seRect.RectUL, seRect.RectDR, shortNotes);
         }
 
         private void menuStripPaste(object sender, EventArgs e)//sRootからもらう//詰める
         {
-            shortNotes.AddRange(sRoot.YankNotes.ToList());
-            seRect = sRoot.YankRect;
-            seRect.SelectedNotes = sRoot.YankNotes;
+            List<ShortNote> selectedNotes = new List<ShortNote>();
+            foreach(ShortNote note in sRoot.YankNotes)
+            {
+                selectedNotes.Add(
+                         new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+            }
+            shortNotes.AddRange(selectedNotes);
+            //LongNotesNumber更新
+            seRect = new RectSelect(sRoot.YankRect.RectUL, sRoot.YankRect.RectDR, shortNotes);
+            seRect.SelectedNotes = selectedNotes;
             seRect.move(new Point(21, 2));
         }
 
@@ -569,15 +580,18 @@ namespace NotesEditerforD
             {
                 if (seRect != null && seRect.Rect.Contains(e.Location))
                 {
-                    if (e.Button == MouseButtons.Right)
+                    if (e.Button == MouseButtons.Right)//選択矩形内での右クリック
                     {
-                        
+                        for (int i = 0; i < stripItem.Count(); i++) stripItem[i].Enabled = true;
+                        stripItem[2].Enabled = false;
                         selectMenuStrip.Show(this, e.Location);
                     }
                     else seRectFlag = true;
                 }
-                else if (e.Button == MouseButtons.Right)
+                else if (e.Button == MouseButtons.Right)//選択矩形以外での右クリック
                 {
+                    for(int i=0; i < stripItem.Count(); i++) stripItem[i].Enabled = false;
+                    if (sRoot.YankRect != null) stripItem[2].Enabled = true;
                     selectMenuStrip.Show(this, e.Location);
                 }
                 bool hitFlag = false;
