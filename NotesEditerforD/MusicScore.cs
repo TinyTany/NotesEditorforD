@@ -158,11 +158,13 @@ namespace NotesEditerforD
 
         private void menuStripCut(object sender, EventArgs e)
         {
-
+            menuStripCopy(sender, e);
+            menuStripRemove(sender, e);
         }
 
         private void menuStripCopy(object sender, EventArgs e)//sRootに渡す
         {
+            sRoot.YankNotes.Clear();
             foreach(ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツをコピーしてYankのリストにぶち込む
             {
                 if(seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10, 5))) &&
@@ -172,7 +174,7 @@ namespace NotesEditerforD
                          new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
                 }
             }
-            foreach(ShortNote note in sRoot.YankNotes.ToList())//ロングノーツ系のやつは全体が含まれてるかチェック
+            foreach(ShortNote note in sRoot.YankNotes.ToArray())//ロングノーツ系のやつは全体が含まれてるかチェック
             {
                 if (note.LongNoteNumber == -1) continue;
                 if(shortNotes.Where
@@ -184,6 +186,14 @@ namespace NotesEditerforD
                 else if (false) ;//始点と終点を共に含んでいるか
             }
             //Line系もYankNotesに入れる処理書け
+            foreach(ShortNote note in shortNotes)//書きました
+            {
+                if (note.LongNoteNumber == -1) continue;
+                if (!(new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(note.NoteStyle))) continue;
+                if (!sRoot.YankNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber).Any()) continue;
+                sRoot.YankNotes.Insert(0,
+                    new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+            }
             sRoot.YankRect = new RectSelect(seRect.RectUL, seRect.RectDR, shortNotes);
         }
 
@@ -195,8 +205,20 @@ namespace NotesEditerforD
                 selectedNotes.Add(
                          new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
             }
+            //LongNotesNumber更新しろ
+            int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて無理やり実装する
+            foreach(ShortNote note in selectedNotes)
+            {
+                if (note.LongNoteNumber == -1) continue;
+                if (num[note.LongNoteNumber] == -1)
+                {
+                    num[note.LongNoteNumber] = sRoot.LongNoteNumber;
+                    note.LongNoteNumber = num[note.LongNoteNumber];
+                    sRoot.LongNoteNumber++;
+                }
+                else note.LongNoteNumber = num[note.LongNoteNumber];
+            }
             shortNotes.AddRange(selectedNotes);
-            //LongNotesNumber更新
             seRect = new RectSelect(sRoot.YankRect.RectUL, sRoot.YankRect.RectDR, shortNotes);
             seRect.SelectedNotes = selectedNotes;
             seRect.move(new Point(21, 2));
