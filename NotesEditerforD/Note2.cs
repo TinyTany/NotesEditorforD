@@ -42,6 +42,25 @@ namespace NotesEditerforD
             //destPoints = new Point[3];
 
             noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
+            setRelativePosition();
+        }
+
+        public ShortNote(MusicScore _musicscore, Point _position, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber, int _beat)
+        {
+            musicscore = _musicscore;
+            position = _position;
+            noteSize = _noteSize;//1-16
+            noteStyle = _noteStyle;
+            airDirection = _airDirection;
+            longNoteNumber = _longNoteNumber;
+            //
+            prevNote = null;
+            nextNote = null;
+            //destPoints = new Point[3];
+
+            noteImage = setNoteImage();
+            pos.Beat = _beat;
             setRelativePosition();
         }
 
@@ -55,6 +74,7 @@ namespace NotesEditerforD
             //destPoints = new Point[3];
 
             noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
             setRelativePosition();
         }
         //
@@ -62,23 +82,29 @@ namespace NotesEditerforD
         private void setRelativePosition()
         {
             pos.X = (position.X - MusicScore.LeftMargin) / 10;
-            pos.Beat = MusicScore.SelectedBeat;
+            //pos.Beat = MusicScore.SelectedBeat;//20160;
             int localY = 778 - position.Y - MusicScore.BottomMargin;
             if (localY < 386)//2*n+1小節
             {
                 pos.Measure = 2 * musicscore.Index + 1;
-                pos.BeatNumber = localY / (384 / pos.Beat);
+                pos.BeatNumber = (int)Math.Round((localY - 3) * pos.Beat / 384m);
             }
             else//2*(n+1)小節
             {
                 localY -= 386;
                 pos.Measure = 2 * musicscore.Index + 2;
-                pos.BeatNumber = localY / (384 / pos.Beat);
+                pos.BeatNumber = (int)Math.Round((localY - 3) * pos.Beat / 384m);
             }
             int beatGCD = GCD(pos.Beat, pos.BeatNumber);
             pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;
-            //MessageBox.Show(pos.X + "\n" + pos.Measure + "(" + pos.BeatNumber + "/" + pos.Beat + ")");
         }
+
+        //*
+        public void showRerativePosition()
+        {
+            MessageBox.Show(pos.X + "\n" + pos.Measure + "(" + pos.BeatNumber + "/" + pos.Beat + ")");
+        }
+        //*/
 
         private int GCD(int a, int b)
         {
@@ -182,6 +208,7 @@ namespace NotesEditerforD
         public void update()
         {
             noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
             setRelativePosition();
         }
 

@@ -55,7 +55,7 @@ namespace NotesEditerforD
             selectMenuStrip = new ContextMenuStrip();
             stripItem = new ToolStripMenuItem[]
             {
-                new ToolStripMenuItem("切り取り", null, new EventHandler(menuStripCut)),
+                new ToolStripMenuItem("切り取り（未実装）", null, new EventHandler(menuStripCut)),
                 new ToolStripMenuItem("コピー", null, new EventHandler(menuStripCopy)),
                 new ToolStripMenuItem("貼り付け", null, new EventHandler(menuStripPaste)),
                 new ToolStripMenuItem("削除", null, new EventHandler(menuStripRemove)),
@@ -158,7 +158,7 @@ namespace NotesEditerforD
 
         private void menuStripCut(object sender, EventArgs e)
         {
-            menuStripCopy(sender, e);
+            //menuStripCopy(sender, e);
             //menuStripRemove(sender, e);
         }
 
@@ -224,7 +224,7 @@ namespace NotesEditerforD
             seRect.move(new Point(21, 2));
         }
 
-        private void menuStripRemove(object sender, EventArgs e)//ロングノーツの消し方を真面目にやれ
+        private void menuStripRemove(object sender, EventArgs e)//ロングノーツの消し方を真面目にやれ//やった
         {
             List<ShortNote> selectedNotes = new List<ShortNote>();
             foreach (ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツそのものをSelectedNotesのリストに（も）ぶち込む
@@ -249,9 +249,26 @@ namespace NotesEditerforD
         public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
         {
             Point notePosition;
-            int noteSize, longNoteNumber;
+            int noteSize, longNoteNumber, beat;
             string noteStyle, airDirection;
             ShortNote shortNote;
+            if (dymsVersion == "0.6")
+            {
+                notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
+                startPosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
+                endPosition = new Point(int.Parse(_noteData[6]), int.Parse(_noteData[7]));
+                noteSize = int.Parse(_noteData[1]);
+                noteStyle = _noteData[0];
+                airDirection = _noteData[8];
+                longNoteNumber = int.Parse(_noteData[9]);
+                beat = int.Parse(_noteData[11]);
+                if(new string[] { "HoldLine", "SlideLine", "AirLine"}.Contains(noteStyle))
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                else
+                    shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, beat);
+                shortNotes.Add(shortNote);
+                return;
+            }
             if (dymsVersion == "0.3" || dymsVersion == "0.4" || dymsVersion == "0.5")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
@@ -264,7 +281,6 @@ namespace NotesEditerforD
                 if(dymsVersion == "0.5")
                 {
                     shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
-                    //shortNote.setRelativePosition();
                     shortNotes.Add(shortNote);
                     return;
                 }
@@ -339,7 +355,6 @@ namespace NotesEditerforD
                 {
                     shortNote = new ShortNote(this, locationize(e.Location), selectedNoteStyle, selectedBPM);
                     if (shortNote.NotePosition.Y != 2 && ((772 - shortNote.NotePosition.Y) - 2) % 48 == 0) specialNotes.Add(shortNote);
-                    //shortNote.setRelativePosition();
                     update();
                     return;
                 }
@@ -481,9 +496,9 @@ namespace NotesEditerforD
                         }
                     }
                 }
-                //shortNote.setRelativePosition();
                 if(!deleteFlag) addNote(shortNote);
                 update();
+                //shortNote.showRerativePosition();//テスト用
                 //MessageBox.Show(locationize(e.Location).ToString());
             }
             else if (selectedEditStatus == "Delete")

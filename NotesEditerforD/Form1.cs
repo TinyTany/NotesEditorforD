@@ -183,7 +183,8 @@ namespace NotesEditerforD
                         note.EndPosition.Y + "," +   //7
                         note.AirDirection + "," +    //8
                         note.LongNoteNumber + "," +  //9
-                        indx);                       //10
+                        indx + "," +                 //10
+                        note.LocalPosition.Beat);    //11
                 }
                 indx++;
             }
@@ -635,7 +636,7 @@ namespace NotesEditerforD
                     sRoot.Scores[indx].setNote(noteData, "0.1");
                 }
                 if (dymsDataVersion == "0.1") msIndex = 12;
-                else msIndex = 10;
+                else msIndex = 10;//index
                 bool flg = false;
                 while (sr.Peek() > -1)
                 {
