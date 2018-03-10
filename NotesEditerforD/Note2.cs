@@ -4,23 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace NotesEditerforD
 {
+    /// <summary>
+    /// ノーツそのもの
+    /// </summary>
     public class ShortNote
     {
-        private MusicScore2 musicscore;
+        private MusicScore musicscore;
         private Point position, startPosition, endPosition;
+        private PosInfo pos = new PosInfo();
         private string noteStyle, airDirection;
         private ShortNote prevNote, nextNote;
         private int longNoteNumber, noteSize;
-        private Point[] destPoints;//{ul, ur, ll}
+        private Point[] destPoints = new Point[3];//{ul, ur, ll}
         private decimal specialValue;
         //*
         private Bitmap noteImage;
         //*/
 
-        public ShortNote(MusicScore2 _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
+        //コンストラクタ
+        public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
         {
             musicscore = _musicscore;
             position = _position;
@@ -33,22 +39,91 @@ namespace NotesEditerforD
             //
             prevNote = null;
             nextNote = null;
-            destPoints = new Point[3];
+            //destPoints = new Point[3];
 
             noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
+            setRelativePosition();
         }
 
-        public ShortNote(MusicScore2 _musicscore, Point _position, string _noteStyle, decimal _value)
+        public ShortNote(MusicScore _musicscore, Point _position, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber, int _beat)
+        {
+            musicscore = _musicscore;
+            position = _position;
+            noteSize = _noteSize;//1-16
+            noteStyle = _noteStyle;
+            airDirection = _airDirection;
+            longNoteNumber = _longNoteNumber;
+            //
+            prevNote = null;
+            nextNote = null;
+            //destPoints = new Point[3];
+
+            noteImage = setNoteImage();
+            pos.Beat = _beat;
+            setRelativePosition();
+        }
+
+        public ShortNote(MusicScore _musicscore, Point _position, string _noteStyle, decimal _value)
         {
             musicscore = _musicscore;
             position = _position;
             noteStyle = _noteStyle;
             specialValue = _value;
             noteSize = 16;
-            destPoints = new Point[3];
+            //destPoints = new Point[3];
+
             noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
+            setRelativePosition();
+        }
+        //
+
+        private void setRelativePosition()
+        {
+            pos.X = (position.X - MusicScore.LeftMargin) / 10;
+            //pos.Beat = MusicScore.SelectedBeat;//20160;
+            int localY = 778 - position.Y - MusicScore.BottomMargin;
+            if (localY < 386)//2*n+1小節
+            {
+                pos.Measure = 2 * musicscore.Index + 1;
+                pos.BeatNumber = (int)Math.Round((localY - 3) * pos.Beat / 384m);
+            }
+            else//2*(n+1)小節
+            {
+                localY -= 386;
+                pos.Measure = 2 * musicscore.Index + 2;
+                pos.BeatNumber = (int)Math.Round((localY - 2) * pos.Beat / 384m);
+            }
+            int beatGCD = GCD(pos.Beat, pos.BeatNumber);
+            pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;
         }
 
+        //*
+        public void showRerativePosition()
+        {
+            MessageBox.Show(pos.X + "\n" + pos.Measure + "(" + pos.BeatNumber + "/" + pos.Beat + ")");
+        }
+        //*/
+
+        private int GCD(int a, int b)
+        {
+            if (a == 0 || b == 0) return 1;
+            if (a < b)
+            {
+                int tmp = a; a = b; b = tmp;
+            }
+
+            int r = a % b;
+            while (r != 0)
+            {
+                a = b; b = r; r = a % b;
+            }
+
+            return b;
+        }
+
+        /////////////////////////////////////////
         ///*
         public Bitmap NoteImage
         {
@@ -92,6 +167,12 @@ namespace NotesEditerforD
             set { this.position = value; }
         }
 
+        public PosInfo LocalPosition
+        {
+            get { return pos; }
+            set { pos = value; }
+        }
+
         public Point StartPosition
         {
             get { return this.startPosition; }
@@ -121,13 +202,17 @@ namespace NotesEditerforD
             get { return this.specialValue; }
             set { this.specialValue = value; }
         }
+        
+        
 
         public void update()
         {
             noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
+            setRelativePosition();
         }
 
-        public Bitmap setNoteImage()
+        private Bitmap setNoteImage()
         {
             System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
             cm.Matrix00 = 1; cm.Matrix11 = 1; cm.Matrix22 = 1; cm.Matrix33 = 1; cm.Matrix44 = 1;
@@ -159,6 +244,7 @@ namespace NotesEditerforD
             System.Drawing.Imaging.ImageAttributes ia = new System.Drawing.Imaging.ImageAttributes();
             ia.SetColorMatrix(cm);
             Graphics g = Graphics.FromImage(canvas);
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
             Bitmap _noteImage = setNoteImage(noteStyle);
             _noteImage.MakeTransparent(Color.Black);
             destPoints = setDestPoints("ShortNote");
@@ -169,7 +255,7 @@ namespace NotesEditerforD
             return canvas;
         }
         //*
-        public Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
+        private Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
         {
             Bitmap noteImage;
             switch (_noteStyle)

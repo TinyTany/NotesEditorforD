@@ -7,42 +7,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace NotesEditerforD
 {
     public partial class Form1 : Form
     {
-        MusicScore2 musicScore2;
+        private ScoreRoot sRoot;
         private static NotesButton prevNotesButton;
-        private static SpecialButton prevSpecialButton;
         private int maxScore = 125;
-        List<MusicScore2> scores2 = new List<MusicScore2>();
-        private string songID, title, artist, designer, wave, jacket, exDir, appName, pathName, dymsDataVersion;
+        //List<MusicScore> scores2 = new List<MusicScore>();
+        private string songID, title, artist, designer, wave, jacket, exDir, appName, pathName, dymsDataVersion, weStr;
         private int difficulty, longNoteNumber;
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.5", Version = "0.5.2";
-        public bool slideRelay = false;
+        private const string dymsVersion = "0.6", Version = "0.6b (unstable)";
+        //public bool slideRelay = false;
         public Form1()
         {
             InitializeComponent();
-            checkSlideRelay.Checked = !slideRelay;
+            sRoot = new ScoreRoot(this, maxScore, 0, false);
+            ScoreRoot.StartBPM = BPM;
+            this.Controls.Add(sRoot);
+            sRoot.update();
+            checkSlideRelay.Checked = true;
             comboBoxBeat.SelectedIndex = 1;
-            MusicScore2.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
+            MusicScore.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
+            /*
             for (int i = 0; i < maxScore; i++)
             {
-                musicScore2 = new MusicScore2();
+                musicScore2 = new MusicScore();
                 musicScore2.form1 = this;
                 musicScore2.Index = i;
                 flowLayoutPanelMusicScore.Controls.Add(musicScore2);
                 scores2.Add(musicScore2);
                 musicScore2.update();
             }
-            ///*
             scores2[0].NextScore = scores2[1];
             scores2[0].PrevScore = null;
-            for(int i = 1; i < maxScore - 1; i++)
+            for (int i = 1; i < maxScore - 1; i++)
             {
                 scores2[i].NextScore = scores2[i + 1];
                 scores2[i].PrevScore = scores2[i - 1];
@@ -68,7 +74,8 @@ namespace NotesEditerforD
             designer = "defaultDesigner";
             wave = "";
             jacket = "";
-            exDir = System.Environment.CurrentDirectory;
+            weStr = "";
+            exDir = Environment.CurrentDirectory;
             difficulty = 0;
             playLevel = 1.0m;
             offset = 0.0m;
@@ -77,7 +84,7 @@ namespace NotesEditerforD
             fileName = "NewMusicScore.dyms";
             pathName = null;
             setEdited(false);
-            
+
             longNoteNumber = 0;
 
             //KeyDownEventはすべてにおいて発火する
@@ -85,17 +92,25 @@ namespace NotesEditerforD
             {
                 c.KeyDown += Form1_KeyDown;
             }
-        }
 
-        public decimal StartBPM
-        {
-            get { return BPM; }
+            Tap._Form1 = this;
+            ExTap._Form1 = this;
+            Flick._Form1 = this;
+            HellTap._Form1 = this;
+            Hold._Form1 = this;
+            Slide._Form1 = this;
+            SlideCurve._Form1 = this;
+            AirUp._Form1 = this;
+            AirDown._Form1 = this;
+            AirLine._Form1 = this;
+            Speed._Form1 = this;
+            BPMButton._Form1 = this;
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
         {
             if (!isEdited) return;
-            if(isNew) { object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e);  }
+            if (isNew) { object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e); }
             else
             {
                 saveScores(fileName);
@@ -107,8 +122,12 @@ namespace NotesEditerforD
         {
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.FileName = fileName;
+            sfd.DefaultExt = ".dyz";
+            sfd.Filter = "dyzファイル(NotesEditorforD) (.dyz)|*.dyz";
+            //*
             sfd.DefaultExt = ".dyms";
             sfd.Filter = "dymsファイル(NotesEditorforD) (.dyms)|*.dyms";
+            //*/
             sfd.RestoreDirectory = true;
 
             if (sfd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
@@ -122,8 +141,17 @@ namespace NotesEditerforD
             }
         }
 
+        private void serialize(string path)
+        {
+            FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
+            BinaryFormatter bf = new BinaryFormatter();
+            bf.Serialize(fs, sRoot);
+            fs.Close();
+        }
+
         private void saveScores(string path)
         {
+            //serialize(path); return;
             int indx = 0;
             System.IO.StreamWriter sw = new System.IO.StreamWriter(path);
             sw.WriteLine("dymsVersion:" + dymsVersion);
@@ -132,7 +160,7 @@ namespace NotesEditerforD
             sw.WriteLine("ARTIST:" + artist);
             sw.WriteLine("DESIGNER:" + designer);
             sw.WriteLine("DIFFICULTY:" + difficulty);
-            sw.WriteLine("PLAYLEVEL:" + playLevel);
+            sw.WriteLine("PLAYLEVEL:" + playLevel + ":" + weStr);
             sw.WriteLine("WAVE=" + wave);
             sw.WriteLine("WAVEOFFSET:" + offset);
             sw.WriteLine("JACKET=" + jacket);
@@ -140,7 +168,7 @@ namespace NotesEditerforD
             sw.WriteLine("LongNoteNumber:" + longNoteNumber);
             sw.WriteLine("ExportDir=" + exDir);
             sw.WriteLine("isWhile:" + isWhile);
-            foreach (MusicScore2 mscore in scores2)
+            foreach (MusicScore mscore in sRoot.Scores)
             {
                 foreach (ShortNote note in mscore.shortNotes)
                 {
@@ -155,12 +183,13 @@ namespace NotesEditerforD
                         note.EndPosition.Y + "," +   //7
                         note.AirDirection + "," +    //8
                         note.LongNoteNumber + "," +  //9
-                        indx);                       //10
+                        indx + "," +                 //10
+                        note.LocalPosition.Beat);    //11
                 }
                 indx++;
             }
             sw.WriteLine("#SpecialNotes"); indx = 0;
-            foreach (MusicScore2 mscore in scores2)
+            foreach (MusicScore mscore in sRoot.Scores)
             {
                 foreach (ShortNote note in mscore.specialNotes)
                 {
@@ -182,10 +211,12 @@ namespace NotesEditerforD
             set { this.longNoteNumber = value; }
         }
 
-        public List<MusicScore2> Scores2
+        /*
+        public List<MusicScore> Scores2
         {
             get { return this.scores2; }
         }
+        //*/
 
         public int MaxScore
         {
@@ -210,8 +241,8 @@ namespace NotesEditerforD
 
         private void exportMenuItem_Click(object sender, EventArgs e)
         {
-            Form2 f = new Form2(this);
-            f.loadExportData(songID, title, artist, designer, wave, jacket, difficulty, playLevel, BPM, exDir, offset, isWhile);
+            Form2 f = new Form2(this, sRoot);
+            f.loadExportData(songID, title, artist, designer, wave, jacket, difficulty, playLevel, BPM, exDir, offset, isWhile, weStr);
             f.ShowDialog(this);
             setEdited(true);
         }
@@ -219,7 +250,8 @@ namespace NotesEditerforD
         private void BPMupdown_ValueChanged(object sender, EventArgs e)
         {
             BPM = BPMupdown.Value;
-            scores2[0].update();
+            ScoreRoot.StartBPM = BPM;
+            sRoot.Scores[0].update();
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -248,22 +280,24 @@ namespace NotesEditerforD
                 if (comboBoxGrid.SelectedIndex == 0) comboBoxGrid.SelectedIndex = comboBoxGrid.Items.Count - 1;
                 else comboBoxGrid.SelectedIndex--;
             }
-            else if (e.KeyCode == Keys.F1) { MusicScore2.SelectedNoteStyle = "Tap"; activeNotesButton(Tap); }
-            else if (e.KeyCode == Keys.F2) { MusicScore2.SelectedNoteStyle = "ExTap"; activeNotesButton(ExTap); }
-            else if (e.KeyCode == Keys.F3) { MusicScore2.SelectedNoteStyle = "Flick"; activeNotesButton(Flick); }
-            else if (e.KeyCode == Keys.F4) { MusicScore2.SelectedNoteStyle = "HellTap"; activeNotesButton(HellTap); }
-            else if (e.KeyCode == Keys.F5) { MusicScore2.SelectedNoteStyle = "Hold"; activeNotesButton(Hold); }
-            else if (e.KeyCode == Keys.F6) { MusicScore2.SelectedNoteStyle = "Slide"; activeNotesButton(Slide); }
-            else if (e.KeyCode == Keys.F7) { MusicScore2.SelectedNoteStyle = "SlideCurve"; activeNotesButton(SlideCurve); }
-            else if (e.KeyCode == Keys.F8) { MusicScore2.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
-            else if (e.KeyCode == Keys.F9) { MusicScore2.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
-            else if (e.KeyCode == Keys.F10) { MusicScore2.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
-            else if (e.KeyCode == Keys.F11) { MusicScore2.SelectedNoteStyle = "Speed"; activeNotesButton(Speed); }
+            else if (e.KeyCode == Keys.F1) { MusicScore.SelectedNoteStyle = "Tap"; activeNotesButton(Tap); }
+            else if (e.KeyCode == Keys.F2) { MusicScore.SelectedNoteStyle = "ExTap"; activeNotesButton(ExTap); }
+            else if (e.KeyCode == Keys.F3) { MusicScore.SelectedNoteStyle = "Flick"; activeNotesButton(Flick); }
+            else if (e.KeyCode == Keys.F4) { MusicScore.SelectedNoteStyle = "HellTap"; activeNotesButton(HellTap); }
+            else if (e.KeyCode == Keys.F5) { MusicScore.SelectedNoteStyle = "Hold"; activeNotesButton(Hold); }
+            else if (e.KeyCode == Keys.F6) { MusicScore.SelectedNoteStyle = "Slide"; activeNotesButton(Slide); }
+            else if (e.KeyCode == Keys.F7) { MusicScore.SelectedNoteStyle = "SlideCurve"; activeNotesButton(SlideCurve); }
+            else if (e.KeyCode == Keys.F8) { MusicScore.SelectedNoteStyle = "AirUp"; activeNotesButton(AirUp); }
+            else if (e.KeyCode == Keys.F9) { MusicScore.SelectedNoteStyle = "AirDown"; activeNotesButton(AirDown); }
+            else if (e.KeyCode == Keys.F10) { MusicScore.SelectedNoteStyle = "AirLine"; activeNotesButton(AirLine); }
+            else if (e.KeyCode == Keys.F11) { MusicScore.SelectedNoteStyle = "BPM"; activeNotesButton(BPMButton); }
+            else if (e.KeyCode == Keys.F12) { MusicScore.SelectedNoteStyle = "Speed"; activeNotesButton(Speed); }
             else if (e.KeyCode == Keys.S)
             {
-                slideRelay = !slideRelay;
-                checkSlideRelay.Checked = !slideRelay;
+                sRoot.slideRelayInv();
+                checkSlideRelay.Checked = !checkSlideRelay.Checked;
             }
+            if (e.KeyCode == Keys.Delete) { }
             if (AirUp.IsActive)
             {
                 if (e.KeyCode == Keys.L) AirUp.setDirection("Left");
@@ -293,26 +327,14 @@ namespace NotesEditerforD
             }
             else
             {
-                /*
-                if (e.KeyCode == Keys.OemPeriod && e.Modifiers == Keys.Shift && activeNotesButton().NumUDValue != activeNotesButton().NumUDMax)
-                {
-                    activeNotesButton().NumUDValue++;
-                    activeNotesButton().numericUpDown1_ValueChanged(sender, e);
-                }
-                else if (e.KeyCode == Keys.Oemcomma && e.Modifiers == Keys.Shift && activeNotesButton().NumUDValue != activeNotesButton().NumUDMin)
-                {
-                    activeNotesButton().NumUDValue--;
-                    activeNotesButton().numericUpDown1_ValueChanged(sender, e);
-                }
-                //*/
                 if (e.KeyCode == Keys.OemPeriod && activeNotesButton().NumUDValue != activeNotesButton().NumUDMax)
                 {
-                    activeNotesButton().NumUDValue+=0.1m;
+                    activeNotesButton().NumUDValue += 0.1m;
                     activeNotesButton().numericUpDown1_ValueChanged(sender, e);
                 }
                 else if (e.KeyCode == Keys.Oemcomma && activeNotesButton().NumUDValue != activeNotesButton().NumUDMin)
                 {
-                    activeNotesButton().NumUDValue-=0.1m;
+                    activeNotesButton().NumUDValue -= 0.1m;
                     activeNotesButton().numericUpDown1_ValueChanged(sender, e);
                 }
             }
@@ -321,9 +343,14 @@ namespace NotesEditerforD
             //MessageBox.Show("KeyDown");
         }
 
-        private void flowLayoutPanelMusicScore_Paint(object sender, PaintEventArgs e)
+        private void Form1_Resize(object sender, EventArgs e)
         {
-
+            /*
+            flowLayoutPanelMusicScore.Width = this.Width - 297;
+            flowLayoutPanelMusicScore.Height = this.Height - 97;
+            //*/
+            flowLayoutPanelNotesButton.Height = this.Height - 72;
+            sRoot.panelResize(Width, Height);
         }
 
         private NotesButton activeNotesButton()
@@ -345,7 +372,7 @@ namespace NotesEditerforD
 
         private void checkSlideRelay_Click(object sender, EventArgs e)
         {
-            slideRelay = !slideRelay;
+            sRoot.slideRelayInv();
             this.ActiveControl = null;
         }
 
@@ -359,7 +386,7 @@ namespace NotesEditerforD
 
         }
 
-        public void saveExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool _isWhile)
+        public void saveExportData(string _songID, string _title, string _artist, string _designer, string _wave, string _jacket, int _difficulty, decimal _playLevel, decimal _BPM, string _exDir, decimal _offset, bool _isWhile, string _weStr)
         {
             songID = _songID;
             title = _title;
@@ -373,6 +400,7 @@ namespace NotesEditerforD
             exDir = _exDir;
             offset = _offset;
             isWhile = _isWhile;
+            weStr = _weStr;
         }
 
         private void newMenuItem_Click(object sender, EventArgs e)//edt
@@ -387,10 +415,7 @@ namespace NotesEditerforD
                 }
                 else if (result == DialogResult.Cancel) return;
             }
-            for (int i = 0; i < scores2.Count(); i++)
-            {
-                scores2[i].deleteAllNotes();
-            }
+            sRoot.newScore();
             setTotalNotes();
             songID = "defaultID";
             title = "defaultTitle";
@@ -398,6 +423,7 @@ namespace NotesEditerforD
             designer = "defaultDesigner";
             wave = "";
             jacket = "";
+            weStr = "";
             exDir = Environment.CurrentDirectory;
             difficulty = 0;
             playLevel = 1.0m;
@@ -420,7 +446,7 @@ namespace NotesEditerforD
                     object _sender = new object(); EventArgs _e = new EventArgs(); saveAsMenuItem_Click(_sender, _e);
                     return;
                 }
-                else if (result == DialogResult.Cancel) return; 
+                else if (result == DialogResult.Cancel) return;
             }
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.FileName = "default.dyms";
@@ -430,10 +456,7 @@ namespace NotesEditerforD
             if (ofd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
             {
                 //initialize musicscore
-                for (int i = 0; i < scores2.Count(); i++)
-                {
-                    scores2[i].deleteAllNotes();
-                }
+                sRoot.newScore();
                 setTotalNotes();
                 //
                 System.IO.StreamReader sr = new System.IO.StreamReader(ofd.FileName);
@@ -442,7 +465,7 @@ namespace NotesEditerforD
                 string[] noteData;
                 int indx, msIndex;
                 dataLine = sr.ReadLine();
-                if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5")//バージョン変更時に必ず変更
+                if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5" || dataLine == "dymsVersion:0.6")//バージョン変更時に必ず変更
                 {
                     noteData = dataLine.Split(':');
                     dymsDataVersion = noteData[1];
@@ -464,6 +487,7 @@ namespace NotesEditerforD
                     dataLine = sr.ReadLine();
                     noteData = dataLine.Split(':');
                     playLevel = decimal.Parse(noteData[1]);
+                    if(noteData.Length == 3) weStr = noteData[2];
                     dataLine = sr.ReadLine();
                     noteData = dataLine.Split('=');
                     wave = noteData[1];
@@ -569,7 +593,7 @@ namespace NotesEditerforD
                     noteData = dataLine.Split(':');
                     longNoteNumber = int.Parse(noteData[1]);
                 }
-                else if(dataLine == "dymsVersion:0.2")
+                else if (dataLine == "dymsVersion:0.2")
                 {
                     dymsDataVersion = "0.2";
                     dataLine = sr.ReadLine();
@@ -609,18 +633,18 @@ namespace NotesEditerforD
                     dymsDataVersion = "0.1";
                     noteData = dataLine.Split(',');
                     indx = int.Parse(noteData[12]);
-                    scores2[indx].setNote(noteData, "0.1");
+                    sRoot.Scores[indx].setNote(noteData, "0.1");
                 }
                 if (dymsDataVersion == "0.1") msIndex = 12;
-                else msIndex = 10;
+                else msIndex = 10;//index
                 bool flg = false;
-                while(sr.Peek() > -1)
+                while (sr.Peek() > -1)
                 {
                     dataLine = sr.ReadLine();
-                    if(dataLine == "#SpecialNotes") { flg = true; break; }
+                    if (dataLine == "#SpecialNotes") { flg = true; break; }
                     noteData = dataLine.Split(',');
                     indx = int.Parse(noteData[msIndex]);
-                    scores2[indx].setNote(noteData, dymsDataVersion);
+                    sRoot.Scores[indx].setNote(noteData, dymsDataVersion);
                 }
                 if (flg)
                 {
@@ -629,10 +653,10 @@ namespace NotesEditerforD
                         dataLine = sr.ReadLine();
                         noteData = dataLine.Split(',');
                         indx = int.Parse(noteData[4]);
-                        scores2[indx].setSpecialNote(noteData);
+                        sRoot.Scores[indx].setSpecialNote(noteData);
                     }
                 }
-                for (int i = 0; i < maxScore; i++) scores2[i].update();
+                for (int i = 0; i < maxScore; i++) sRoot.Scores[i].update();
                 setEdited(false);
                 isNew = false;
                 sr.Close();
@@ -642,21 +666,32 @@ namespace NotesEditerforD
             pathName = ofd.FileName;
         }
 
-        public static void activeNotesButton(NotesButton notesButton)
+        public void activeNotesButton(NotesButton notesButton)
         {
-            if(prevNotesButton == null)
+            if (prevNotesButton == null)
             {
-                //prevSpecialButton.notesButtonInactive();
                 prevNotesButton = notesButton;
             }
-            if(notesButton != prevNotesButton)
+            if (notesButton != prevNotesButton)
             {
                 prevNotesButton.notesButtonInactive();
                 prevNotesButton = notesButton;
             }
             notesButton.notesButtonActive();
+            /*
+            if(notesButton == BPMButton)
+            {
+                MusicScore2.SelectedBeat = 8;
+                comboBoxBeat.SelectedIndex = 1;
+                comboBoxBeat.Enabled = false;
+            }
+            else
+            {
+                comboBoxBeat.Enabled = true;
+            }//*/
         }
 
+        /*
         public static void activeNotesButton(SpecialButton notesButton)
         {
             if (prevNotesButton != null)
@@ -664,7 +699,7 @@ namespace NotesEditerforD
                 prevNotesButton.notesButtonInactive();
                 prevNotesButton = null;
             }
-        }
+        }//*/
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)//edt//
         {
@@ -697,11 +732,13 @@ namespace NotesEditerforD
 
         public void setTotalNotes()
         {
+            //*
             int totalNotes = 0;
-            foreach(MusicScore2 score in scores2)
+            foreach(MusicScore score in sRoot.Scores)
             {
                 totalNotes += score.shortNotes.Count;
             }
+            //*/
             labelTotalNotes.Text = "Total notes : " + totalNotes.ToString();
         }
 
@@ -724,19 +761,19 @@ namespace NotesEditerforD
 
         private void setEditStatus(object sender, EventArgs e)
         {
-            if (radioAdd.Checked) MusicScore2.SelectedEditStatus = "Add";
-            else if (radioEdit.Checked) MusicScore2.SelectedEditStatus = "Edit";
-            else MusicScore2.SelectedEditStatus = "Delete";
+            if (radioAdd.Checked) MusicScore.SelectedEditStatus = "Add";
+            else if (radioEdit.Checked) MusicScore.SelectedEditStatus = "Edit";
+            else MusicScore.SelectedEditStatus = "Delete";
         }
 
         private void comboBoxBeat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MusicScore2.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
+            MusicScore.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
         }
 
         private void comboBoxGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MusicScore2.SelectedGrid = int.Parse(this.comboBoxGrid.Text);
+            MusicScore.SelectedGrid = int.Parse(this.comboBoxGrid.Text);
         }
     }
 }
