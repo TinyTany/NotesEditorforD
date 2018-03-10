@@ -705,12 +705,12 @@
             this.BPMButton.Name = "BPMButton";
             this.BPMButton.NotesName = "BPM";
             this.BPMButton.NumUDMax = new decimal(new int[] {
-            300,
+            1000,
             0,
             0,
             0});
             this.BPMButton.NumUDMin = new decimal(new int[] {
-            30,
+            10,
             0,
             0,
             0});

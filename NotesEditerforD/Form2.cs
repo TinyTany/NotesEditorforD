@@ -147,7 +147,7 @@ namespace NotesEditerforD
             sw.WriteLine("#00008:01");
             char[] numAlpha = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
             int BPMNum = 2;//<=35
-            string[] BPMArr = new string[3001];
+            string[] BPMArr = new string[10001];
             for (int i = 0; i < BPMArr.Count(); i++) BPMArr[i] = "00";
             int BPMBeatDevide = 8;
             BPMArr[(int)(BPMUpDown.Value * 10)] = "01";
@@ -501,13 +501,12 @@ namespace NotesEditerforD
                 _beatLCMArray4x[0, measure] = beatLCM(sRoot.Scores[measure].shortNotes, 0, 4);//譜面下AirLine
                 _beatLCMArray4x[1, measure] = beatLCM(sRoot.Scores[measure].shortNotes, 1, 4);//譜面上AirLine
             }
+            longLane1 = new string[lastScore + 1, 16, 1000, sign[sgnindx]];
+            for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < longLane1.GetLength(2); j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
+            longLane2 = new string[lastScore + 1, 16, 1000, sign[sgnindx]];
+            for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < longLane2.GetLength(2); j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
             for (measure = 0; measure <= lastScore; measure++)
             {
-                longLane1 = new string[lastScore + 1, 16, 1000, sign[sgnindx]];
-                for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < longLane1.GetLength(2); j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
-                longLane2 = new string[lastScore + 1, 16, 1000, sign[sgnindx]];
-                for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < longLane2.GetLength(2); j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
-
                 foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = note.LocalPosition.X;
@@ -522,7 +521,7 @@ namespace NotesEditerforD
                                 if (noteSize == 16) longLane1[measure, _X, _Y, sgnindx] = "1g";
                                 else longLane1[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
                                 int longNoteNumber = note.LongNoteNumber;
-                                int startMeasure = measure, endMeasure;
+                                int startMeasure = measure;
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
@@ -538,8 +537,6 @@ namespace NotesEditerforD
                                                 _Y = _note.LocalPosition.BeatNumber * _beatLCMArray2x[0, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "2g";
                                                 else longLane1[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                                endMeasure = _measure;
-                                                for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
                                             }
                                             else
                                             {
@@ -547,8 +544,6 @@ namespace NotesEditerforD
                                                 _Y = _note.LocalPosition.BeatNumber * _beatLCMArray2x[1, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "2g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                                endMeasure = _measure;
-                                                for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
                                             flg = true;
                                             break;
@@ -572,7 +567,7 @@ namespace NotesEditerforD
                                 if (noteSize == 16) longLane2[measure, _X, _Y, sgnindx] = "1g";
                                 else longLane2[measure, _X, _Y, sgnindx] = "1" + noteSize.ToString("x");
                                 int longNoteNumber = note.LongNoteNumber;
-                                int startMeasure = measure, endMeasure;
+                                int startMeasure = measure;
                                 bool flg = false;
                                 for (int _measure = measure; _measure < lastScore + 1; _measure++)
                                 {
@@ -588,8 +583,6 @@ namespace NotesEditerforD
                                                 _Y = _note.LocalPosition.BeatNumber * _beatLCMArray2x[0, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane1[_measure, _X, _Y, sgnindx] = "2g";
                                                 else longLane1[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                                endMeasure = _measure;
-                                                for (int i = startMeasure; i <= endMeasure; i++) isUsedLane1[i, sgnindx] = true;
                                             }
                                             else
                                             {
@@ -597,8 +590,6 @@ namespace NotesEditerforD
                                                 _Y = _note.LocalPosition.BeatNumber * _beatLCMArray2x[1, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "2g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "2" + noteSize.ToString("x");
-                                                endMeasure = _measure;
-                                                for (int i = startMeasure; i <= endMeasure; i++) isUsedLane2[i, sgnindx] = true;
                                             }
                                             flg = true;
                                             break;
@@ -652,7 +643,6 @@ namespace NotesEditerforD
                 foreach (ShortNote note in sRoot.Scores[measure].shortNotes)//レーンを設定
                 {
                     _X = note.LocalPosition.X;
-                    
                     noteSize = note.NoteSize;
                     if (note.LocalPosition.Measure % 2 != 0)//odd
                     {
@@ -1277,7 +1267,7 @@ namespace NotesEditerforD
 
         private bool isModified(string[,,,] lane, int measure, int i, int sgnindx)
         {
-            for (int j = 0; j < maxBeatDevide; j++) if (lane[measure, i, j, sgnindx] != "00") return true;
+            for (int j = 0; j < lane.GetLength(2); j++) if (lane[measure, i, j, sgnindx] != "00") return true;
             return false;
         }
 

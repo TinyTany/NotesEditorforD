@@ -289,7 +289,10 @@ namespace NotesEditerforD
                 longNoteNumber = int.Parse(_noteData[9]);
                 if(dymsVersion == "0.5")
                 {
-                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                    if (new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(noteStyle))
+                        shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                    else
+                        shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, 192);
                     shortNotes.Add(shortNote);
                     return;
                 }
@@ -952,6 +955,7 @@ namespace NotesEditerforD
                             shortNote = new ShortNote(this, new Point(startPosition.X, endPosition.Y), startPosition, new Point(startPosition.X, endPosition.Y), selectedNoteSize, "HoldEnd", selectedAirDirection, tmpLongNoteNumber);
                             //shortNote.setRelativePosition();
                             addNote(shortNote);
+                            //shortNote.showRerativePosition();//debug
                             sRoot.LongNoteNumber++;
                         }
                         else if(selectedNote != null)//Holdが新たに生成されなかった時
@@ -971,6 +975,7 @@ namespace NotesEditerforD
                             shortNote = new ShortNote(this, endPosition, startPosition, endPosition, selectedNoteSize, "SlideEnd", selectedAirDirection, tmpLongNoteNumber);
                             //shortNote.setRelativePosition();
                             addNote(shortNote);
+                            //shortNote.showRerativePosition();//debug
                             sRoot.LongNoteNumber++;
                         }
                         else if (selectedNote != null && !addSlideRelayFlag)//Slideが新たに生成されなかったときの後始末
@@ -1100,10 +1105,12 @@ namespace NotesEditerforD
                 nextShortNote.StartPosition = new Point(nextShortNote.StartPosition.X, nextShortNote.StartPosition.Y + 768);
                 nextShortNote.EndPosition = new Point(nextShortNote.EndPosition.X, nextShortNote.EndPosition.Y + 768);
                 nextShortNote.NotePosition = new Point(nextShortNote.NotePosition.X, nextShortNote.NotePosition.Y + 768);
+                nextShortNote.update();
                 //nextShortNote.LongNoteNumber = shortNote.LongNoteNumber;
                 nextShortNote.PrevNote = shortNote;
                 shortNote.NextNote = nextShortNote;
                 nextScore.shortNotes.Add(nextShortNote);
+                nextShortNote.showRerativePosition();
                 nextScore.update();
             }
             //*
@@ -1220,6 +1227,7 @@ namespace NotesEditerforD
                 if (previewNote.NoteStyle == "AirUp" || previewNote.NoteStyle == "AirDown") g.DrawImage(previewNote.NoteImage, new Point(previewNote.NotePosition.X, previewNote.NotePosition.Y - 32));
                 else g.DrawImage(previewNote.NoteImage, previewNote.NotePosition);
             }
+            //*
             if (previewLongNote != null)//プレビュー用ロングノーツを描画
             {
                 previewLongNote.update();
@@ -1230,6 +1238,7 @@ namespace NotesEditerforD
                 }
                 else g.DrawImage(previewLongNote.NoteImage, new Point(previewLongNote.StartPosition.X, previewLongNote.EndPosition.Y));
             }
+            //*/
             if (seRect != null)//矩形選択を描画
             {
                 if (selectedEditStatus == "Edit") g.DrawRectangle(new Pen(Color.White), seRect.Rect);

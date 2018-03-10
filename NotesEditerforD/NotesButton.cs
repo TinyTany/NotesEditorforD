@@ -91,8 +91,8 @@ namespace NotesEditerforD
             setRadioButton(isAir);
             if(notesName == "BPM")
             {
-                numericUpDown1.Maximum = 300;
-                numericUpDown1.Minimum = 30;
+                numericUpDown1.Maximum = 1000;
+                numericUpDown1.Minimum = 10;
                 numericUpDown1.DecimalPlaces = 1;
                 numericUpDown1.Increment = 0.1m;
                 numericUpDown1.Value = 120.0m;
