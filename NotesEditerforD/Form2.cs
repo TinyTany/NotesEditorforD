@@ -248,15 +248,15 @@ namespace NotesEditerforD
             int sgnindx = 0;//for LongLane
             bool[,] isUsedLane1 = new bool[lastScore + 1, sign.Length];
             bool[,] isUsedLane2 = new bool[lastScore + 1, sign.Length];
-            string[,,,] longLane1 = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
-            string[,,,] longLane2 = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
+            string[,,,] longLane1;// = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
+            string[,,,] longLane2;// = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
             int noteSize;
             int _X, _Y;
             int _beatLCM1, _beatLCM2;
 
             //[h,i,j,k]=lane,beat,layer
-            for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
-            for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
+            //for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
+            //for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
 
             for (measure = 0; measure <= lastScore; measure++)
             {
@@ -1083,19 +1083,19 @@ namespace NotesEditerforD
                     switch (noteType)
                     {
                         case 1://Tap,ExTap,Flick,HellTap
-                            if (note.NoteStyle == "Tap" || note.NoteStyle == "ExTap" || note.NoteStyle == "Flick" || note.NoteStyle == "HellTap") notes.Add(note);
+                            if (new string[] { "Tap", "ExTap", "Flick", "HellTap"}.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 2://Hold
-                            if (note.NoteStyle == "Hold" || note.NoteStyle == "HoldEnd") notes.Add(note);
+                            if (new string[] { "Hold", "HoldEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 3://Slide
-                            if (note.NoteStyle == "Slide" || note.NoteStyle == "SlideTap" || note.NoteStyle == "SlideRelay" || note.NoteStyle == "SlideEnd") notes.Add(note);
+                            if (new string[] { "Slide", "SlideTap", "SlideRelay", "SlideCurve", "SlideEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 4://AirLine
-                            if (note.NoteStyle == "AirBegin" || note.NoteStyle == "AirAction" || note.NoteStyle == "AirEnd") notes.Add(note);
+                            if (new string[] { "AirBegin", "AirAction", "AirEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 5://Air
-                            if (note.NoteStyle == "AirUp" || note.NoteStyle == "AirDown") notes.Add(note);
+                            if (new string[] { "AirUp", "AirDown" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 8://BPM
                             if (note.NoteStyle == "BPM") notes.Add(note);

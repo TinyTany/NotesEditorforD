@@ -1110,7 +1110,7 @@ namespace NotesEditerforD
                 nextShortNote.PrevNote = shortNote;
                 shortNote.NextNote = nextShortNote;
                 nextScore.shortNotes.Add(nextShortNote);
-                nextShortNote.showRerativePosition();
+                //nextShortNote.showRerativePosition();//debug
                 nextScore.update();
             }
             //*
