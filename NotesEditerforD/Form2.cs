@@ -1057,19 +1057,19 @@ namespace NotesEditerforD
                     switch (noteType)
                     {
                         case 1://Tap,ExTap,Flick,HellTap
-                            if (note.NoteStyle == "Tap" || note.NoteStyle == "ExTap" || note.NoteStyle == "Flick" || note.NoteStyle == "HellTap") notes.Add(note);
+                            if (new string[] { "Tap", "ExTap", "Flick", "HellTap" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 2://Hold
-                            if (note.NoteStyle == "Hold" || note.NoteStyle == "HoldEnd") notes.Add(note);
+                            if (new string[] { "Hold", "HoldEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 3://Slide
-                            if (note.NoteStyle == "Slide" || note.NoteStyle == "SlideTap" || note.NoteStyle == "SlideRelay" || note.NoteStyle == "SlideEnd") notes.Add(note);
-                            break; 
+                            if (new string[] { "Slide", "SlideTap", "SlideRelay", "SlideCurve", "SlideEnd" }.Contains(note.NoteStyle)) notes.Add(note);
+                            break;
                         case 4://AirLine
-                            if (note.NoteStyle == "AirBegin" || note.NoteStyle == "AirAction" || note.NoteStyle == "AirEnd") notes.Add(note);
+                            if (new string[] { "AirBegin", "AirAction", "AirEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 5://Air
-                            if (note.NoteStyle == "AirUp" || note.NoteStyle == "AirDown") notes.Add(note);
+                            if (new string[] { "AirUp", "AirDown" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 8://BPM
                             if (note.NoteStyle == "BPM") notes.Add(note);
