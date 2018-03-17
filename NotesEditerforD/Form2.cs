@@ -30,6 +30,9 @@ namespace NotesEditerforD
             leftMargin = MusicScore.LeftMargin;
             rightMargin = MusicScore.RightMargin;
 
+            BPMUpDown.Maximum = _form1.BPM_MAX;
+            BPMUpDown.Minimum = _form1.BPM_MIN;
+
             object sender = new object();
             EventArgs e = new EventArgs();
             previewButton_Click(sender, e);
@@ -146,14 +149,19 @@ namespace NotesEditerforD
             sw.WriteLine("#BPM01:" + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
             char[] numAlpha = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-            int BPMNum = 2;//<=35
-            string[] BPMArr = new string[10001];
-            for (int i = 0; i < BPMArr.Count(); i++) BPMArr[i] = "00";
+            //int BPMNum = 2;//<=35
+            //string[] BPMArr = new string[10001];
+            string[] BPMStrArr = new string[1296];
+            for (int i = 0; i < numAlpha.Length; i++)
+                for (int j = 0; j < numAlpha.Length; j++)
+                    BPMStrArr[numAlpha.Length * i + j] = numAlpha[i].ToString() + numAlpha[j].ToString();//"00" ~ "ZZ"
+            //for (int i = 0; i < BPMArr.Count(); i++) BPMArr[i] = "00";
             int BPMBeatDevide = 8;
-            BPMArr[(int)(BPMUpDown.Value * 10)] = "01";
+            var objBPM = new[] { new { BPM = BPMUpDown.Value, BPMStrArrIdx = 1} }.ToList(); int curBPMStrArrIdx = 1;
+            //BPMArr[(int)(BPMUpDown.Value * 10)] = "01";
             string[] spLane1 = new string[BPMBeatDevide];
             string[] spLane2 = new string[BPMBeatDevide];
-            string cur = "01";
+            
             for (measure = 0; measure <= lastScore; measure++)
             {
                 for (int i = 0; i < BPMBeatDevide; i++) spLane1[i] = "00";//initialize lane
@@ -166,27 +174,26 @@ namespace NotesEditerforD
                         if (Y < 0)
                         {
                             Y += BPMBeatDevide;
-                            if (BPMArr[(int)(_note.SpecialValue * 10)] == "00")
+                            if (!objBPM.Where(x => x.BPM == _note.SpecialValue).Any())
                             {
-                                BPMArr[(int)(_note.SpecialValue * 10)] = "0" + numAlpha[BPMNum];
-                                sw.WriteLine("#BPM0" + numAlpha[BPMNum] + ":" + _note.SpecialValue);
-                                BPMNum++;
+                                objBPM.Add(new { BPM = _note.SpecialValue, BPMStrArrIdx = ++curBPMStrArrIdx });
+                                sw.WriteLine("#BPM" + BPMStrArr[curBPMStrArrIdx] + ":" + _note.SpecialValue);
                             }
-                            spLane1[Y] = BPMArr[(int)(_note.SpecialValue * 10)].ToString().PadLeft(2, '0');
+                            spLane1[Y] = BPMStrArr[objBPM.Find(x => x.BPM == _note.SpecialValue).BPMStrArrIdx];
                         }
                         else
                         {
-                            if (Y >= BPMBeatDevide) continue;
-                            if (BPMArr[(int)(_note.SpecialValue * 10)] == "00")
+                            if (!objBPM.Where(x => x.BPM == _note.SpecialValue).Any())
                             {
-                                BPMArr[(int)(_note.SpecialValue * 10)] = "0" + numAlpha[BPMNum];
-                                sw.WriteLine("#BPM0" + numAlpha[BPMNum] + ":" + _note.SpecialValue);
-                                BPMNum++;
+                                objBPM.Add(new { BPM = _note.SpecialValue, BPMStrArrIdx = ++curBPMStrArrIdx });
+                                sw.WriteLine("#BPM" + BPMStrArr[curBPMStrArrIdx] + ":" + _note.SpecialValue);
                             }
-                            spLane2[Y] = BPMArr[(int)(_note.SpecialValue * 10)];
+                            spLane2[Y] = BPMStrArr[objBPM.Find(x => x.BPM == _note.SpecialValue).BPMStrArrIdx];
                         }
                     }
                 }
+                //*
+                string cur = "01";
                 if(isBPMModified(spLane1, BPMBeatDevide)) for (int i = 0; i < BPMBeatDevide; i++)
                 {
                     if (spLane1[i] == "00") spLane1[i] = cur;
@@ -197,6 +204,7 @@ namespace NotesEditerforD
                     if (spLane2[i] == "00") spLane2[i] = cur;
                     else if (spLane2[i] != cur) cur = spLane2[i];
                 }
+                //*/
                 if (isBPMModified(spLane1, BPMBeatDevide))
                 {
                     if (checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "08:");

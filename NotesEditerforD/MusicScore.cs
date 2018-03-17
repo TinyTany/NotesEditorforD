@@ -23,7 +23,7 @@ namespace NotesEditerforD
         private Point startPosition, endPosition;
         private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag;
         private Point rectSelectBegin, rectSelectEnd;
-        private RectSelect seRect, cpRect;
+        private RectSelect seRect;
         public ScoreRoot sRoot;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
@@ -200,16 +200,29 @@ namespace NotesEditerforD
         private void menuStripPaste(object sender, EventArgs e)//sRootからもらう//詰める//詰めた
         {
             List<ShortNote> selectedNotes = new List<ShortNote>();
+            var objLNN = new[] { new { prevLNN = -1, nextLNN = -1 } }.Skip(1).ToList();
+            
             foreach(ShortNote note in sRoot.YankNotes)
             {
                 selectedNotes.Add(
                          new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
             }
             //LongNotesNumber更新しろ
-            int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて乱暴に実装する
+            //int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて乱暴に実装する←やめろ
             foreach(ShortNote note in selectedNotes)//しました
             {
                 if (note.LongNoteNumber == -1) continue;
+                if(objLNN.Where(x => x.prevLNN == note.LongNoteNumber).Any())
+                {
+                    note.LongNoteNumber = objLNN.Find(x => x.prevLNN == note.LongNoteNumber).nextLNN;
+                }
+                else
+                {
+                    objLNN.Add(new { prevLNN = note.LongNoteNumber, nextLNN = sRoot.LongNoteNumber });
+                    note.LongNoteNumber = sRoot.LongNoteNumber;
+                    sRoot.LongNoteNumber++;
+                }
+                /*
                 if (num[note.LongNoteNumber] == -1)
                 {
                     num[note.LongNoteNumber] = sRoot.LongNoteNumber;
@@ -217,6 +230,7 @@ namespace NotesEditerforD
                     sRoot.LongNoteNumber++;
                 }
                 else note.LongNoteNumber = num[note.LongNoteNumber];
+                //*/
             }
             shortNotes.AddRange(selectedNotes);
             seRect = new RectSelect(sRoot.YankRect.RectUL, sRoot.YankRect.RectDR, shortNotes);
@@ -1093,6 +1107,7 @@ namespace NotesEditerforD
                 prevShortNote.StartPosition = new Point(prevShortNote.StartPosition.X, prevShortNote.StartPosition.Y - 768);
                 prevShortNote.EndPosition = new Point(prevShortNote.EndPosition.X, prevShortNote.EndPosition.Y - 768);
                 prevShortNote.NotePosition = new Point(prevShortNote.NotePosition.X, prevShortNote.NotePosition.Y - 768);
+                prevShortNote.update();////
                 //prevShortNote.LongNoteNumber = shortNote.LongNoteNumber;
                 prevShortNote.NextNote = shortNote;
                 shortNote.PrevNote = prevShortNote;
@@ -1105,7 +1120,7 @@ namespace NotesEditerforD
                 nextShortNote.StartPosition = new Point(nextShortNote.StartPosition.X, nextShortNote.StartPosition.Y + 768);
                 nextShortNote.EndPosition = new Point(nextShortNote.EndPosition.X, nextShortNote.EndPosition.Y + 768);
                 nextShortNote.NotePosition = new Point(nextShortNote.NotePosition.X, nextShortNote.NotePosition.Y + 768);
-                nextShortNote.update();
+                nextShortNote.update();//
                 //nextShortNote.LongNoteNumber = shortNote.LongNoteNumber;
                 nextShortNote.PrevNote = shortNote;
                 shortNote.NextNote = nextShortNote;
@@ -1174,12 +1189,12 @@ namespace NotesEditerforD
                 if (_note.NoteStyle == "BPM")
                 {
                     g.DrawImage(_note.NoteImage, _note.NotePosition);
-                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//BPM
+                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, _note.NotePosition.Y - 5, 100, 15));//BPM
                 }
                 else
                 {
                     g.DrawImage(_note.NoteImage, _note.NotePosition);
-                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//Speed
+                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(180, _note.NotePosition.Y - 5, 100, 15));//Speed
                 }
             }
             foreach (ShortNote _note in shortNotes)//普通のノーツを描画

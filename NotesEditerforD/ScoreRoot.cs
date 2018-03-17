@@ -27,6 +27,7 @@ namespace NotesEditerforD
             form1 = _form1;
             longNotesNumber = _longNotesNumber;
             slideRelay = _slideRelay;
+            SuspendLayout();
             for (int i = 0; i < maxScore; i++)
             {
                 musicScore = new MusicScore();
@@ -36,6 +37,7 @@ namespace NotesEditerforD
                 scores.Add(musicScore);
                 //musicScore.update();
             }
+            ResumeLayout();
             scores[0].NextScore = scores[1];
             scores[0].PrevScore = null;
             for (int i = 1; i < maxScore - 1; i++)
@@ -52,6 +54,15 @@ namespace NotesEditerforD
             this.FlowDirection = FlowDirection.LeftToRight;
             this.WrapContents = false;
             this.AutoScroll = true;
+            //System.Diagnostics.Debug.WriteLine(HorizontalScroll.Maximum);
+
+            MouseWheel += ScoreRoot_MouseWheel;
+        }
+
+        private void ScoreRoot_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (VScroll && (ModifierKeys & Keys.Shift) == Keys.Shift) ;
+            //System.Diagnostics.Debug.WriteLine(HorizontalScroll.Value);
         }
 
         public void update()

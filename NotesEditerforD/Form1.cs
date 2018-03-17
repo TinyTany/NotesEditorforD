@@ -31,31 +31,17 @@ namespace NotesEditerforD
             InitializeComponent();
             sRoot = new ScoreRoot(this, maxScore, 0, false);
             ScoreRoot.StartBPM = BPM;
+            BPMupdown.Maximum = 99999;
+            BPMupdown.Minimum = 1;
+            BPMButton.spVal_MAX = BPMupdown.Maximum;
+            BPMButton.spVal_MIN = BPMupdown.Minimum;
+            Speed.spVal_MAX = 10000;
+            Speed.spVal_MIN = -10000;
             this.Controls.Add(sRoot);
             sRoot.update();
             checkSlideRelay.Checked = true;
             comboBoxBeat.SelectedIndex = 1;
             MusicScore.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
-            /*
-            for (int i = 0; i < maxScore; i++)
-            {
-                musicScore2 = new MusicScore();
-                musicScore2.form1 = this;
-                musicScore2.Index = i;
-                flowLayoutPanelMusicScore.Controls.Add(musicScore2);
-                scores2.Add(musicScore2);
-                musicScore2.update();
-            }
-            scores2[0].NextScore = scores2[1];
-            scores2[0].PrevScore = null;
-            for (int i = 1; i < maxScore - 1; i++)
-            {
-                scores2[i].NextScore = scores2[i + 1];
-                scores2[i].PrevScore = scores2[i - 1];
-            }
-            scores2[maxScore - 1].NextScore = null;
-            scores2[maxScore - 1].PrevScore = scores2[maxScore - 2];
-            //*/
             appName = " - NotesEditorforD " + Version;
             Text = "NewMusicScore" + appName;
             prevNotesButton = Tap;
@@ -105,6 +91,16 @@ namespace NotesEditerforD
             AirLine._Form1 = this;
             Speed._Form1 = this;
             BPMButton._Form1 = this;
+        }
+
+        public decimal BPM_MAX
+        {
+            get { return BPMupdown.Maximum; }
+        }
+
+        public decimal BPM_MIN
+        {
+            get { return BPMupdown.Minimum; }
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
