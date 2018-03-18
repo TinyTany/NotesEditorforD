@@ -78,9 +78,9 @@ namespace NotesEditerforD
         }
 
         /// <summary>
-        /// 選択範囲をlocULを右上となるように移動します
+        /// 選択範囲をlocULを左上となるように移動します
         /// </summary>
-        /// <param name="locUL">右上の座標</param>
+        /// <param name="locUL">左上の座標</param>
         public void move(Point locUL)//
         {
             Size delta = new Size(locUL.X - rectUL.X, locUL.Y - rectUL.Y);
