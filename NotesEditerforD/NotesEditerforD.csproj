@@ -185,9 +185,6 @@
     <None Include="Resources\AirLine.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\MusicScore.jpg" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\BPM.png" />
   </ItemGroup>
   <ItemGroup>
@@ -252,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\noimage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MusicScore.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

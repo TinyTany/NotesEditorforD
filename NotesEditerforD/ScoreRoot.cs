@@ -73,7 +73,7 @@ namespace NotesEditerforD
             }
         }
 
-        //*//test
+        /*//test
         public void setLongNote(ShortNote note, MusicScore score)
         {
             Graphics g = Graphics.FromImage(score.StoreImage);

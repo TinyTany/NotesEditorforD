@@ -33,6 +33,7 @@ namespace NotesEditerforD
         private MouseButtons eyedropperMouseButton = MouseButtons.Right;
         private ContextMenuStrip selectMenuStrip;//, scoreMenuStrip;
         private ToolStripMenuItem[] stripItem;
+        private StringFormat sFormat = new StringFormat();
 
         public MusicScore()
         {
@@ -68,6 +69,8 @@ namespace NotesEditerforD
             this.MouseUp += new MouseEventHandler(this_MouseUp);
             this.MouseEnter += new EventHandler(this_MouseEnter);
             this.MouseLeave += new EventHandler(this_MouseLeave);
+
+            sFormat.Alignment = StringAlignment.Far;
         }
 
         public MusicScore PrevScore
@@ -222,15 +225,6 @@ namespace NotesEditerforD
                     note.LongNoteNumber = sRoot.LongNoteNumber;
                     sRoot.LongNoteNumber++;
                 }
-                /*
-                if (num[note.LongNoteNumber] == -1)
-                {
-                    num[note.LongNoteNumber] = sRoot.LongNoteNumber;
-                    note.LongNoteNumber = num[note.LongNoteNumber];
-                    sRoot.LongNoteNumber++;
-                }
-                else note.LongNoteNumber = num[note.LongNoteNumber];
-                //*/
             }
             shortNotes.AddRange(selectedNotes);
             seRect = new RectSelect(sRoot.YankRect.RectUL, sRoot.YankRect.RectDR, shortNotes);
@@ -1189,12 +1183,12 @@ namespace NotesEditerforD
                 if (_note.NoteStyle == "BPM")
                 {
                     g.DrawImage(_note.NoteImage, _note.NotePosition);
-                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, _note.NotePosition.Y - 5, 100, 15));//BPM
+                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(0, _note.NotePosition.Y - 5, this.Width, 15), sFormat);//BPM
                 }
                 else
                 {
                     g.DrawImage(_note.NoteImage, _note.NotePosition);
-                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(180, _note.NotePosition.Y - 5, 100, 15));//Speed
+                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(0, _note.NotePosition.Y - 5, this.Width, 15), sFormat);//Speed
                 }
             }
             foreach (ShortNote _note in shortNotes)//普通のノーツを描画
@@ -1261,7 +1255,7 @@ namespace NotesEditerforD
             }
             g.DrawString((2 * index + 1).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 768 - 5, 30, 10));//MeasureNumber
             g.DrawString((2 * (index + 1)).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 384 - 5, 30, 10));//MeasureNumber
-            if(index == 0) g.DrawString(ScoreRoot.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, 768 - 5, 50, 15));//BPM
+            if(index == 0) g.DrawString(ScoreRoot.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(0, 768 - 5, Width, 15), sFormat);//StartBPM
             BackgroundImage = storeImage;
             g.Dispose();
             this.Refresh();

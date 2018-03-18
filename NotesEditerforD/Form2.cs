@@ -149,16 +149,12 @@ namespace NotesEditerforD
             sw.WriteLine("#BPM01:" + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
             char[] numAlpha = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-            //int BPMNum = 2;//<=35
-            //string[] BPMArr = new string[10001];
             string[] BPMStrArr = new string[1296];
             for (int i = 0; i < numAlpha.Length; i++)
                 for (int j = 0; j < numAlpha.Length; j++)
                     BPMStrArr[numAlpha.Length * i + j] = numAlpha[i].ToString() + numAlpha[j].ToString();//"00" ~ "ZZ"
-            //for (int i = 0; i < BPMArr.Count(); i++) BPMArr[i] = "00";
             int BPMBeatDevide = 8;
             var objBPM = new[] { new { BPM = BPMUpDown.Value, BPMStrArrIdx = 1} }.ToList(); int curBPMStrArrIdx = 1;
-            //BPMArr[(int)(BPMUpDown.Value * 10)] = "01";
             string[] spLane1 = new string[BPMBeatDevide];
             string[] spLane2 = new string[BPMBeatDevide];
             
@@ -913,7 +909,7 @@ namespace NotesEditerforD
                                             else
                                             {
                                                 if (_note.LocalPosition.Beat == _note.LocalPosition.BeatNumber) continue;
-                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / note.LocalPosition.Beat;
+                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
                                                 endMeasure = _measure;
@@ -983,7 +979,7 @@ namespace NotesEditerforD
                                             else
                                             {
                                                 if (_note.LocalPosition.Beat == _note.LocalPosition.BeatNumber) continue;
-                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / note.LocalPosition.Beat;
+                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
                                                 endMeasure = _measure;
