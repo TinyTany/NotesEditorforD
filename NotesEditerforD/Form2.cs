@@ -118,6 +118,7 @@ namespace NotesEditerforD
 
         public void susExport(string path)
         {
+
             string level = setLevel(playLevelUpDown.Value);
             int Y;
             System.IO.StreamWriter sw = new System.IO.StreamWriter(path);
@@ -290,7 +291,14 @@ namespace NotesEditerforD
                         {
                             case "Tap":
                                 if (noteSize == 16) lane1[_X, _Y] = "1g";
-                                else lane1[_X, _Y] = "1" + noteSize.ToString("x");
+                                else
+                                {
+                                    lane1[_X, _Y] = "1" + noteSize.ToString("x");
+                                }
+                                /*
+                                 * MessageBox.Show(note.NotePosition.ToString() + note.LocalPosition.Measure); 
+                                 * MessageBox.Show(note.LocalPosition.Measure + " (" + note.LocalPosition.BeatNumber + "/" + note.LocalPosition.Beat + ")"); 
+                                //*/
                                 break;
                             case "ExTap":
                                 if (noteSize == 16) lane1[_X, _Y] = "2g";

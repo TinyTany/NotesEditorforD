@@ -50,6 +50,8 @@ namespace NotesEditerforD
         {
             musicscore = _musicscore;
             position = _position;
+            startPosition = _position;
+            endPosition = _position;
             noteSize = _noteSize;//1-16
             noteStyle = _noteStyle;
             airDirection = _airDirection;

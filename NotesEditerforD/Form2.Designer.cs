@@ -234,12 +234,12 @@
             // 
             // BPMUpDown
             // 
-            this.BPMUpDown.DecimalPlaces = 1;
+            this.BPMUpDown.DecimalPlaces = 2;
             this.BPMUpDown.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.BPMUpDown.Location = new System.Drawing.Point(447, 248);
             this.BPMUpDown.Maximum = new decimal(new int[] {
             1000,

@@ -93,8 +93,8 @@ namespace NotesEditerforD
             {
                 //numericUpDown1.Maximum = 1000;
                 //numericUpDown1.Minimum = 10;
-                numericUpDown1.DecimalPlaces = 1;
-                numericUpDown1.Increment = 0.1m;
+                numericUpDown1.DecimalPlaces = 2;
+                numericUpDown1.Increment = 0.01m;
                 numericUpDown1.Value = 120.0m;
                 MusicScore.SelectedBPM = numericUpDown1.Value;
                 label_size.Text = "";

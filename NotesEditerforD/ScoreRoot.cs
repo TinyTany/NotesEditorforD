@@ -73,6 +73,15 @@ namespace NotesEditerforD
             }
         }
 
+        /*
+        public int setLNN()
+        {
+            
+
+            return longNotesNumber;
+        }
+        //*/
+
         /*//test
         public void setLongNote(ShortNote note, MusicScore score)
         {

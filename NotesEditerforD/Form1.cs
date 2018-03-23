@@ -161,7 +161,7 @@ namespace NotesEditerforD
             sw.WriteLine("WAVEOFFSET:" + offset);
             sw.WriteLine("JACKET=" + jacket);
             sw.WriteLine("BASEBPM:" + BPM);
-            sw.WriteLine("LongNoteNumber:" + longNoteNumber);
+            sw.WriteLine("LongNoteNumber:" + sRoot.LongNoteNumber);
             sw.WriteLine("ExportDir=" + exDir);
             sw.WriteLine("isWhile:" + isWhile);
             foreach (MusicScore mscore in sRoot.Scores)
