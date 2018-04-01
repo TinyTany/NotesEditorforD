@@ -1150,10 +1150,10 @@ namespace NotesEditerforD
         }
 
         /// <summary>
-        /// マウスクリックとノーツの衝突判定をします
+        /// マウスポインタと3点で定義された平行四辺形の衝突判定をします
         /// </summary>
-        /// <param name="_destPoints">ノーツの場所</param>
-        /// <param name="e">マウス</param>
+        /// <param name="_destPoints">3点で定義された平行四辺形</param>
+        /// <param name="e">マウスポインタの位置</param>
         /// <returns></returns>
         private bool isMouseCollision(Point[] _destPoints, Point e)
         {
@@ -1166,6 +1166,36 @@ namespace NotesEditerforD
             //MessageBox.Show("s = " + s + '\n' + "t = " + t);
             if (0 <= s && s <= 1 && 0 <= t && t <= 1) return true;
             return false;
+        }
+
+        /// <summary>
+        /// マウスポインタと3点で定義された三角形の衝突判定をします
+        /// </summary>
+        /// <param name="_destPoints">3点で定義された三角形</param>
+        /// <param name="e">マウスポインタの位置</param>
+        /// <returns></returns>
+        private bool isMouseCollisionTriangle(Point[] _destPoints, Point e)
+        {
+            Point upperLeft = _destPoints[0], upperRight = _destPoints[1], lowerLeft = _destPoints[2];
+            Point vec_ULLL = new Point(lowerLeft.X - upperLeft.X, lowerLeft.Y - upperLeft.Y);//->ac
+            Point vec_ULUR = new Point(upperRight.X - upperLeft.X, upperRight.Y - upperLeft.Y);//->ab
+            Point vec_ULE = new Point(e.X - upperLeft.X, e.Y - upperLeft.Y);//->ap
+            double s = (vec_ULE.X * vec_ULLL.Y - vec_ULLL.X * vec_ULE.Y) / (double)(vec_ULUR.X * vec_ULLL.Y - vec_ULLL.X * vec_ULUR.Y);
+            double t = (vec_ULE.X * vec_ULUR.Y - vec_ULUR.X * vec_ULE.Y) / (double)(vec_ULLL.X * vec_ULUR.Y - vec_ULUR.X * vec_ULLL.Y);
+            if (0 <= s && 0 <= t && s + t <= 1) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// マウスポインタと4点で定義された四角形の衝突判定をします
+        /// </summary>
+        /// <param name="_destPoints">4点で定義された四角形</param>
+        /// <param name="e">マウスポインタの位置</param>
+        /// <returns></returns>
+        private bool isMouseCollisionSquare(Point[] _destPoints, Point e)//{ul, ur, ll, lr}
+        {
+            return (isMouseCollisionTriangle(new Point[] { _destPoints[0], _destPoints[1], _destPoints[2] }, e) ||
+                isMouseCollisionTriangle(new Point[] { _destPoints[1], _destPoints[2], _destPoints[3]}, e));
         }
 
         /// <summary>
