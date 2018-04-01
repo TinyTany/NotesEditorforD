@@ -65,7 +65,7 @@ namespace NotesEditerforD
         public void update()
         {
             rect.Location = rectUL;
-            rect.Size = new Size(rectDR.X - rectUL.X, rectDR.Y - rectUL.Y);
+            rect.Size = new Size(rectDR.X - rectUL.X, rectDR.Y - rectUL.Y + 5);
             selectedNotes.Clear();
             foreach (ShortNote note in notes)
             {

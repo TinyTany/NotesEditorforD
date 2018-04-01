@@ -1201,7 +1201,7 @@ namespace NotesEditerforD
                     else g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
-                //if (_note.NoteStyle == "Slide") sRoot.setLongNote(_note, this);
+                if (new string[] {"Slide", "SlideTap", "SlideRelay" }.Contains(_note.NoteStyle)) sRoot.setLongNote(_note, this);//test
                 if(_note.NoteStyle == "SlideCurve")//Bezier
                 {
                     Point prev = new Point(-1, 9999), next = new Point(-1, -9999);

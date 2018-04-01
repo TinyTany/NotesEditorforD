@@ -82,34 +82,99 @@ namespace NotesEditerforD
         }
         //*/
 
-        /*//test
+        //*//test
         public void setLongNote(ShortNote note, MusicScore score)
         {
             Graphics g = Graphics.FromImage(score.StoreImage);
-            g.DrawImage(Properties.Resources.MusicScore, new Point(0, 0));
+            //g.DrawImage(Properties.Resources.MusicScore, new Point(0, 0));
             switch (note.NoteStyle)
             {
                 case "Hold":
 
                     break;
                 case "Slide":
-                    ShortNote lastNote = null; int lastIndex = -1;
-                    for (MusicScore cur = score; cur != null; cur = cur.NextScore)
+                case "SlideEnd":
+                case "SlideTap":
+                case "SlideRelay":
+                    ShortNote nextNote = null, prevNote = null;
+                    for (MusicScore iScore = score; iScore.NextScore != null && nextNote == null; iScore = iScore.NextScore)//次の中継点ノーツを探してnextNoteに
                     {
-                        g = Graphics.FromImage(cur.StoreImage);
-                        var notes = cur.shortNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber && x.NoteStyle != "SlideCurve" && x.NoteStyle != "SlideLine").OrderByDescending(x => x.NotePosition.Y).ToList();
-                        if (!notes.Any()) continue;
-                        if (lastNote != null) ;
-                        for (int i = 0; i < notes.Count() - 1; i++)
+                        if(iScore == score)//初回
                         {
-                            g.DrawImage(Properties.Resources.HoldLine, new Point[] { notes[i + 1].NotePosition, new Point(notes[i + 1].NotePosition.X + notes[i + 1].NoteSize * 10, notes[i + 1].NotePosition.Y), notes[i].NotePosition });
+                            foreach(ShortNote iNote in score.shortNotes.Where(
+                                x => x.NotePosition.Y < note.NotePosition.Y).OrderByDescending(x => x.NotePosition.Y))
+                            {
+                                if(iNote.LongNoteNumber == note.LongNoteNumber && iNote.NoteStyle != "SlideCurve")
+                                {
+                                    nextNote = iNote;
+                                    break;
+                                }
+                            }
                         }
-                        //cur.storeImage = _img; //cur.update();
-                        if (notes.Last().NoteStyle != "SlideEnd") { lastNote = notes.Last(); lastIndex = cur.Index; continue; }
-                        break;
+                        else
+                        {
+                            foreach (ShortNote iNote in iScore.shortNotes.OrderByDescending(x => x.NotePosition.Y))
+                            {
+                                if (iNote.LongNoteNumber == note.LongNoteNumber && iNote.NoteStyle != "SlideCurve")
+                                {
+                                    nextNote = iNote;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    for (MusicScore iScore = score; iScore.PrevScore != null && prevNote == null; iScore = iScore.PrevScore)//前の中継点ノーツを探してprevNoteに
+                    {
+                        if (iScore == score)//初回
+                        {
+                            foreach (ShortNote iNote in score.shortNotes.Where(
+                                x => x.NotePosition.Y > note.NotePosition.Y && x.LongNoteNumber != -1).OrderBy(x => x.NotePosition.Y))
+                            {
+                                if (iNote.LongNoteNumber == note.LongNoteNumber && iNote.NoteStyle != "SlideCurve")
+                                {
+                                    prevNote = iNote;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (ShortNote iNote in iScore.shortNotes.OrderBy(x => x.NotePosition.Y))
+                            {
+                                if (iNote.LongNoteNumber == note.LongNoteNumber && iNote.NoteStyle != "SlideCurve")
+                                {
+                                    prevNote = iNote;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (nextNote == null) return;
+                    int nMeasure = nextNote.LocalPosition.Measure;
+                    int cMeasure = note.LocalPosition.Measure;
+                    int measureDiff = (nMeasure % 2 == 0 ? nMeasure - 1 : nMeasure) / 2 - (cMeasure % 2 == 0 ? cMeasure - 1 : cMeasure) / 2;
+                    Point nPnt, cPnt; int nSize, cSize;
+                    if (measureDiff == 0)//2ノーツは同じ譜面レーン上
+                    {
+                        //draw
+                        nPnt = nextNote.NotePosition; nSize = nextNote.NoteSize;
+                        cPnt = note.NotePosition; cSize = note.NoteSize;
+                        Point[] ps = {new Point(nPnt.X + 2, nPnt.Y), new Point(cPnt.X + 2, cPnt.Y),
+                            new Point(cPnt.X + cSize * 10 - 2, cPnt.Y), new Point(nPnt.X + nSize * 10 - 2, nPnt.Y)};
+                        g.FillPolygon(Brushes.Aqua, ps);
+                    }
+                    else//2ノーツは異なるレーン上（境界を何度かまたぐ）
+                    {
+                        //draw(begin)
+                        for(int i = 0; i < measureDiff - 1; i++)
+                        {
+
+                        }
+                        //draw(end)
                     }
                     break;
                 case "AirBegin":
+                case "AirAction":
 
                     break;
                 default:
