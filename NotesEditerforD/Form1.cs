@@ -24,7 +24,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.6", Version = "0.6.1";
+        private const string dymsVersion = "0.6", Version = "0.6.2";
         //public bool slideRelay = false;
         public Form1()
         {

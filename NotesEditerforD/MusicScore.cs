@@ -170,11 +170,11 @@ namespace NotesEditerforD
             sRoot.YankNotes.Clear();
             foreach(ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツをコピーしてYankのリストにぶち込む
             {
-                if(seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10, 5))) &&
+                if(seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10 - 2, 5))) &&
             note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine")
                 {
                     sRoot.YankNotes.Add(
-                         new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+                         new ShortNote(this, note.NotePosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber, note.LocalPosition.Beat));
                 }
             }
             foreach(ShortNote note in sRoot.YankNotes.ToArray())//ロングノーツ系のやつは全体が含まれてるかチェック
@@ -207,8 +207,16 @@ namespace NotesEditerforD
             
             foreach(ShortNote note in sRoot.YankNotes)
             {
-                selectedNotes.Add(
+                if(new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(note.NoteStyle))
+                {
+                    selectedNotes.Add(
                          new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+                }
+                else
+                {
+                    selectedNotes.Add(
+                         new ShortNote(this, note.NotePosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber, note.LocalPosition.Beat));
+                }
             }
             //LongNotesNumber更新しろ
             //int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて乱暴に実装する←やめろ
@@ -808,7 +816,7 @@ namespace NotesEditerforD
                     fixBorder(selectedNote);
                     selectedNote.update();
                 }
-                if (selectedNote_prev != null && selectedNote_next == null)
+                if (selectedNote_prev != null && selectedNote_next == null && selectedNote != null)
                 {
                     if (selectedNote_prev.StartPosition.Y - selectedNote.NotePosition.Y >= threshold)
                     {
@@ -840,7 +848,7 @@ namespace NotesEditerforD
                     selectedNote.update();
                     //fixBorder(selectedNote);
                 }
-                else if (selectedNote_next != null && selectedNote_prev == null)
+                else if (selectedNote_next != null && selectedNote_prev == null && selectedNote != null)
                 {
                     if (selectedNote.NotePosition.Y - selectedNote_next.EndPosition.Y >= threshold)
                     {
@@ -872,7 +880,7 @@ namespace NotesEditerforD
                     selectedNote.update();
                     //fixBorder(selectedNote);
                 }
-                else if (selectedNote_prev != null && selectedNote_next != null)
+                else if (selectedNote_prev != null && selectedNote_next != null && selectedNote != null)
                 {
                     if (selectedNote_prev.StartPosition.Y - selectedNote.NotePosition.Y < threshold)
                     {
@@ -1231,7 +1239,7 @@ namespace NotesEditerforD
                     else g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
-                if (new string[] {"Slide", "SlideTap", "SlideRelay" }.Contains(_note.NoteStyle)) sRoot.setLongNote(_note, this);//test
+                //if (new string[] {"Slide", "SlideTap", "SlideRelay" }.Contains(_note.NoteStyle)) sRoot.setLongNote(_note, this);//test
                 if(_note.NoteStyle == "SlideCurve")//Bezier
                 {
                     Point prev = new Point(-1, 9999), next = new Point(-1, -9999);

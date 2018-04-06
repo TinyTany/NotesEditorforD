@@ -18,14 +18,25 @@ namespace NotesEditerforD
         private PosInfo pos = new PosInfo();
         private string noteStyle, airDirection;
         private ShortNote prevNote, nextNote;
-        private int longNoteNumber, noteSize;
+        private int longNoteNumber, noteSize, startSize, endSize;
         private Point[] destPoints = new Point[3];//{ul, ur, ll}
+        private Point[] destPointsSq = new Point[4];//{ul, ur, ll, lr}
         private decimal specialValue;
         //*
         private Bitmap noteImage;
         //*/
 
-        //コンストラクタ
+        /// <summary>
+        /// 汎用コンストラクタです
+        /// </summary>
+        /// <param name="_musicscore"></param>
+        /// <param name="_position"></param>
+        /// <param name="_startPosition"></param>
+        /// <param name="_endPosition"></param>
+        /// <param name="_noteSize"></param>
+        /// <param name="_noteStyle"></param>
+        /// <param name="_airDirection"></param>
+        /// <param name="_longNoteNumber"></param>
         public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
         {
             musicscore = _musicscore;
@@ -46,6 +57,48 @@ namespace NotesEditerforD
             setRelativePosition();
         }
 
+        /// <summary>
+        /// SlideLine専用コンストラクタです
+        /// </summary>
+        /// <param name="_musicscore"></param>
+        /// <param name="_position"></param>
+        /// <param name="_startPosition"></param>
+        /// <param name="_endPosition"></param>
+        /// <param name="_startSize"></param>
+        /// <param name="_endSize"></param>
+        /// <param name="_longNoteNumber"></param>
+        public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _startSize, int _endSize, int _longNoteNumber)
+        {
+            musicscore = _musicscore;
+            position = _position;
+            startPosition = _startPosition;
+            endPosition = _endPosition;
+            startSize = _startSize;//1-16
+            endSize = _endSize;//1-16
+            noteStyle = "SlideLine";
+            airDirection = "Center";
+            longNoteNumber = _longNoteNumber;
+            //
+            prevNote = null;
+            nextNote = null;
+            //destPoints = new Point[3];
+
+            noteImage = setNoteImage();
+            pos.Beat = MusicScore.SelectedBeat;
+            setRelativePosition();
+        }
+
+
+        /// <summary>
+        /// 分数を指定できるショートノーツ用コンストラクタです
+        /// </summary>
+        /// <param name="_musicscore"></param>
+        /// <param name="_position"></param>
+        /// <param name="_noteSize"></param>
+        /// <param name="_noteStyle"></param>
+        /// <param name="_airDirection"></param>
+        /// <param name="_longNoteNumber"></param>
+        /// <param name="_beat"></param>
         public ShortNote(MusicScore _musicscore, Point _position, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber, int _beat)
         {
             musicscore = _musicscore;
@@ -66,6 +119,13 @@ namespace NotesEditerforD
             setRelativePosition();
         }
 
+        /// <summary>
+        /// SpecialNotes専用コンストラクタです
+        /// </summary>
+        /// <param name="_musicscore"></param>
+        /// <param name="_position"></param>
+        /// <param name="_noteStyle"></param>
+        /// <param name="_value"></param>
         public ShortNote(MusicScore _musicscore, Point _position, string _noteStyle, decimal _value)
         {
             musicscore = _musicscore;
@@ -98,7 +158,7 @@ namespace NotesEditerforD
                 pos.BeatNumber = (int)Math.Round((localY - 2) * pos.Beat / 384m);
             }
             int beatGCD = GCD(pos.Beat, pos.BeatNumber);
-            pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;
+            //pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;
         }
 
         //*
@@ -210,7 +270,7 @@ namespace NotesEditerforD
         public void update()
         {
             noteImage = setNoteImage();
-            pos.Beat = MusicScore.SelectedBeat;
+            //pos.Beat = MusicScore.SelectedBeat;
             setRelativePosition();
         }
 
