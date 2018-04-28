@@ -270,7 +270,7 @@ namespace NotesEditerforD
         public void update()
         {
             noteImage = setNoteImage();
-            //pos.Beat = MusicScore.SelectedBeat;
+            pos.Beat = (MusicScore.SelectedBeat * pos.Beat) / GCD(MusicScore.SelectedBeat, pos.Beat);
             setRelativePosition();
         }
 

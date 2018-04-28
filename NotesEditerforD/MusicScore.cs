@@ -21,7 +21,7 @@ namespace NotesEditerforD
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
         private static decimal selectedBPM, selectedSpeed;
         private Point startPosition, endPosition;
-        private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag;
+        private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag, hitLeftFlag, hitRightFlag;
         private Point rectSelectBegin, rectSelectEnd;
         private RectSelect seRect;
         public ScoreRoot sRoot;
@@ -675,6 +675,8 @@ namespace NotesEditerforD
                     if(_note.NoteStyle != "SlideLine" && _note.NoteStyle != "HoldLine" && _note.NoteStyle != "AirLine" && isMouseCollision(_note.DestPoints, e.Location))
                     {
                         selectedNote = _note; //MessageBox.Show("Hit");
+                        if (e.Location.X < selectedNote.NotePosition.X + 5) hitLeftFlag = true;//ノーツ左端を選択した場合　サイズ変更用フラグ
+                        else if (selectedNote.NotePosition.X + selectedNote.NoteSize * 10 - 5 < e.Location.X) hitRightFlag = true;//ノーツ右端を選択した場合
                         hitFlag = true;
                         foreach(ShortNote __note in shortNotes)
                         {
@@ -798,6 +800,25 @@ namespace NotesEditerforD
                         previewNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteStyle, selectedAirDirection, 0);
                     }
                 }
+            }
+            else if (hitLeftFlag)//Editモードでのノーツサイズ変更
+            {
+                Cursor.Current = Cursors.SizeWE;
+                int endPos = 10 * selectedNote.NoteSize + selectedNote.NotePosition.X;
+                if (endPos - e.Location.X < 160 / selectedGrid) selectedNote.NoteSize = 16 / selectedGrid;
+                else
+                {
+                    selectedNote.NotePosition = new Point(locationize(e.Location).X, selectedNote.NotePosition.Y);
+                    selectedNote.NoteSize = (endPos - selectedNote.NotePosition.X) / 10;
+                }
+                selectedNote.update();
+            }
+            else if (hitRightFlag)//Editモードでのノーツサイズ変更
+            {
+                Cursor.Current = Cursors.SizeWE;
+                if (e.Location.X - selectedNote.NotePosition.X < 160 / selectedGrid) selectedNote.NoteSize = 16 / selectedGrid;
+                else selectedNote.NoteSize = (locationize(e.Location, 0).X - selectedNote.NotePosition.X) / 10;
+                selectedNote.update();
             }
             else if (selectedEditStatus == "Edit" || addSlideRelayFlag)
             {
@@ -941,6 +962,8 @@ namespace NotesEditerforD
 
         private void this_MouseUp(object sender, MouseEventArgs e)
         {
+            if (hitLeftFlag) { hitLeftFlag = false; Cursor = Cursors.Default; }
+            if (hitRightFlag) { hitRightFlag = false; Cursor = Cursors.Default; }
             if (rectSelectFlag)
             {
                 rectSelectFlag = false;
