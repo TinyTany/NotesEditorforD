@@ -376,10 +376,13 @@ namespace NotesEditerforD
                     Bitmap canvas = new Bitmap(Properties.Resources.Black, Math.Max(endPosition.X + endSize * 10, startPosition.X + startSize * 10) - Math.Min(endPosition.X, startPosition.X),
                         startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);//黒の背景を作成
                     Graphics g = Graphics.FromImage(canvas);
-                    Point start = Point.Subtract(startPosition, origin); start.X += 2;
-                    Point end = Point.Subtract(EndPosition, origin); end.X += 2;
-                    Point[] ps = { end, start, new Point(start.X + startSize * 10 - 4, start.Y), new Point(end.X + endSize * 10 - 4, end.Y)};
-                    g.FillPolygon(Brushes.Aqua, ps);
+                    Point start = Point.Subtract(startPosition, origin);
+                    Point end = Point.Subtract(EndPosition, origin);
+                    Point[] ps = { new Point(end.X + 2, end.Y), new Point(start.X + 2, start.Y), new Point(start.X + startSize * 10 - 2, start.Y), new Point(end.X + endSize * 10 - 2, end.Y)};
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    g.FillPolygon(new SolidBrush(Color.FromArgb(0, 224, 224)), ps);
+                    ps = new Point[] { new Point(end.X + endSize * 5 - 2, end.Y), new Point(start.X + startSize * 5 - 2, start.Y), new Point(start.X + startSize * 5 + 2, start.Y), new Point(end.X + endSize * 5 + 2, end.Y) };
+                    g.FillPolygon(new SolidBrush(Color.FromArgb(28, 255, 255)), ps);
                     g.Dispose();
                     noteImage = canvas;
                     break;
