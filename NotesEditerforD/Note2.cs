@@ -223,6 +223,18 @@ namespace NotesEditerforD
             set { this.noteSize = value; }
         }
 
+        public int StartSize
+        {
+            get { return startSize; }
+            set { startSize = value; }
+        }
+
+        public int EndSize
+        {
+            get { return endSize; }
+            set { endSize = value; }
+        }
+
         public Point NotePosition
         {
             get { return this.position; }
@@ -274,24 +286,29 @@ namespace NotesEditerforD
             setRelativePosition();
         }
 
+        /// <summary>
+        /// ノーツ画像を作成します
+        /// </summary>
+        /// <returns></returns>
         private Bitmap setNoteImage()
         {
-            System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
-            cm.Matrix00 = 1; cm.Matrix11 = 1; cm.Matrix22 = 1; cm.Matrix33 = 1; cm.Matrix44 = 1;
+            //System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
+            //cm.Matrix00 = 1; cm.Matrix11 = 1; cm.Matrix22 = 1; cm.Matrix33 = 1; cm.Matrix44 = 1;
             Bitmap canvas;
             switch (noteStyle)
             {
                 case "HoldLine":
                     canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
-                    cm.Matrix33 = 0.9f;
+                    //cm.Matrix33 = 0.9f;
                     break;
                 case "SlideLine":
-                    canvas = new Bitmap(Math.Abs(startPosition.X - endPosition.X) + noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
-                    cm.Matrix33 = 0.9f;
+                    canvas = new Bitmap(Math.Max(endPosition.X + endSize * 10, startPosition.X + startSize * 10) - Math.Min(endPosition.X, startPosition.X),
+                        startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
+                    //cm.Matrix33 = 0.9f;
                     break;
                 case "AirLine":
                     canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
-                    cm.Matrix33 = 0.9f;
+                    //cm.Matrix33 = 0.9f;
                     break;
                 case "AirUp":
                     canvas = new Bitmap(noteSize * 10, 30);
@@ -303,20 +320,26 @@ namespace NotesEditerforD
                     canvas = new Bitmap(noteSize * 10, 5);
                     break;
             }
-            System.Drawing.Imaging.ImageAttributes ia = new System.Drawing.Imaging.ImageAttributes();
-            ia.SetColorMatrix(cm);
-            Graphics g = Graphics.FromImage(canvas);
-            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-            Bitmap _noteImage = setNoteImage(noteStyle);
-            _noteImage.MakeTransparent(Color.Black);
-            destPoints = setDestPoints("ShortNote");
+            //System.Drawing.Imaging.ImageAttributes ia = new System.Drawing.Imaging.ImageAttributes();
+            //ia.SetColorMatrix(cm);
+            Graphics g = Graphics.FromImage(canvas);//設定した大きさで背景を作成
+            g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;//ノーツ画像を拡大縮小するときの方式を指定
+            Bitmap _noteImage = setNoteImage(noteStyle);//生のノーツ画像を持ってくる
+            _noteImage.MakeTransparent(Color.Black);//黒い部分は透明とみなす
+            destPoints = setDestPoints("ShortNote");//ノーツの相対位置を設定
             //g.DrawImage(_noteImage ,destPoints, new Rectangle(new Point(0, 0), canvas.Size), GraphicsUnit.Pixel, ia);
-            g.DrawImage(_noteImage, destPoints);
+            if (noteStyle == "SlideLine") g.DrawImage(_noteImage, new Point());
+            else g.DrawImage(_noteImage, destPoints);
             g.Dispose();
             _noteImage.Dispose();
             return canvas;
         }
         //*
+        /// <summary>
+        /// ノーツ画像を指定します
+        /// </summary>
+        /// <param name="_noteStyle"></param>
+        /// <returns></returns>
         private Bitmap setNoteImage(string _noteStyle)//ノーツ画像を指定
         {
             Bitmap noteImage;
@@ -348,6 +371,17 @@ namespace NotesEditerforD
                     break;
                 case "SlideLine":
                     noteImage = Properties.Resources.SlideLine;
+                    //ここを各自で実装する
+                    Size origin = new Size(Math.Min(startPosition.X, endPosition.X), endPosition.Y);
+                    Bitmap canvas = new Bitmap(Properties.Resources.Black, Math.Max(endPosition.X + endSize * 10, startPosition.X + startSize * 10) - Math.Min(endPosition.X, startPosition.X),
+                        startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);//黒の背景を作成
+                    Graphics g = Graphics.FromImage(canvas);
+                    Point start = Point.Subtract(startPosition, origin); start.X += 2;
+                    Point end = Point.Subtract(EndPosition, origin); end.X += 2;
+                    Point[] ps = { end, start, new Point(start.X + startSize * 10 - 4, start.Y), new Point(end.X + endSize * 10 - 4, end.Y)};
+                    g.FillPolygon(Brushes.Aqua, ps);
+                    g.Dispose();
+                    noteImage = canvas;
                     break;
                 case "SlideTap":
                     
@@ -419,7 +453,7 @@ namespace NotesEditerforD
         //*/
         private Point[] setDestPoints(string state)
         {
-            Point[] _destPoints = new Point[3];
+            Point[] _destPoints;// = new Point[3];
             switch (noteStyle)
             {
                 case "HoldEnd":
@@ -436,7 +470,7 @@ namespace NotesEditerforD
                         if(startPosition.X > endPosition.X) _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(startPosition.X - endPosition.X + 2, startPosition.Y - endPosition.Y) };
                         else _destPoints = new Point[3] { new Point(endPosition.X - startPosition.X + 2, 0), new Point(endPosition.X - startPosition.X + 10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
                     }
-                    else _destPoints = new Point[3] { new Point(endPosition.X + 2, endPosition.Y), new Point(endPosition.X + 10 * noteSize - 2, endPosition.Y), new Point(startPosition.X + 2, startPosition.Y) };
+                    else _destPoints = new Point[4] { new Point(endPosition.X + 2, endPosition.Y), new Point(endPosition.X + 10 * endSize - 2, endPosition.Y), new Point(startPosition.X + 2, startPosition.Y), new Point(startPosition.X + startSize * 10 - 2, startPosition.Y)};
                     break;
                 case "AirLine":
                     if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
