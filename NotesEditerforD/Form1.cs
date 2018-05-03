@@ -453,10 +453,6 @@ namespace NotesEditerforD
 
             if (ofd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
             {
-                //initialize musicscore
-                sRoot.newScore();
-                setTotalNotes();
-                //
                 System.IO.StreamReader sr = new System.IO.StreamReader(ofd.FileName);
                 fileName = ofd.SafeFileName;//MessageBox.Show(fileName);
                 string dataLine;
@@ -514,6 +510,10 @@ namespace NotesEditerforD
                     MessageBox.Show("対応していないバージョンのファイルです", "読み込みエラー");
                     return;
                 }
+                //initialize musicscore
+                sRoot.newScore();
+                setTotalNotes();
+                //
                 if (dymsDataVersion == "0.7") msIndex = 12;
                 else msIndex = 10;//index
                 bool flg = false;
