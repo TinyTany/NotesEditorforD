@@ -25,6 +25,7 @@ namespace NotesEditerforD
         //*
         private Bitmap noteImage;
         //*/
+        private bool visible = true, collision = true;//for SlideLine
 
         /// <summary>
         /// 汎用コンストラクタです
@@ -78,6 +79,7 @@ namespace NotesEditerforD
             noteStyle = "SlideLine";
             airDirection = "Center";
             longNoteNumber = _longNoteNumber;
+            //this.visible = visible == 0 ? false : true;
             //
             prevNote = null;
             nextNote = null;
@@ -191,6 +193,20 @@ namespace NotesEditerforD
         {
             get { return this.noteImage; }
             set { this.noteImage = value; }
+        }
+        //*/
+
+        public bool Visible
+        {
+            get { return visible; }
+            set { visible = value; }
+        }
+
+        /*
+        public bool Collision
+        {
+            get { return collision; }
+            set { collision = value; }
         }
         //*/
 
