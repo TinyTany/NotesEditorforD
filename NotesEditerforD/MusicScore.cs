@@ -274,10 +274,31 @@ namespace NotesEditerforD
         public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
         {
             Point notePosition;
-            int noteSize, longNoteNumber, beat;
+            int noteSize, startSize, endSize, longNoteNumber, beat;
             string noteStyle, airDirection;
             ShortNote shortNote;
-            if (dymsVersion == "0.6")
+            if (dymsVersion == "0.7")
+            {
+                notePosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
+                startPosition = new Point(int.Parse(_noteData[6]), int.Parse(_noteData[7]));
+                endPosition = new Point(int.Parse(_noteData[8]), int.Parse(_noteData[9]));
+                noteSize = int.Parse(_noteData[1]);
+                startSize = int.Parse(_noteData[2]);
+                endSize = int.Parse(_noteData[3]);
+                noteStyle = _noteData[0];
+                airDirection = _noteData[10];
+                longNoteNumber = int.Parse(_noteData[11]);
+                beat = int.Parse(_noteData[13]);
+                if (new string[] { "HoldLine", "AirLine" }.Contains(noteStyle))
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                else if (noteStyle == "SlideLine")
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, startSize, endSize, longNoteNumber);
+                else
+                    shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, beat);
+                shortNotes.Add(shortNote);
+                return;
+            }
+            else if (dymsVersion == "0.6")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
                 startPosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
@@ -287,8 +308,10 @@ namespace NotesEditerforD
                 airDirection = _noteData[8];
                 longNoteNumber = int.Parse(_noteData[9]);
                 beat = int.Parse(_noteData[11]);
-                if(new string[] { "HoldLine", "SlideLine", "AirLine"}.Contains(noteStyle))
+                if (new string[] { "HoldLine", "AirLine" }.Contains(noteStyle))
                     shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                else if (noteStyle == "SlideLine")
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteSize, longNoteNumber);
                 else
                     shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, beat);
                 shortNotes.Add(shortNote);
@@ -307,6 +330,8 @@ namespace NotesEditerforD
                 {
                     if (new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(noteStyle))
                         shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                    else if (noteStyle == "SlideLine")
+                        shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteSize, longNoteNumber);
                     else
                         shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, 192);
                     shortNotes.Add(shortNote);
@@ -683,7 +708,7 @@ namespace NotesEditerforD
                     if(_note.NoteStyle != "SlideLine" && _note.NoteStyle != "HoldLine" && _note.NoteStyle != "AirLine" && isMouseCollision(_note.DestPoints, e.Location))
                     {
                         selectedNote = _note; //MessageBox.Show("Hit");
-                        int hitWidth = 3 * selectedNote.NoteSize;
+                        int hitWidth = Math.Min(3 * selectedNote.NoteSize, 12);
                         if (e.Location.X < selectedNote.NotePosition.X + hitWidth) hitLeftFlag = true;//ノーツ左端を選択した場合　サイズ変更用フラグ
                         else if (selectedNote.NotePosition.X + selectedNote.NoteSize * 10 - hitWidth < e.Location.X) hitRightFlag = true;//ノーツ右端を選択した場合
                         hitFlag = true;
@@ -1305,17 +1330,17 @@ namespace NotesEditerforD
                         int nextSize = nextNote.NoteSize * 10;
                         float ratio = 11 / 16f;
                         Pen pen = new Pen(Color.SteelBlue, 1);
-                        Point prevcur = new Point(prev.X + (int)((_note.NotePosition.X - prev.X) * ratio) + 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
-                        Point curnext = new Point(next.X + (int)((_note.NotePosition.X - next.X) * ratio) + 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
+                        Point prevcur = new Point(prev.X + (int)((_note.NotePosition.X - prev.X + 5 * (_note.NoteSize - prevNote.NoteSize)) * ratio) + 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
+                        Point curnext = new Point(next.X + (int)((_note.NotePosition.X - next.X + 5 * (_note.NoteSize - nextNote.NoteSize)) * ratio) + 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
                         prev = new Point(prev.X + 2, prev.Y);
                         next = new Point(next.X + 2, next.Y);
                         g.DrawBezier(pen, prev, prevcur, curnext, next);
                         prev = prevNote.NotePosition;
                         next = nextNote.NotePosition;
-                        prevcur = new Point(prev.X + prevSize + (int)((_note.NotePosition.X + curSize - prev.X - prevSize) * ratio) + 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
-                        curnext = new Point(next.X + nextSize + (int)((_note.NotePosition.X + curSize - next.X - nextSize) * ratio) + 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
-                        prev = new Point(prev.X + prevSize - 6, prev.Y);
-                        next = new Point(next.X + nextSize - 6, next.Y);
+                        prevcur = new Point(prev.X + prevSize + (int)((_note.NotePosition.X - prev.X + 5 * (_note.NoteSize - prevNote.NoteSize)) * ratio) + 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
+                        curnext = new Point(next.X + nextSize + (int)((_note.NotePosition.X - next.X + 5 * (_note.NoteSize - nextNote.NoteSize)) * ratio) + 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
+                        prev = new Point(prev.X + prevSize - 2, prev.Y);
+                        next = new Point(next.X + nextSize - 2, next.Y);
                         g.DrawBezier(pen, prev, prevcur, curnext, next);
                     }
                 }
