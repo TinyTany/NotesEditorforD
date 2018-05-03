@@ -720,8 +720,11 @@ namespace NotesEditerforD
                     {
                         selectedNote = _note; //MessageBox.Show("Hit");
                         int hitWidth = Math.Min(3 * selectedNote.NoteSize, 12);
-                        if (e.Location.X < selectedNote.NotePosition.X + hitWidth) hitLeftFlag = true;//ノーツ左端を選択した場合　サイズ変更用フラグ
-                        else if (selectedNote.NotePosition.X + selectedNote.NoteSize * 10 - hitWidth < e.Location.X) hitRightFlag = true;//ノーツ右端を選択した場合
+                        if (!(new string[] { "Hold", "HoldLine", "HoldEnd", "AirBegin", "AirLine", "AirAction", "AirEnd" }.Contains(_note.NoteStyle)))
+                        {
+                            if (e.Location.X < selectedNote.NotePosition.X + hitWidth) hitLeftFlag = true;//ノーツ左端を選択した場合　サイズ変更用フラグ
+                            else if (selectedNote.NotePosition.X + selectedNote.NoteSize * 10 - hitWidth < e.Location.X) hitRightFlag = true;//ノーツ右端を選択した場合
+                        }
                         hitFlag = true;
                         foreach(ShortNote __note in shortNotes)
                         {

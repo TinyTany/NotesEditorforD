@@ -252,6 +252,38 @@ namespace NotesEditerforD
             sRoot.Scores[0].update();
         }
 
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        
+
+        private void ダウンロードページToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/TinyTany/NotesEditorforD/releases/");
+        }
+
+        private void 作者のアカウントToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://twitter.com/t4nishi");
+        }
+
+        private void 公式アカウントToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://twitter.com/_ne4d");
+        }
+
+        private void バージョン情報ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("NoteEditorforD v0.7\n2018/5/3");
+        }
+
+        private void 寄付についてToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://osushi.love/t4nishi");
+        }
+
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.A && e.Modifiers == Keys.Shift) { /*ActiveControl = null;*/ radioAdd.Checked = true; }
