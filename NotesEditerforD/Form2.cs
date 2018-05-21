@@ -158,7 +158,8 @@ namespace NotesEditerforD
             var objBPM = new[] { new { BPM = BPMUpDown.Value, BPMStrArrIdx = 1} }.ToList(); int curBPMStrArrIdx = 1;
             string[] spLane1 = new string[BPMBeatDevide];
             string[] spLane2 = new string[BPMBeatDevide];
-            
+
+            string cur = "01";//???
             for (measure = 0; measure <= lastScore; measure++)
             {
                 for (int i = 0; i < BPMBeatDevide; i++) spLane1[i] = "00";//initialize lane
@@ -190,7 +191,7 @@ namespace NotesEditerforD
                     }
                 }
                 //*
-                string cur = "01";
+                //string cur = "01";//???
                 if(isBPMModified(spLane1, BPMBeatDevide)) for (int i = 0; i < BPMBeatDevide; i++)
                 {
                     if (spLane1[i] == "00") spLane1[i] = cur;

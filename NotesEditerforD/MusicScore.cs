@@ -851,6 +851,23 @@ namespace NotesEditerforD
             }
             else if (hitLeftFlag)//Editモードでのノーツサイズ変更
             {
+                ShortNote borderPrev = null, borderNext = null;
+                if (selectedNote.NotePosition.Y == 2 && nextScore != null)
+                {
+                    borderNext = nextScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 770 && 
+                        x.NoteStyle == selectedNote.NoteStyle && 
+                        x.NoteSize == selectedNote.NoteSize && 
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
+                else if (selectedNote.NotePosition.Y == 770 && prevScore != null)
+                {
+                    borderPrev = prevScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 2 &&
+                        x.NoteStyle == selectedNote.NoteStyle &&
+                        x.NoteSize == selectedNote.NoteSize &&
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
                 Cursor.Current = Cursors.SizeWE;
                 int endPos = 10 * selectedNote.NoteSize + selectedNote.NotePosition.X;
                 if (endPos - e.Location.X < 160 / selectedGrid) selectedNote.NoteSize = 16 / selectedGrid;
@@ -868,9 +885,40 @@ namespace NotesEditerforD
                     if(prev != null) { prev.EndSize = selectedNote.NoteSize; prev.EndPosition = selectedNote.NotePosition; prev.update(); }
                     if(next != null) { next.StartSize = selectedNote.NoteSize; next.StartPosition = selectedNote.NotePosition; next.update(); }
                 }
+                if(borderNext != null)
+                {
+                    borderNext.NotePosition = new Point(selectedNote.NotePosition.X, borderNext.NotePosition.Y);
+                    borderNext.NoteSize = selectedNote.NoteSize;
+                    borderNext.update();
+                    nextScore.update();
+                }
+                if (borderPrev != null)
+                {
+                    borderPrev.NotePosition = new Point(selectedNote.NotePosition.X, borderPrev.NotePosition.Y);
+                    borderPrev.NoteSize = selectedNote.NoteSize;
+                    borderPrev.update();
+                    prevScore.update();
+                }
             }
             else if (hitRightFlag)//Editモードでのノーツサイズ変更
             {
+                ShortNote borderPrev = null, borderNext = null;
+                if (selectedNote.NotePosition.Y == 2 && nextScore != null)
+                {
+                    borderNext = nextScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 770 &&
+                        x.NoteStyle == selectedNote.NoteStyle &&
+                        x.NoteSize == selectedNote.NoteSize &&
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
+                else if (selectedNote.NotePosition.Y == 770 && prevScore != null)
+                {
+                    borderPrev = prevScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 2 &&
+                        x.NoteStyle == selectedNote.NoteStyle &&
+                        x.NoteSize == selectedNote.NoteSize &&
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
                 Cursor.Current = Cursors.SizeWE;
                 if (e.Location.X - selectedNote.NotePosition.X < 160 / selectedGrid) selectedNote.NoteSize = 16 / selectedGrid;
                 else selectedNote.NoteSize = (locationize(e.Location, 0).X - selectedNote.NotePosition.X) / 10;
@@ -882,6 +930,20 @@ namespace NotesEditerforD
                     next = shortNotes.Find(x => x.LongNoteNumber == selectedNote.LongNoteNumber && x.NoteStyle == "SlideLine" && x.StartPosition.Y == selectedNote.NotePosition.Y);
                     if (prev != null) { prev.EndSize = selectedNote.NoteSize; prev.EndPosition = selectedNote.NotePosition; prev.update(); }
                     if (next != null) { next.StartSize = selectedNote.NoteSize; next.StartPosition = selectedNote.NotePosition; next.update(); }
+                }
+                if (borderNext != null)
+                {
+                    borderNext.NotePosition = new Point(selectedNote.NotePosition.X, borderNext.NotePosition.Y);
+                    borderNext.NoteSize = selectedNote.NoteSize;
+                    borderNext.update();
+                    nextScore.update();
+                }
+                if (borderPrev != null)
+                {
+                    borderPrev.NotePosition = new Point(selectedNote.NotePosition.X, borderPrev.NotePosition.Y);
+                    borderPrev.NoteSize = selectedNote.NoteSize;
+                    borderPrev.update();
+                    prevScore.update();
                 }
             }
             else if (selectedEditStatus == "Edit" || addSlideRelayFlag)
@@ -1205,9 +1267,17 @@ namespace NotesEditerforD
             }
             else if (shortNote.NotePosition.Y == 2 && nextScore != null && shortNote.PrevNote == null && shortNote.NextNote == null)
             {
-                ShortNote nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
+                ShortNote nextShortNote;
+                //*
+                if(shortNote.NoteStyle == "SlideLine")
+                {
+                    nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.StartSize, shortNote.EndSize, shortNote.LongNoteNumber);
+                }
+                else nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
                 nextShortNote.StartPosition = new Point(nextShortNote.StartPosition.X, nextShortNote.StartPosition.Y + 768);
                 nextShortNote.EndPosition = new Point(nextShortNote.EndPosition.X, nextShortNote.EndPosition.Y + 768);
+                //nextShortNote.StartSize = shortNote.StartSize;
+                //nextShortNote.EndSize = shortNote.EndSize;
                 nextShortNote.NotePosition = new Point(nextShortNote.NotePosition.X, nextShortNote.NotePosition.Y + 768);
                 nextShortNote.update();//
                 //nextShortNote.LongNoteNumber = shortNote.LongNoteNumber;
@@ -1216,6 +1286,7 @@ namespace NotesEditerforD
                 nextScore.shortNotes.Add(nextShortNote);
                 //nextShortNote.showRerativePosition();//debug
                 nextScore.update();
+                //*/
             }
             //*
             if (shortNote.NotePosition.Y != 770 && shortNote.PrevNote != null && shortNote.NoteStyle != "SlideLine")

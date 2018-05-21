@@ -45,6 +45,7 @@ namespace NotesEditerforD
             startPosition = _startPosition;
             endPosition = _endPosition;
             noteSize = _noteSize;//1-16
+            //startSize = endSize = noteSize;
             noteStyle = _noteStyle;
             airDirection = _airDirection;
             longNoteNumber = _longNoteNumber;
@@ -157,7 +158,7 @@ namespace NotesEditerforD
             {
                 localY -= 386;
                 pos.Measure = 2 * musicscore.Index + 2;
-                pos.BeatNumber = (int)Math.Round((localY - 2) * pos.Beat / 384m);
+                pos.BeatNumber = (int)Math.Round((localY - 3) * pos.Beat / 384m);//
             }
             int beatGCD = GCD(pos.Beat, pos.BeatNumber);
             //pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;

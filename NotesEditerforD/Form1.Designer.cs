@@ -201,6 +201,7 @@
             this.flowLayoutPanelMusicScore.TabIndex = 9;
             this.flowLayoutPanelMusicScore.Visible = false;
             this.flowLayoutPanelMusicScore.WrapContents = false;
+            this.flowLayoutPanelMusicScore.Scroll += new System.Windows.Forms.ScrollEventHandler(this.flowLayoutPanelMusicScore_Scroll);
             // 
             // labelGrid
             // 

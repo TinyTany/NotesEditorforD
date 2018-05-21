@@ -24,7 +24,7 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.7", Version = "0.7";
+        private const string dymsVersion = "0.7", Version = "0.7.1";
         //public bool slideRelay = false;
         public Form1()
         {
@@ -282,6 +282,11 @@ namespace NotesEditerforD
         private void 寄付についてToolStripMenuItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://osushi.love/t4nishi");
+        }
+
+        private void flowLayoutPanelMusicScore_Scroll(object sender, ScrollEventArgs e)
+        {
+            
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
