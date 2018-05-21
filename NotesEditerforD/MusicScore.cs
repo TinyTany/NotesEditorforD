@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace NotesEditerforD
@@ -21,9 +22,9 @@ namespace NotesEditerforD
         private static string selectedNoteStyle, selectedEditStatus, selectedAirDirection;
         private static decimal selectedBPM, selectedSpeed;
         private Point startPosition, endPosition;
-        private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag;
+        private bool addSlideRelayFlag, previewVisible, rectSelectFlag, seRectFlag, hitLeftFlag, hitRightFlag;
         private Point rectSelectBegin, rectSelectEnd;
-        private RectSelect seRect, cpRect;
+        private RectSelect seRect;
         public ScoreRoot sRoot;
         public List<ShortNote> shortNotes = new List<ShortNote>();
         public List<ShortNote> specialNotes = new List<ShortNote>();
@@ -33,6 +34,7 @@ namespace NotesEditerforD
         private MouseButtons eyedropperMouseButton = MouseButtons.Right;
         private ContextMenuStrip selectMenuStrip;//, scoreMenuStrip;
         private ToolStripMenuItem[] stripItem;
+        private StringFormat sFormat = new StringFormat();
 
         public MusicScore()
         {
@@ -68,6 +70,8 @@ namespace NotesEditerforD
             this.MouseUp += new MouseEventHandler(this_MouseUp);
             this.MouseEnter += new EventHandler(this_MouseEnter);
             this.MouseLeave += new EventHandler(this_MouseLeave);
+
+            sFormat.Alignment = StringAlignment.Far;
         }
 
         public MusicScore PrevScore
@@ -167,11 +171,11 @@ namespace NotesEditerforD
             sRoot.YankNotes.Clear();
             foreach(ShortNote note in shortNotes)//矩形内に含まれてそうなショートノーツをコピーしてYankのリストにぶち込む
             {
-                if(seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10, 5))) &&
+                if(seRect.Rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10 - 2, 5))) &&
             note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine")
                 {
                     sRoot.YankNotes.Add(
-                         new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+                         new ShortNote(this, note.NotePosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber, note.LocalPosition.Beat));
                 }
             }
             foreach(ShortNote note in sRoot.YankNotes.ToArray())//ロングノーツ系のやつは全体が含まれてるかチェック
@@ -191,7 +195,13 @@ namespace NotesEditerforD
                 if (note.LongNoteNumber == -1) continue;
                 if (!(new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(note.NoteStyle))) continue;
                 if (!sRoot.YankNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber).Any()) continue;
-                sRoot.YankNotes.Insert(0,
+                if(note.NoteStyle == "SlideLine")
+                {
+                    sRoot.YankNotes.Insert(0,
+                    new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.StartSize, note.EndSize, note.LongNoteNumber));
+                }
+                else
+                    sRoot.YankNotes.Insert(0,
                     new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
             }
             sRoot.YankRect = new RectSelect(seRect.RectUL, seRect.RectDR, shortNotes);
@@ -200,23 +210,40 @@ namespace NotesEditerforD
         private void menuStripPaste(object sender, EventArgs e)//sRootからもらう//詰める//詰めた
         {
             List<ShortNote> selectedNotes = new List<ShortNote>();
+            var objLNN = new[] { new { prevLNN = -1, nextLNN = -1 } }.Skip(1).ToList();
+            
             foreach(ShortNote note in sRoot.YankNotes)
             {
-                selectedNotes.Add(
+                if(new string[] { "HoldLine", "AirLine" }.Contains(note.NoteStyle))
+                {
+                    selectedNotes.Add(
                          new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber));
+                }
+                else if(note.NoteStyle == "SlideLine")
+                {
+                    selectedNotes.Add(
+                         new ShortNote(this, note.NotePosition, note.StartPosition, note.EndPosition, note.StartSize, note.EndSize, note.LongNoteNumber));
+                }
+                else
+                {
+                    selectedNotes.Add(
+                         new ShortNote(this, note.NotePosition, note.NoteSize, note.NoteStyle, note.AirDirection, note.LongNoteNumber, note.LocalPosition.Beat));
+                }
             }
             //LongNotesNumber更新しろ
-            int[] num = new int[10000]; for (int i = 0; i < num.Count(); i++) num[i] = -1;//LongNotesNumberは高々10000を超えないと勝手に考えて乱暴に実装する
             foreach(ShortNote note in selectedNotes)//しました
             {
                 if (note.LongNoteNumber == -1) continue;
-                if (num[note.LongNoteNumber] == -1)
+                if(objLNN.Where(x => x.prevLNN == note.LongNoteNumber).Any())
                 {
-                    num[note.LongNoteNumber] = sRoot.LongNoteNumber;
-                    note.LongNoteNumber = num[note.LongNoteNumber];
+                    note.LongNoteNumber = objLNN.Find(x => x.prevLNN == note.LongNoteNumber).nextLNN;
+                }
+                else
+                {
+                    objLNN.Add(new { prevLNN = note.LongNoteNumber, nextLNN = sRoot.LongNoteNumber });
+                    note.LongNoteNumber = sRoot.LongNoteNumber;
                     sRoot.LongNoteNumber++;
                 }
-                else note.LongNoteNumber = num[note.LongNoteNumber];
             }
             shortNotes.AddRange(selectedNotes);
             seRect = new RectSelect(sRoot.YankRect.RectUL, sRoot.YankRect.RectDR, shortNotes);
@@ -258,10 +285,31 @@ namespace NotesEditerforD
         public void setNote(string[] _noteData, string dymsVersion)//dymsVer変更時に必ず編集
         {
             Point notePosition;
-            int noteSize, longNoteNumber, beat;
+            int noteSize, startSize, endSize, longNoteNumber, beat;
             string noteStyle, airDirection;
             ShortNote shortNote;
-            if (dymsVersion == "0.6")
+            if (dymsVersion == "0.7")
+            {
+                notePosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
+                startPosition = new Point(int.Parse(_noteData[6]), int.Parse(_noteData[7]));
+                endPosition = new Point(int.Parse(_noteData[8]), int.Parse(_noteData[9]));
+                noteSize = int.Parse(_noteData[1]);
+                startSize = int.Parse(_noteData[2]);
+                endSize = int.Parse(_noteData[3]);
+                noteStyle = _noteData[0];
+                airDirection = _noteData[10];
+                longNoteNumber = int.Parse(_noteData[11]);
+                beat = int.Parse(_noteData[13]);
+                if (new string[] { "HoldLine", "AirLine" }.Contains(noteStyle))
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                else if (noteStyle == "SlideLine")
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, startSize, endSize, longNoteNumber);
+                else
+                    shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, beat);
+                shortNotes.Add(shortNote);
+                return;
+            }
+            else if (dymsVersion == "0.6")
             {
                 notePosition = new Point(int.Parse(_noteData[2]), int.Parse(_noteData[3]));
                 startPosition = new Point(int.Parse(_noteData[4]), int.Parse(_noteData[5]));
@@ -271,8 +319,10 @@ namespace NotesEditerforD
                 airDirection = _noteData[8];
                 longNoteNumber = int.Parse(_noteData[9]);
                 beat = int.Parse(_noteData[11]);
-                if(new string[] { "HoldLine", "SlideLine", "AirLine"}.Contains(noteStyle))
+                if (new string[] { "HoldLine", "AirLine" }.Contains(noteStyle))
                     shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                else if (noteStyle == "SlideLine")
+                    shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteSize, longNoteNumber);
                 else
                     shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, beat);
                 shortNotes.Add(shortNote);
@@ -291,6 +341,8 @@ namespace NotesEditerforD
                 {
                     if (new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(noteStyle))
                         shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteStyle, airDirection, longNoteNumber);
+                    else if (noteStyle == "SlideLine")
+                        shortNote = new ShortNote(this, notePosition, startPosition, endPosition, noteSize, noteSize, longNoteNumber);
                     else
                         shortNote = new ShortNote(this, notePosition, noteSize, noteStyle, airDirection, longNoteNumber, 192);
                     shortNotes.Add(shortNote);
@@ -347,7 +399,13 @@ namespace NotesEditerforD
                 {
                     foreach (ShortNote note in shortNotes.Reverse<ShortNote>())
                     {
-                        if (isMouseCollision(note.DestPoints, e.Location))
+                        if (note.NoteStyle == "SlideLine" && isMouseCollisionSquare(note.DestPoints, e.Location) && note.Visible)
+                        {
+                            selectedNoteStyle = "Slide";
+                            selectedNoteSize = note.StartSize;
+                            break;
+                        }
+                        else if (note.NoteStyle != "SlideLine" && isMouseCollision(note.DestPoints, e.Location))
                         {
                             if (note.NoteStyle == "SlideLine" || note.NoteStyle == "SlideTap" || note.NoteStyle == "SlideRelay" || note.NoteStyle == "SlideEnd") selectedNoteStyle = "Slide";
                             else if (note.NoteStyle == "HoldLine" || note.NoteStyle == "HoldEnd") selectedNoteStyle = "Hold";
@@ -460,25 +518,25 @@ namespace NotesEditerforD
                             break;
                         }
 
-                        if (shortNotes[i].NoteStyle == "SlideLine" && shortNotes[i].NoteSize == selectedNoteSize && isMouseCollision(shortNotes[i].DestPoints, e.Location))//間に節を追加
+                        if (shortNotes[i].NoteStyle == "SlideLine" && isMouseCollisionSquare(shortNotes[i].DestPoints, e.Location) && shortNotes[i].Visible)//間に節を追加
                         {
                             if ((Control.ModifierKeys & Keys.Shift) == Keys.Shift) break;
                             deleteFlag = true;//deleteNote(startNote);
                             previewVisible = false;
                             ShortNote next = shortNotes[i];
-                            ShortNote prev = new ShortNote(this, next.NotePosition, next.StartPosition, locationize(e.Location), next.NoteSize, "SlideLine", "Center", next.LongNoteNumber);
+                            ShortNote prev = new ShortNote(this, next.NotePosition, next.StartPosition, locationize(e.Location), next.StartSize, selectedNoteSize, next.LongNoteNumber);
                             next.StartPosition = locationize(e.Location);
-                            //addNote(prev);
+                            next.StartSize = selectedNoteSize;
                             shortNotes.Insert(i, prev);
                             next.update();
                             ShortNote slide;
                             if (!sRoot.SlideRelay)
                             {
-                                slide = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), next.NoteSize, "SlideRelay", "Center", next.LongNoteNumber);
+                                slide = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), next.StartSize, "SlideRelay", "Center", next.LongNoteNumber);
                             }
                             else
                             {
-                                slide = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), next.NoteSize, "SlideTap", "Center", next.LongNoteNumber);
+                                slide = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), next.StartSize, "SlideTap", "Center", next.LongNoteNumber);
                             }
                             //addNote(slide);
                             shortNotes.Insert(i + 1, slide);
@@ -490,16 +548,17 @@ namespace NotesEditerforD
                             break;
                         }
                     }
-                    if (!addSlideRelayFlag) previewLongNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, startPosition.Y - 1), selectedNoteSize, "SlideLine", selectedAirDirection, 0);
+                    if (!addSlideRelayFlag) previewLongNote = new ShortNote(this, locationize(e.Location), startPosition, new Point(startPosition.X, startPosition.Y - 1), selectedNoteSize, selectedNoteSize, 0);
                 }
                 else if (selectedNoteStyle == "SlideCurve")
                 {
                     deleteFlag = true;//deleteNote(shortNote);
                     foreach (ShortNote note in shortNotes.Reverse<ShortNote>())
                     {
-                        if (note.NoteStyle == "SlideLine" && isMouseCollision(note.DestPoints, e.Location))
+                        if (note.NoteStyle == "SlideLine" && isMouseCollisionSquare(note.DestPoints, e.Location) && note.Visible)
                         {
-                            shortNote = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), note.NoteSize, "SlideCurve", "Center", note.LongNoteNumber);
+                            //MessageBox.Show(note.DestPoints.Count().ToString());
+                            shortNote = new ShortNote(this, locationize(e.Location), locationize(e.Location), locationize(e.Location), note.StartSize, "SlideCurve", "Center", note.LongNoteNumber);
                             addNote(shortNote);
                             selectedNote = shortNote;
                             addSlideRelayFlag = true;
@@ -544,6 +603,7 @@ namespace NotesEditerforD
                             if (next != null)
                             {
                                 prev.EndPosition = next.EndPosition;
+                                prev.EndSize = next.EndSize;
                                 prev.update();
                                 deleteNote(next);
                                 deleteNote(_note);
@@ -659,6 +719,12 @@ namespace NotesEditerforD
                     if(_note.NoteStyle != "SlideLine" && _note.NoteStyle != "HoldLine" && _note.NoteStyle != "AirLine" && isMouseCollision(_note.DestPoints, e.Location))
                     {
                         selectedNote = _note; //MessageBox.Show("Hit");
+                        int hitWidth = Math.Min(3 * selectedNote.NoteSize, 12);
+                        if (!(new string[] { "Hold", "HoldLine", "HoldEnd", "AirBegin", "AirLine", "AirAction", "AirEnd" }.Contains(_note.NoteStyle)))
+                        {
+                            if (e.Location.X < selectedNote.NotePosition.X + hitWidth) hitLeftFlag = true;//ノーツ左端を選択した場合　サイズ変更用フラグ
+                            else if (selectedNote.NotePosition.X + selectedNote.NoteSize * 10 - hitWidth < e.Location.X) hitRightFlag = true;//ノーツ右端を選択した場合
+                        }
                         hitFlag = true;
                         foreach(ShortNote __note in shortNotes)
                         {
@@ -783,6 +849,103 @@ namespace NotesEditerforD
                     }
                 }
             }
+            else if (hitLeftFlag)//Editモードでのノーツサイズ変更
+            {
+                ShortNote borderPrev = null, borderNext = null;
+                if (selectedNote.NotePosition.Y == 2 && nextScore != null)
+                {
+                    borderNext = nextScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 770 && 
+                        x.NoteStyle == selectedNote.NoteStyle && 
+                        x.NoteSize == selectedNote.NoteSize && 
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
+                else if (selectedNote.NotePosition.Y == 770 && prevScore != null)
+                {
+                    borderPrev = prevScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 2 &&
+                        x.NoteStyle == selectedNote.NoteStyle &&
+                        x.NoteSize == selectedNote.NoteSize &&
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
+                Cursor.Current = Cursors.SizeWE;
+                int endPos = 10 * selectedNote.NoteSize + selectedNote.NotePosition.X;
+                if (endPos - e.Location.X < 160 / selectedGrid) selectedNote.NoteSize = 16 / selectedGrid;
+                else
+                {
+                    selectedNote.NotePosition = new Point(locationize(e.Location, 0).X, selectedNote.NotePosition.Y);
+                    selectedNote.NoteSize = (endPos - selectedNote.NotePosition.X) / 10;
+                }
+                selectedNote.update();
+                if(new string[] { "Slide", "SlideTap", "SlideRelay", "SlideEnd" }.Contains(selectedNote.NoteStyle))
+                {
+                    ShortNote prev, next;
+                    prev = shortNotes.Find(x => x.LongNoteNumber == selectedNote.LongNoteNumber && x.NoteStyle == "SlideLine" && x.EndPosition.Y == selectedNote.NotePosition.Y);
+                    next = shortNotes.Find(x => x.LongNoteNumber == selectedNote.LongNoteNumber && x.NoteStyle == "SlideLine" && x.StartPosition.Y == selectedNote.NotePosition.Y);
+                    if(prev != null) { prev.EndSize = selectedNote.NoteSize; prev.EndPosition = selectedNote.NotePosition; prev.update(); }
+                    if(next != null) { next.StartSize = selectedNote.NoteSize; next.StartPosition = selectedNote.NotePosition; next.update(); }
+                }
+                if(borderNext != null)
+                {
+                    borderNext.NotePosition = new Point(selectedNote.NotePosition.X, borderNext.NotePosition.Y);
+                    borderNext.NoteSize = selectedNote.NoteSize;
+                    borderNext.update();
+                    nextScore.update();
+                }
+                if (borderPrev != null)
+                {
+                    borderPrev.NotePosition = new Point(selectedNote.NotePosition.X, borderPrev.NotePosition.Y);
+                    borderPrev.NoteSize = selectedNote.NoteSize;
+                    borderPrev.update();
+                    prevScore.update();
+                }
+            }
+            else if (hitRightFlag)//Editモードでのノーツサイズ変更
+            {
+                ShortNote borderPrev = null, borderNext = null;
+                if (selectedNote.NotePosition.Y == 2 && nextScore != null)
+                {
+                    borderNext = nextScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 770 &&
+                        x.NoteStyle == selectedNote.NoteStyle &&
+                        x.NoteSize == selectedNote.NoteSize &&
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
+                else if (selectedNote.NotePosition.Y == 770 && prevScore != null)
+                {
+                    borderPrev = prevScore.shortNotes.Find(
+                        x => x.NotePosition.Y == 2 &&
+                        x.NoteStyle == selectedNote.NoteStyle &&
+                        x.NoteSize == selectedNote.NoteSize &&
+                        x.NotePosition.X == selectedNote.NotePosition.X);
+                }
+                Cursor.Current = Cursors.SizeWE;
+                if (e.Location.X - selectedNote.NotePosition.X < 160 / selectedGrid) selectedNote.NoteSize = 16 / selectedGrid;
+                else selectedNote.NoteSize = (locationize(e.Location, 0).X - selectedNote.NotePosition.X) / 10;
+                selectedNote.update();
+                if (new string[] { "Slide", "SlideTap", "SlideRelay", "SlideEnd" }.Contains(selectedNote.NoteStyle))
+                {
+                    ShortNote prev, next;
+                    prev = shortNotes.Find(x => x.LongNoteNumber == selectedNote.LongNoteNumber && x.NoteStyle == "SlideLine" && x.EndPosition.Y == selectedNote.NotePosition.Y);
+                    next = shortNotes.Find(x => x.LongNoteNumber == selectedNote.LongNoteNumber && x.NoteStyle == "SlideLine" && x.StartPosition.Y == selectedNote.NotePosition.Y);
+                    if (prev != null) { prev.EndSize = selectedNote.NoteSize; prev.EndPosition = selectedNote.NotePosition; prev.update(); }
+                    if (next != null) { next.StartSize = selectedNote.NoteSize; next.StartPosition = selectedNote.NotePosition; next.update(); }
+                }
+                if (borderNext != null)
+                {
+                    borderNext.NotePosition = new Point(selectedNote.NotePosition.X, borderNext.NotePosition.Y);
+                    borderNext.NoteSize = selectedNote.NoteSize;
+                    borderNext.update();
+                    nextScore.update();
+                }
+                if (borderPrev != null)
+                {
+                    borderPrev.NotePosition = new Point(selectedNote.NotePosition.X, borderPrev.NotePosition.Y);
+                    borderPrev.NoteSize = selectedNote.NoteSize;
+                    borderPrev.update();
+                    prevScore.update();
+                }
+            }
             else if (selectedEditStatus == "Edit" || addSlideRelayFlag)
             {
                 if (previewNote != null) previewNote = null;
@@ -800,7 +963,7 @@ namespace NotesEditerforD
                     fixBorder(selectedNote);
                     selectedNote.update();
                 }
-                if (selectedNote_prev != null && selectedNote_next == null)
+                if (selectedNote_prev != null && selectedNote_next == null && selectedNote != null)//ロングノーツの終点
                 {
                     if (selectedNote_prev.StartPosition.Y - selectedNote.NotePosition.Y >= threshold)
                     {
@@ -810,7 +973,7 @@ namespace NotesEditerforD
                         }
                         else
                         {
-                            selectedNote_prev.EndPosition = locationize(e.Location, selectedNote_prev.NoteSize);
+                            selectedNote_prev.EndPosition = locationize(e.Location, selectedNote_prev.EndSize);
                         }
                     }
                     else
@@ -832,7 +995,7 @@ namespace NotesEditerforD
                     selectedNote.update();
                     //fixBorder(selectedNote);
                 }
-                else if (selectedNote_next != null && selectedNote_prev == null)
+                else if (selectedNote_next != null && selectedNote_prev == null && selectedNote != null)//ロングノーツの始点
                 {
                     if (selectedNote.NotePosition.Y - selectedNote_next.EndPosition.Y >= threshold)
                     {
@@ -842,7 +1005,7 @@ namespace NotesEditerforD
                         }
                         else
                         {
-                            selectedNote_next.StartPosition = locationize(e.Location, selectedNote_next.NoteSize);
+                            selectedNote_next.StartPosition = locationize(e.Location, selectedNote_next.StartSize);
                         }
                         selectedNote_next.update();
                     }
@@ -864,7 +1027,7 @@ namespace NotesEditerforD
                     selectedNote.update();
                     //fixBorder(selectedNote);
                 }
-                else if (selectedNote_prev != null && selectedNote_next != null)
+                else if (selectedNote_prev != null && selectedNote_next != null && selectedNote != null)//ロングノーツの中間点
                 {
                     if (selectedNote_prev.StartPosition.Y - selectedNote.NotePosition.Y < threshold)
                     {
@@ -907,8 +1070,8 @@ namespace NotesEditerforD
                         }
                         else
                         {
-                            selectedNote_prev.EndPosition = locationize(e.Location, selectedNote_prev.NoteSize);
-                            selectedNote_next.StartPosition = locationize(e.Location, selectedNote_next.NoteSize);
+                            selectedNote_prev.EndPosition = locationize(e.Location, selectedNote_prev.EndSize);
+                            selectedNote_next.StartPosition = locationize(e.Location, selectedNote_next.StartSize);
                         }
                         selectedNote_prev.update();
                         selectedNote_next.update();
@@ -925,6 +1088,8 @@ namespace NotesEditerforD
 
         private void this_MouseUp(object sender, MouseEventArgs e)
         {
+            if (hitLeftFlag) { hitLeftFlag = false; Cursor = Cursors.Default; }
+            if (hitRightFlag) { hitRightFlag = false; Cursor = Cursors.Default; }
             if (rectSelectFlag)
             {
                 rectSelectFlag = false;
@@ -970,7 +1135,7 @@ namespace NotesEditerforD
                     case "Slide":
                         if (endPosition.Y < startPosition.Y && !addSlideRelayFlag)
                         {
-                            shortNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, "SlideLine", selectedAirDirection, tmpLongNoteNumber);
+                            shortNote = new ShortNote(this, locationize(e.Location), startPosition, endPosition, selectedNoteSize, selectedNoteSize, tmpLongNoteNumber);
                             addNote(shortNote);
                             shortNote = new ShortNote(this, endPosition, startPosition, endPosition, selectedNoteSize, "SlideEnd", selectedAirDirection, tmpLongNoteNumber);
                             //shortNote.setRelativePosition();
@@ -1093,6 +1258,7 @@ namespace NotesEditerforD
                 prevShortNote.StartPosition = new Point(prevShortNote.StartPosition.X, prevShortNote.StartPosition.Y - 768);
                 prevShortNote.EndPosition = new Point(prevShortNote.EndPosition.X, prevShortNote.EndPosition.Y - 768);
                 prevShortNote.NotePosition = new Point(prevShortNote.NotePosition.X, prevShortNote.NotePosition.Y - 768);
+                prevShortNote.update();////
                 //prevShortNote.LongNoteNumber = shortNote.LongNoteNumber;
                 prevShortNote.NextNote = shortNote;
                 shortNote.PrevNote = prevShortNote;
@@ -1101,17 +1267,26 @@ namespace NotesEditerforD
             }
             else if (shortNote.NotePosition.Y == 2 && nextScore != null && shortNote.PrevNote == null && shortNote.NextNote == null)
             {
-                ShortNote nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
+                ShortNote nextShortNote;
+                //*
+                if(shortNote.NoteStyle == "SlideLine")
+                {
+                    nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.StartSize, shortNote.EndSize, shortNote.LongNoteNumber);
+                }
+                else nextShortNote = new ShortNote(nextScore, shortNote.NotePosition, shortNote.StartPosition, shortNote.EndPosition, shortNote.NoteSize, shortNote.NoteStyle, shortNote.AirDirection, shortNote.LongNoteNumber);
                 nextShortNote.StartPosition = new Point(nextShortNote.StartPosition.X, nextShortNote.StartPosition.Y + 768);
                 nextShortNote.EndPosition = new Point(nextShortNote.EndPosition.X, nextShortNote.EndPosition.Y + 768);
+                //nextShortNote.StartSize = shortNote.StartSize;
+                //nextShortNote.EndSize = shortNote.EndSize;
                 nextShortNote.NotePosition = new Point(nextShortNote.NotePosition.X, nextShortNote.NotePosition.Y + 768);
-                nextShortNote.update();
+                nextShortNote.update();//
                 //nextShortNote.LongNoteNumber = shortNote.LongNoteNumber;
                 nextShortNote.PrevNote = shortNote;
                 shortNote.NextNote = nextShortNote;
                 nextScore.shortNotes.Add(nextShortNote);
-                nextShortNote.showRerativePosition();
+                //nextShortNote.showRerativePosition();//debug
                 nextScore.update();
+                //*/
             }
             //*
             if (shortNote.NotePosition.Y != 770 && shortNote.PrevNote != null && shortNote.NoteStyle != "SlideLine")
@@ -1141,10 +1316,10 @@ namespace NotesEditerforD
         }
 
         /// <summary>
-        /// マウスクリックとノーツの衝突判定をします
+        /// マウスポインタと3点で定義された平行四辺形の衝突判定をします
         /// </summary>
-        /// <param name="_destPoints">ノーツの場所</param>
-        /// <param name="e">マウス</param>
+        /// <param name="_destPoints">3点で定義された平行四辺形</param>
+        /// <param name="e">マウスポインタの位置</param>
         /// <returns></returns>
         private bool isMouseCollision(Point[] _destPoints, Point e)
         {
@@ -1160,12 +1335,43 @@ namespace NotesEditerforD
         }
 
         /// <summary>
+        /// マウスポインタと3点で定義された三角形の衝突判定をします
+        /// </summary>
+        /// <param name="_destPoints">3点で定義された三角形</param>
+        /// <param name="e">マウスポインタの位置</param>
+        /// <returns></returns>
+        private bool isMouseCollisionTriangle(Point[] _destPoints, Point e)
+        {
+            Point upperLeft = _destPoints[0], upperRight = _destPoints[1], lowerLeft = _destPoints[2];
+            Point vec_ULLL = new Point(lowerLeft.X - upperLeft.X, lowerLeft.Y - upperLeft.Y);//->ac
+            Point vec_ULUR = new Point(upperRight.X - upperLeft.X, upperRight.Y - upperLeft.Y);//->ab
+            Point vec_ULE = new Point(e.X - upperLeft.X, e.Y - upperLeft.Y);//->ap
+            double s = (vec_ULE.X * vec_ULLL.Y - vec_ULLL.X * vec_ULE.Y) / (double)(vec_ULUR.X * vec_ULLL.Y - vec_ULLL.X * vec_ULUR.Y);
+            double t = (vec_ULE.X * vec_ULUR.Y - vec_ULUR.X * vec_ULE.Y) / (double)(vec_ULLL.X * vec_ULUR.Y - vec_ULUR.X * vec_ULLL.Y);
+            if (0 <= s && 0 <= t && s + t <= 1) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// マウスポインタと4点で定義された四角形の衝突判定をします
+        /// </summary>
+        /// <param name="_destPoints">4点で定義された四角形</param>
+        /// <param name="e">マウスポインタの位置</param>
+        /// <returns></returns>
+        private bool isMouseCollisionSquare(Point[] _destPoints, Point e)//{ul, ur, ll, lr}
+        {
+            return (isMouseCollisionTriangle(new Point[] { _destPoints[0], _destPoints[1], _destPoints[2] }, e) ||
+                isMouseCollisionTriangle(new Point[] { _destPoints[1], _destPoints[2], _destPoints[3]}, e));
+        }
+
+        /// <summary>
         /// いろいろと更新します
         /// </summary>
         public void update()
         {
             //storeImage = imageLN;
             Graphics g = Graphics.FromImage(storeImage);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
             /*
             g.DrawImage(Properties.Resources.SlideLine, new Point[]{ new Point(10, 10), new Point(30, 10), new Point(40, 30) });
             //*/
@@ -1174,53 +1380,90 @@ namespace NotesEditerforD
                 if (_note.NoteStyle == "BPM")
                 {
                     g.DrawImage(_note.NoteImage, _note.NotePosition);
-                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//BPM
+                    g.DrawString(_note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(0, _note.NotePosition.Y - 5, this.Width, 15), sFormat);//BPM
                 }
                 else
                 {
                     g.DrawImage(_note.NoteImage, _note.NotePosition);
-                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(180, _note.NotePosition.Y - 5, 50, 15));//Speed
+                    g.DrawString("x" + _note.SpecialValue.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Crimson, new Rectangle(0, _note.NotePosition.Y - 5, this.Width, 15), sFormat);//Speed
+                }
+            }
+            foreach (ShortNote _note in shortNotes.Where(x => new string[] { "Hold", "HoldLine", "HoldEnd" }.Contains(x.NoteStyle)))//Hold描画
+            {
+                if (_note.NoteStyle == "HoldLine") g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
+                else g.DrawImage(_note.NoteImage, _note.NotePosition);
+            }
+            foreach (ShortNote _note in shortNotes.Where(x => x.NoteStyle == "SlideCurve"))//曲線の描画
+            {
+                ShortNote prevNote = null, nextNote = null;
+                ShortNote[] tmpNotes = shortNotes.Where(x => x.LongNoteNumber == _note.LongNoteNumber && x.NotePosition.Y > _note.NotePosition.Y && x.NoteStyle != "SlideLine" && x.NoteStyle != "SlideCurve").OrderBy(x => x.NotePosition.Y).ToArray();
+                if (tmpNotes.Any()) prevNote = tmpNotes[0];
+                tmpNotes = shortNotes.Where(x => x.LongNoteNumber == _note.LongNoteNumber && x.NotePosition.Y < _note.NotePosition.Y && x.NoteStyle != "SlideLine" && x.NoteStyle != "SlideCurve").OrderByDescending(x => x.NotePosition.Y).ToArray();
+                if (tmpNotes.Any()) nextNote = tmpNotes[0];
+
+                GraphicsPath gp = new GraphicsPath();
+
+                if (prevNote != null && nextNote != null)
+                {
+                    Point prev = prevNote.NotePosition;
+                    Point next = nextNote.NotePosition;
+                    int curSize = _note.NoteSize * 10;
+                    int prevSize = prevNote.NoteSize * 10;
+                    int nextSize = nextNote.NoteSize * 10;
+
+                    gp.AddLine(new Point(prev.X + 2, prev.Y), new Point(prev.X + prevSize - 2, prev.Y));
+                    gp.AddLine(new Point(next.X + 2, next.Y), new Point(next.X + nextSize - 2, next.Y));
+
+                    float ratio = 11 / 16f;
+                    Pen pen = new Pen(Color.FromArgb(0, 224, 224), 1);
+                    Point prevcur = new Point(prev.X + (int)((_note.NotePosition.X - prev.X + 5 * (_note.NoteSize - prevNote.NoteSize)) * ratio) + 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
+                    Point curnext = new Point(next.X + (int)((_note.NotePosition.X - next.X + 5 * (_note.NoteSize - nextNote.NoteSize)) * ratio) + 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
+                    prev = new Point(prev.X + 2, prev.Y);
+                    next = new Point(next.X + 2, next.Y);
+                    g.DrawBezier(pen, prev, prevcur, curnext, next);
+                    gp.AddBezier(prev, prevcur, curnext, next);
+                    prev = prevNote.NotePosition;
+                    next = nextNote.NotePosition;
+                    prevcur = new Point(prev.X + prevSize + (int)((_note.NotePosition.X - prev.X + 5 * (_note.NoteSize - prevNote.NoteSize)) * ratio) - 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
+                    curnext = new Point(next.X + nextSize + (int)((_note.NotePosition.X - next.X + 5 * (_note.NoteSize - nextNote.NoteSize)) * ratio) - 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
+                    prev = new Point(prev.X + prevSize - 2, prev.Y);
+                    next = new Point(next.X + nextSize - 2, next.Y);
+                    g.DrawBezier(pen, prev, prevcur, curnext, next);
+                    gp.AddBezier(prev, prevcur, curnext, next);
+
+                    Region reg = new Region(gp);
+
+                    g.FillRegion(new SolidBrush(Color.FromArgb(0, 224, 224)), reg);
+
+                    prev = prevNote.NotePosition;
+                    next = nextNote.NotePosition;
+                    prevcur = new Point(prev.X + prevSize / 2 + (int)((_note.NotePosition.X - prev.X + 5 * (_note.NoteSize - prevNote.NoteSize)) * ratio), prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
+                    curnext = new Point(next.X + nextSize / 2 + (int)((_note.NotePosition.X - next.X + 5 * (_note.NoteSize - nextNote.NoteSize)) * ratio), next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
+                    
+                    pen = new Pen(Color.FromArgb(28, 255, 255), 4);
+                    g.DrawBezier(pen, new Point(prev.X + prevSize / 2 - 1, prev.Y), prevcur, curnext, new Point(next.X + nextSize / 2 - 1, next.Y));
                 }
             }
             foreach (ShortNote _note in shortNotes)//普通のノーツを描画
             {
-                if(_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
-                else if(_note.NoteStyle == "HoldLine" || _note.NoteStyle == "AirLine") g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
-                else if(_note.NoteStyle == "SlideLine")
+                if (new string[] { "Hold", "HoldLine", "HoldEnd" }.Contains(_note.NoteStyle)) continue;
+                if (_note.NoteStyle == "AirUp" || _note.NoteStyle == "AirDown") g.DrawImage(_note.NoteImage, new Point(_note.NotePosition.X, _note.NotePosition.Y - 32));
+                else if (_note.NoteStyle == "AirLine") g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
+                else if (_note.NoteStyle == "SlideLine")
                 {
-                    if (_note.StartPosition.X >= _note.EndPosition.X) g.DrawImage(_note.NoteImage, _note.EndPosition);
-                    else g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
+                    //間にSlideCurveがあるときは描画しない（invisible）
+                    if (shortNotes.Where(x => x.LongNoteNumber == _note.LongNoteNumber && x.NoteStyle == "SlideCurve" && _note.EndPosition.Y < x.NotePosition.Y && x.NotePosition.Y < _note.StartPosition.Y).Any())
+                    {
+                        _note.Visible = false;
+                    }
+                    else
+                    {
+                        _note.Visible = true;
+                        if (_note.StartPosition.X >= _note.EndPosition.X) g.DrawImage(_note.NoteImage, _note.EndPosition);
+                        else g.DrawImage(_note.NoteImage, new Point(_note.StartPosition.X, _note.EndPosition.Y));
+                    }
                 }
                 else g.DrawImage(_note.NoteImage, _note.NotePosition);
-                //if (_note.NoteStyle == "Slide") sRoot.setLongNote(_note, this);
-                if(_note.NoteStyle == "SlideCurve")//Bezier
-                {
-                    Point prev = new Point(-1, 9999), next = new Point(-1, -9999);
-                    foreach(ShortNote note in shortNotes)
-                    {
-                        if(note.LongNoteNumber == _note.LongNoteNumber && (note.NoteStyle == "Slide" || note.NoteStyle == "SlideTap" || note.NoteStyle == "SlideRelay" || note.NoteStyle == "SlideEnd"))
-                        {
-                            if (prev.Y > note.NotePosition.Y && note.NotePosition.Y > _note.NotePosition.Y) prev = note.NotePosition;
-                            else if (_note.NotePosition.Y > note.NotePosition.Y && note.NotePosition.Y > next.Y) next = note.NotePosition;
-                        }
-                    }
-                    if(prev.X != -1 && next.X != -1)
-                    {
-                        int size = _note.NoteSize * 10;
-                        float ratio = 11 / 16f;
-                        Pen pen = new Pen(Color.SteelBlue, 1);
-                        Point prevcur = new Point(prev.X + (int)((_note.NotePosition.X - prev.X) * ratio) + 2, prev.Y + (int)((_note.NotePosition.Y - prev.Y) * ratio));
-                        Point curnext = new Point(next.X + (int)((_note.NotePosition.X - next.X) * ratio) + 2, next.Y + (int)((_note.NotePosition.Y - next.Y) * ratio));
-                        prev = new Point(prev.X + 2, prev.Y);
-                        next = new Point(next.X + 2, next.Y);
-                        g.DrawBezier(pen, prev, prevcur, curnext, next);
-                        prevcur = new Point(prevcur.X + size - 6, prevcur.Y);
-                        curnext = new Point(curnext.X + size - 6, curnext.Y);
-                        prev = new Point(prev.X + size - 6, prev.Y);
-                        next = new Point(next.X + size - 6, next.Y);
-                        g.DrawBezier(pen, prev, prevcur, curnext, next);
-                    }
-                }
             }
             if (previewNote != null && previewVisible)//プレビュー用のノーツを描画
             {
@@ -1246,7 +1489,7 @@ namespace NotesEditerforD
             }
             g.DrawString((2 * index + 1).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 768 - 5, 30, 10));//MeasureNumber
             g.DrawString((2 * (index + 1)).ToString().PadLeft(3, '0'), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.White, new Rectangle(0, 384 - 5, 30, 10));//MeasureNumber
-            if(index == 0) g.DrawString(ScoreRoot.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(180, 768 - 5, 50, 15));//BPM
+            if(index == 0) g.DrawString(ScoreRoot.StartBPM.ToString(), new Font("ＭＳ ゴシック", 8, FontStyle.Bold), Brushes.Lime, new Rectangle(0, 768 - 5, Width, 15), sFormat);//StartBPM
             BackgroundImage = storeImage;
             g.Dispose();
             this.Refresh();
@@ -1334,6 +1577,7 @@ namespace NotesEditerforD
                 if (next != null)
                 {
                     prev.EndPosition = next.EndPosition;
+                    prev.EndSize = next.EndSize;
                     prev.update();
                     deleteNote(next);
                     deleteNote(_note);

@@ -50,6 +50,13 @@
             this.saveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ヘルプHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ダウンロードページへ移動ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ダウンロードページToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.作者のアカウントToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.公式アカウントToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.バージョン情報ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.寄付についてToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.BPMupdown = new System.Windows.Forms.NumericUpDown();
             this.labelBPM = new System.Windows.Forms.Label();
             this.checkSlideRelay = new System.Windows.Forms.CheckBox();
@@ -194,6 +201,7 @@
             this.flowLayoutPanelMusicScore.TabIndex = 9;
             this.flowLayoutPanelMusicScore.Visible = false;
             this.flowLayoutPanelMusicScore.WrapContents = false;
+            this.flowLayoutPanelMusicScore.Scroll += new System.Windows.Forms.ScrollEventHandler(this.flowLayoutPanelMusicScore_Scroll);
             // 
             // labelGrid
             // 
@@ -231,12 +239,14 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileMenuItem});
+            this.fileMenuItem,
+            this.ヘルプHToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1384, 24);
             this.menuStrip1.TabIndex = 13;
             this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip1_ItemClicked);
             // 
             // fileMenuItem
             // 
@@ -300,14 +310,69 @@
             this.quitMenuItem.Size = new System.Drawing.Size(254, 22);
             this.quitMenuItem.Text = "終了(Q)";
             // 
+            // ヘルプHToolStripMenuItem
+            // 
+            this.ヘルプHToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ダウンロードページへ移動ToolStripMenuItem,
+            this.バージョン情報ToolStripMenuItem,
+            this.寄付についてToolStripMenuItem});
+            this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
+            this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
+            this.ヘルプHToolStripMenuItem.Text = "ヘルプ(H)";
+            // 
+            // ダウンロードページへ移動ToolStripMenuItem
+            // 
+            this.ダウンロードページへ移動ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ダウンロードページToolStripMenuItem,
+            this.作者のアカウントToolStripMenuItem,
+            this.公式アカウントToolStripMenuItem});
+            this.ダウンロードページへ移動ToolStripMenuItem.Name = "ダウンロードページへ移動ToolStripMenuItem";
+            this.ダウンロードページへ移動ToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.ダウンロードページへ移動ToolStripMenuItem.Text = "サイトへ移動";
+            // 
+            // ダウンロードページToolStripMenuItem
+            // 
+            this.ダウンロードページToolStripMenuItem.Name = "ダウンロードページToolStripMenuItem";
+            this.ダウンロードページToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.ダウンロードページToolStripMenuItem.Text = "ダウンロードページ";
+            this.ダウンロードページToolStripMenuItem.Click += new System.EventHandler(this.ダウンロードページToolStripMenuItem_Click);
+            // 
+            // 作者のアカウントToolStripMenuItem
+            // 
+            this.作者のアカウントToolStripMenuItem.Name = "作者のアカウントToolStripMenuItem";
+            this.作者のアカウントToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.作者のアカウントToolStripMenuItem.Text = "作者のアカウント";
+            this.作者のアカウントToolStripMenuItem.Click += new System.EventHandler(this.作者のアカウントToolStripMenuItem_Click);
+            // 
+            // 公式アカウントToolStripMenuItem
+            // 
+            this.公式アカウントToolStripMenuItem.Name = "公式アカウントToolStripMenuItem";
+            this.公式アカウントToolStripMenuItem.Size = new System.Drawing.Size(154, 22);
+            this.公式アカウントToolStripMenuItem.Text = "公式アカウント";
+            this.公式アカウントToolStripMenuItem.Click += new System.EventHandler(this.公式アカウントToolStripMenuItem_Click);
+            // 
+            // バージョン情報ToolStripMenuItem
+            // 
+            this.バージョン情報ToolStripMenuItem.Name = "バージョン情報ToolStripMenuItem";
+            this.バージョン情報ToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.バージョン情報ToolStripMenuItem.Text = "バージョン情報";
+            this.バージョン情報ToolStripMenuItem.Click += new System.EventHandler(this.バージョン情報ToolStripMenuItem_Click);
+            // 
+            // 寄付についてToolStripMenuItem
+            // 
+            this.寄付についてToolStripMenuItem.Name = "寄付についてToolStripMenuItem";
+            this.寄付についてToolStripMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.寄付についてToolStripMenuItem.Text = "作者に寄付をする";
+            this.寄付についてToolStripMenuItem.Click += new System.EventHandler(this.寄付についてToolStripMenuItem_Click);
+            // 
             // BPMupdown
             // 
-            this.BPMupdown.DecimalPlaces = 1;
+            this.BPMupdown.DecimalPlaces = 2;
             this.BPMupdown.Increment = new decimal(new int[] {
             1,
             0,
             0,
-            65536});
+            131072});
             this.BPMupdown.Location = new System.Drawing.Point(503, 27);
             this.BPMupdown.Maximum = new decimal(new int[] {
             1000,
@@ -834,6 +899,13 @@
         private NotesButton Speed;
         private System.Windows.Forms.CheckBox checkSlideRelay;
         private NotesButton SlideCurve;
+        private System.Windows.Forms.ToolStripMenuItem ヘルプHToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ダウンロードページへ移動ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem バージョン情報ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 寄付についてToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ダウンロードページToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 作者のアカウントToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 公式アカウントToolStripMenuItem;
     }
 }
 

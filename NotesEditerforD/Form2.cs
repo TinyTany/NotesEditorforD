@@ -30,6 +30,9 @@ namespace NotesEditerforD
             leftMargin = MusicScore.LeftMargin;
             rightMargin = MusicScore.RightMargin;
 
+            BPMUpDown.Maximum = _form1.BPM_MAX;
+            BPMUpDown.Minimum = _form1.BPM_MIN;
+
             object sender = new object();
             EventArgs e = new EventArgs();
             previewButton_Click(sender, e);
@@ -115,6 +118,7 @@ namespace NotesEditerforD
 
         public void susExport(string path)
         {
+
             string level = setLevel(playLevelUpDown.Value);
             int Y;
             System.IO.StreamWriter sw = new System.IO.StreamWriter(path);
@@ -146,14 +150,16 @@ namespace NotesEditerforD
             sw.WriteLine("#BPM01:" + BPMUpDown.Value);
             sw.WriteLine("#00008:01");
             char[] numAlpha = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-            int BPMNum = 2;//<=35
-            string[] BPMArr = new string[10001];
-            for (int i = 0; i < BPMArr.Count(); i++) BPMArr[i] = "00";
+            string[] BPMStrArr = new string[1296];
+            for (int i = 0; i < numAlpha.Length; i++)
+                for (int j = 0; j < numAlpha.Length; j++)
+                    BPMStrArr[numAlpha.Length * i + j] = numAlpha[i].ToString() + numAlpha[j].ToString();//"00" ~ "ZZ"
             int BPMBeatDevide = 8;
-            BPMArr[(int)(BPMUpDown.Value * 10)] = "01";
+            var objBPM = new[] { new { BPM = BPMUpDown.Value, BPMStrArrIdx = 1} }.ToList(); int curBPMStrArrIdx = 1;
             string[] spLane1 = new string[BPMBeatDevide];
             string[] spLane2 = new string[BPMBeatDevide];
-            string cur = "01";
+
+            string cur = "01";//???
             for (measure = 0; measure <= lastScore; measure++)
             {
                 for (int i = 0; i < BPMBeatDevide; i++) spLane1[i] = "00";//initialize lane
@@ -166,27 +172,26 @@ namespace NotesEditerforD
                         if (Y < 0)
                         {
                             Y += BPMBeatDevide;
-                            if (BPMArr[(int)(_note.SpecialValue * 10)] == "00")
+                            if (!objBPM.Where(x => x.BPM == _note.SpecialValue).Any())
                             {
-                                BPMArr[(int)(_note.SpecialValue * 10)] = "0" + numAlpha[BPMNum];
-                                sw.WriteLine("#BPM0" + numAlpha[BPMNum] + ":" + _note.SpecialValue);
-                                BPMNum++;
+                                objBPM.Add(new { BPM = _note.SpecialValue, BPMStrArrIdx = ++curBPMStrArrIdx });
+                                sw.WriteLine("#BPM" + BPMStrArr[curBPMStrArrIdx] + ":" + _note.SpecialValue);
                             }
-                            spLane1[Y] = BPMArr[(int)(_note.SpecialValue * 10)].ToString().PadLeft(2, '0');
+                            spLane1[Y] = BPMStrArr[objBPM.Find(x => x.BPM == _note.SpecialValue).BPMStrArrIdx];
                         }
                         else
                         {
-                            if (Y >= BPMBeatDevide) continue;
-                            if (BPMArr[(int)(_note.SpecialValue * 10)] == "00")
+                            if (!objBPM.Where(x => x.BPM == _note.SpecialValue).Any())
                             {
-                                BPMArr[(int)(_note.SpecialValue * 10)] = "0" + numAlpha[BPMNum];
-                                sw.WriteLine("#BPM0" + numAlpha[BPMNum] + ":" + _note.SpecialValue);
-                                BPMNum++;
+                                objBPM.Add(new { BPM = _note.SpecialValue, BPMStrArrIdx = ++curBPMStrArrIdx });
+                                sw.WriteLine("#BPM" + BPMStrArr[curBPMStrArrIdx] + ":" + _note.SpecialValue);
                             }
-                            spLane2[Y] = BPMArr[(int)(_note.SpecialValue * 10)];
+                            spLane2[Y] = BPMStrArr[objBPM.Find(x => x.BPM == _note.SpecialValue).BPMStrArrIdx];
                         }
                     }
                 }
+                //*
+                //string cur = "01";//???
                 if(isBPMModified(spLane1, BPMBeatDevide)) for (int i = 0; i < BPMBeatDevide; i++)
                 {
                     if (spLane1[i] == "00") spLane1[i] = cur;
@@ -197,6 +202,7 @@ namespace NotesEditerforD
                     if (spLane2[i] == "00") spLane2[i] = cur;
                     else if (spLane2[i] != cur) cur = spLane2[i];
                 }
+                //*/
                 if (isBPMModified(spLane1, BPMBeatDevide))
                 {
                     if (checkBoxWhile.Checked) sw.Write("#" + (2 * measure + 1).ToString().PadLeft(3, '0') + "08:");
@@ -248,15 +254,15 @@ namespace NotesEditerforD
             int sgnindx = 0;//for LongLane
             bool[,] isUsedLane1 = new bool[lastScore + 1, sign.Length];
             bool[,] isUsedLane2 = new bool[lastScore + 1, sign.Length];
-            string[,,,] longLane1 = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
-            string[,,,] longLane2 = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
+            string[,,,] longLane1;// = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
+            string[,,,] longLane2;// = new string[lastScore + 1, 16, maxBeatDevide, sign[sgnindx]];
             int noteSize;
             int _X, _Y;
             int _beatLCM1, _beatLCM2;
 
             //[h,i,j,k]=lane,beat,layer
-            for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
-            for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
+            //for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
+            //for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < maxBeatDevide; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
 
             for (measure = 0; measure <= lastScore; measure++)
             {
@@ -286,7 +292,14 @@ namespace NotesEditerforD
                         {
                             case "Tap":
                                 if (noteSize == 16) lane1[_X, _Y] = "1g";
-                                else lane1[_X, _Y] = "1" + noteSize.ToString("x");
+                                else
+                                {
+                                    lane1[_X, _Y] = "1" + noteSize.ToString("x");
+                                }
+                                /*
+                                 * MessageBox.Show(note.NotePosition.ToString() + note.LocalPosition.Measure); 
+                                 * MessageBox.Show(note.LocalPosition.Measure + " (" + note.LocalPosition.BeatNumber + "/" + note.LocalPosition.Beat + ")"); 
+                                //*/
                                 break;
                             case "ExTap":
                                 if (noteSize == 16) lane1[_X, _Y] = "2g";
@@ -905,7 +918,7 @@ namespace NotesEditerforD
                                             else
                                             {
                                                 if (_note.LocalPosition.Beat == _note.LocalPosition.BeatNumber) continue;
-                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / note.LocalPosition.Beat;
+                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
                                                 endMeasure = _measure;
@@ -975,7 +988,7 @@ namespace NotesEditerforD
                                             else
                                             {
                                                 if (_note.LocalPosition.Beat == _note.LocalPosition.BeatNumber) continue;
-                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / note.LocalPosition.Beat;
+                                                _Y = _note.LocalPosition.BeatNumber * _beatLCMArray4x[1, _measure] / _note.LocalPosition.Beat;
                                                 if (noteSize == 16) longLane2[_measure, _X, _Y, sgnindx] = "3g";
                                                 else longLane2[_measure, _X, _Y, sgnindx] = "3" + noteSize.ToString("x");
                                                 endMeasure = _measure;
@@ -1057,19 +1070,19 @@ namespace NotesEditerforD
                     switch (noteType)
                     {
                         case 1://Tap,ExTap,Flick,HellTap
-                            if (note.NoteStyle == "Tap" || note.NoteStyle == "ExTap" || note.NoteStyle == "Flick" || note.NoteStyle == "HellTap") notes.Add(note);
+                            if (new string[] { "Tap", "ExTap", "Flick", "HellTap" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 2://Hold
-                            if (note.NoteStyle == "Hold" || note.NoteStyle == "HoldEnd") notes.Add(note);
+                            if (new string[] { "Hold", "HoldEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 3://Slide
-                            if (note.NoteStyle == "Slide" || note.NoteStyle == "SlideTap" || note.NoteStyle == "SlideRelay" || note.NoteStyle == "SlideEnd") notes.Add(note);
-                            break; 
+                            if (new string[] { "Slide", "SlideTap", "SlideRelay", "SlideCurve", "SlideEnd" }.Contains(note.NoteStyle)) notes.Add(note);
+                            break;
                         case 4://AirLine
-                            if (note.NoteStyle == "AirBegin" || note.NoteStyle == "AirAction" || note.NoteStyle == "AirEnd") notes.Add(note);
+                            if (new string[] { "AirBegin", "AirAction", "AirEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 5://Air
-                            if (note.NoteStyle == "AirUp" || note.NoteStyle == "AirDown") notes.Add(note);
+                            if (new string[] { "AirUp", "AirDown" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 8://BPM
                             if (note.NoteStyle == "BPM") notes.Add(note);
@@ -1083,19 +1096,19 @@ namespace NotesEditerforD
                     switch (noteType)
                     {
                         case 1://Tap,ExTap,Flick,HellTap
-                            if (note.NoteStyle == "Tap" || note.NoteStyle == "ExTap" || note.NoteStyle == "Flick" || note.NoteStyle == "HellTap") notes.Add(note);
+                            if (new string[] { "Tap", "ExTap", "Flick", "HellTap"}.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 2://Hold
-                            if (note.NoteStyle == "Hold" || note.NoteStyle == "HoldEnd") notes.Add(note);
+                            if (new string[] { "Hold", "HoldEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 3://Slide
-                            if (note.NoteStyle == "Slide" || note.NoteStyle == "SlideTap" || note.NoteStyle == "SlideRelay" || note.NoteStyle == "SlideEnd") notes.Add(note);
+                            if (new string[] { "Slide", "SlideTap", "SlideRelay", "SlideCurve", "SlideEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 4://AirLine
-                            if (note.NoteStyle == "AirBegin" || note.NoteStyle == "AirAction" || note.NoteStyle == "AirEnd") notes.Add(note);
+                            if (new string[] { "AirBegin", "AirAction", "AirEnd" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 5://Air
-                            if (note.NoteStyle == "AirUp" || note.NoteStyle == "AirDown") notes.Add(note);
+                            if (new string[] { "AirUp", "AirDown" }.Contains(note.NoteStyle)) notes.Add(note);
                             break;
                         case 8://BPM
                             if (note.NoteStyle == "BPM") notes.Add(note);

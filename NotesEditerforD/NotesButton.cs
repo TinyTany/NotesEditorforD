@@ -91,10 +91,10 @@ namespace NotesEditerforD
             setRadioButton(isAir);
             if(notesName == "BPM")
             {
-                numericUpDown1.Maximum = 1000;
-                numericUpDown1.Minimum = 10;
-                numericUpDown1.DecimalPlaces = 1;
-                numericUpDown1.Increment = 0.1m;
+                //numericUpDown1.Maximum = 1000;
+                //numericUpDown1.Minimum = 10;
+                numericUpDown1.DecimalPlaces = 2;
+                numericUpDown1.Increment = 0.01m;
                 numericUpDown1.Value = 120.0m;
                 MusicScore.SelectedBPM = numericUpDown1.Value;
                 label_size.Text = "";
@@ -102,8 +102,8 @@ namespace NotesEditerforD
             }
             else if(notesName == "Speed")
             {
-                numericUpDown1.Maximum = 10;
-                numericUpDown1.Minimum = -10;
+                //numericUpDown1.Maximum = 10;
+                //numericUpDown1.Minimum = -10;
                 numericUpDown1.DecimalPlaces = 1;
                 numericUpDown1.Increment = 0.1m;
                 numericUpDown1.Value = 1.0m;
@@ -111,6 +111,16 @@ namespace NotesEditerforD
                 label_size.Text = "";
                 label_sizevalue.Text = "x" + numericUpDown1.Value.ToString();
             }
+        }
+
+        public decimal spVal_MAX
+        {
+            set { numericUpDown1.Maximum = value; }
+        }
+
+        public decimal spVal_MIN
+        {
+            set { numericUpDown1.Minimum = value; }
         }
 
         public void numericUpDown1_ValueChanged(object sender, EventArgs e)

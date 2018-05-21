@@ -21,7 +21,7 @@ namespace NotesEditerforD
         public RectSelect(Point _rectUL, Point _rectDR, List<ShortNote> _notes)
         {
             rectUL = _rectUL; rectDR = _rectDR;
-            rect = new Rectangle(rectUL, new Size(rectDR.X - rectUL.X, rectDR.Y - rectUL.Y));
+            rect = new Rectangle(rectUL, new Size(rectDR.X - rectUL.X, rectDR.Y - rectUL.Y + 5));
             notes = _notes;
             selectedNotes = new List<ShortNote>();
         }
@@ -65,29 +65,50 @@ namespace NotesEditerforD
         public void update()
         {
             rect.Location = rectUL;
-            rect.Size = new Size(rectDR.X - rectUL.X, rectDR.Y - rectUL.Y);
+            rect.Size = new Size(rectDR.X - rectUL.X, rectDR.Y - rectUL.Y + 5);
             selectedNotes.Clear();
-            foreach (ShortNote note in notes)
+            foreach (ShortNote note in notes)//範囲内にあるショートノーツをリストにぶち込む
             {
-                if (rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10, 5))) &&
+                if (rect.Contains(new Rectangle(note.DestPoints[0], new Size(note.NoteSize * 10 - 2, 5))) &&
              note.NoteStyle != "HoldLine" && note.NoteStyle != "SlideLine" && note.NoteStyle != "AirLine")
                 {
                     selectedNotes.Add(note);
                 }
             }
+            foreach (ShortNote note in selectedNotes.ToArray())//ロングノーツ系のやつは全体が含まれてるかチェック
+            {
+                if (note.LongNoteNumber == -1) continue;
+                if (notes.Where
+                    (x => x.LongNoteNumber == note.LongNoteNumber && !(new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(x.NoteStyle))).Count()
+                    != selectedNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber).Count())//1譜面内でのロングノーツでの節が全て網羅されているか
+                {
+                    selectedNotes.RemoveAll(x => x.LongNoteNumber == note.LongNoteNumber);
+                }
+                else if (false) ;//始点と終点を共に含んでいるか
+            }
+            //Line系もYankNotesに入れる処理書け
+            foreach (ShortNote note in notes)//書きました
+            {
+                if (note.LongNoteNumber == -1) continue;
+                if (!(new string[] { "HoldLine", "SlideLine", "AirLine" }.Contains(note.NoteStyle))) continue;
+                if (!selectedNotes.Where(x => x.LongNoteNumber == note.LongNoteNumber).Any()) continue;
+                selectedNotes.Add(note);
+            }
         }
 
         /// <summary>
-        /// 選択範囲をlocULを右上となるように移動します
+        /// 選択範囲をlocULを左上となるように移動します
         /// </summary>
-        /// <param name="locUL">右上の座標</param>
+        /// <param name="locUL">左上の座標</param>
         public void move(Point locUL)//
         {
             Size delta = new Size(locUL.X - rectUL.X, locUL.Y - rectUL.Y);
-            ShortNote prev, next;
+            //ShortNote prev, next;
             foreach(ShortNote note in selectedNotes)
             {
+                /*
                 prev = next = null;
+                /*
                 if (new string[]{ "Slide", "SlideTap", "SlideRelay", "SlideEnd" }.Contains(note.NoteStyle))
                 {
                     foreach(ShortNote _note in notes)
@@ -121,9 +142,12 @@ namespace NotesEditerforD
                         if (note.NotePosition == _note.EndPosition) prev = _note;
                     }
                 }
+                //*/
                 note.NotePosition = new Point(note.NotePosition.X + delta.Width, note.NotePosition.Y + delta.Height);
-                if (prev != null) { prev.EndPosition = note.NotePosition; prev.update(); }
-                if (next != null) { next.StartPosition = note.NotePosition; next.update(); }
+                note.StartPosition = new Point(note.StartPosition.X + delta.Width, note.StartPosition.Y + delta.Height);
+                note.EndPosition = new Point(note.EndPosition.X + delta.Width, note.EndPosition.Y + delta.Height);
+                //if (prev != null) { prev.EndPosition = note.NotePosition; prev.update(); }
+                //if (next != null) { next.StartPosition = note.NotePosition; next.update(); }
                 note.update();
             }
             rectUL = locUL;

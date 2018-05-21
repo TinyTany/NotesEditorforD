@@ -24,38 +24,24 @@ namespace NotesEditerforD
         private decimal BPM = 120.0m, playLevel, offset;
         private string fileName;
         private bool isEdited, isNew = true, isWhile = true;
-        private const string dymsVersion = "0.6", Version = "0.6b (unstable)";
+        private const string dymsVersion = "0.7", Version = "0.7.1";
         //public bool slideRelay = false;
         public Form1()
         {
             InitializeComponent();
             sRoot = new ScoreRoot(this, maxScore, 0, false);
             ScoreRoot.StartBPM = BPM;
+            BPMupdown.Maximum = 99999;
+            BPMupdown.Minimum = 1;
+            BPMButton.spVal_MAX = BPMupdown.Maximum;
+            BPMButton.spVal_MIN = BPMupdown.Minimum;
+            Speed.spVal_MAX = 10000;
+            Speed.spVal_MIN = -10000;
             this.Controls.Add(sRoot);
             sRoot.update();
             checkSlideRelay.Checked = true;
             comboBoxBeat.SelectedIndex = 1;
             MusicScore.SelectedBeat = int.Parse(this.comboBoxBeat.Text);
-            /*
-            for (int i = 0; i < maxScore; i++)
-            {
-                musicScore2 = new MusicScore();
-                musicScore2.form1 = this;
-                musicScore2.Index = i;
-                flowLayoutPanelMusicScore.Controls.Add(musicScore2);
-                scores2.Add(musicScore2);
-                musicScore2.update();
-            }
-            scores2[0].NextScore = scores2[1];
-            scores2[0].PrevScore = null;
-            for (int i = 1; i < maxScore - 1; i++)
-            {
-                scores2[i].NextScore = scores2[i + 1];
-                scores2[i].PrevScore = scores2[i - 1];
-            }
-            scores2[maxScore - 1].NextScore = null;
-            scores2[maxScore - 1].PrevScore = scores2[maxScore - 2];
-            //*/
             appName = " - NotesEditorforD " + Version;
             Text = "NewMusicScore" + appName;
             prevNotesButton = Tap;
@@ -105,6 +91,16 @@ namespace NotesEditerforD
             AirLine._Form1 = this;
             Speed._Form1 = this;
             BPMButton._Form1 = this;
+        }
+
+        public decimal BPM_MAX
+        {
+            get { return BPMupdown.Maximum; }
+        }
+
+        public decimal BPM_MIN
+        {
+            get { return BPMupdown.Minimum; }
         }
 
         private void saveMenuItem_Click(object sender, EventArgs e)
@@ -165,7 +161,7 @@ namespace NotesEditerforD
             sw.WriteLine("WAVEOFFSET:" + offset);
             sw.WriteLine("JACKET=" + jacket);
             sw.WriteLine("BASEBPM:" + BPM);
-            sw.WriteLine("LongNoteNumber:" + longNoteNumber);
+            sw.WriteLine("LongNoteNumber:" + sRoot.LongNoteNumber);
             sw.WriteLine("ExportDir=" + exDir);
             sw.WriteLine("isWhile:" + isWhile);
             foreach (MusicScore mscore in sRoot.Scores)
@@ -175,16 +171,18 @@ namespace NotesEditerforD
                     sw.WriteLine(
                         note.NoteStyle + "," +       //0
                         note.NoteSize + "," +        //1
-                        note.NotePosition.X + "," +  //2
-                        note.NotePosition.Y + "," +  //3
-                        note.StartPosition.X + "," + //4
-                        note.StartPosition.Y + "," + //5
-                        note.EndPosition.X + "," +   //6
-                        note.EndPosition.Y + "," +   //7
-                        note.AirDirection + "," +    //8
-                        note.LongNoteNumber + "," +  //9
-                        indx + "," +                 //10
-                        note.LocalPosition.Beat);    //11
+                        note.StartSize + "," +       //2
+                        note.EndSize + "," +         //3
+                        note.NotePosition.X + "," +  //4
+                        note.NotePosition.Y + "," +  //5
+                        note.StartPosition.X + "," + //6
+                        note.StartPosition.Y + "," + //7
+                        note.EndPosition.X + "," +   //8
+                        note.EndPosition.Y + "," +   //9
+                        note.AirDirection + "," +    //10
+                        note.LongNoteNumber + "," +  //11
+                        indx + "," +                 //12
+                        note.LocalPosition.Beat);    //13
                 }
                 indx++;
             }
@@ -252,6 +250,43 @@ namespace NotesEditerforD
             BPM = BPMupdown.Value;
             ScoreRoot.StartBPM = BPM;
             sRoot.Scores[0].update();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        
+
+        private void ダウンロードページToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/TinyTany/NotesEditorforD/releases/");
+        }
+
+        private void 作者のアカウントToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://twitter.com/t4nishi");
+        }
+
+        private void 公式アカウントToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://twitter.com/_ne4d");
+        }
+
+        private void バージョン情報ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("NoteEditorforD v0.7\n2018/5/3");
+        }
+
+        private void 寄付についてToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://osushi.love/t4nishi");
+        }
+
+        private void flowLayoutPanelMusicScore_Scroll(object sender, ScrollEventArgs e)
+        {
+            
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -455,17 +490,13 @@ namespace NotesEditerforD
 
             if (ofd.ShowDialog() == DialogResult.OK)//OKボタンがクリックされた時
             {
-                //initialize musicscore
-                sRoot.newScore();
-                setTotalNotes();
-                //
                 System.IO.StreamReader sr = new System.IO.StreamReader(ofd.FileName);
                 fileName = ofd.SafeFileName;//MessageBox.Show(fileName);
                 string dataLine;
                 string[] noteData;
                 int indx, msIndex;
                 dataLine = sr.ReadLine();
-                if (dataLine == "dymsVersion:0.4" || dataLine == "dymsVersion:0.5" || dataLine == "dymsVersion:0.6")//バージョン変更時に必ず変更
+                if (dataLine == "dymsVersion:0.5" || dataLine == "dymsVersion:0.6"　|| dataLine == "dymsVersion:0.7")//バージョン変更時に必ず変更
                 {
                     noteData = dataLine.Split(':');
                     dymsDataVersion = noteData[1];
@@ -511,131 +542,16 @@ namespace NotesEditerforD
                     noteData = dataLine.Split(':');
                     isWhile = bool.Parse(noteData[1]);
                 }
-                else if (dataLine == "dymsVersion:0.3")
-                {
-                    dymsDataVersion = "0.3";
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    songID = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    title = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    artist = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    designer = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    difficulty = int.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    playLevel = decimal.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split('=');
-                    wave = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    offset = decimal.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split('=');
-                    jacket = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    BPM = decimal.Parse(noteData[1]);
-                    BPMupdown.Value = BPM;
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    longNoteNumber = int.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split('=');
-                    exDir = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    isWhile = bool.Parse(noteData[1]);
-                }
-                else if (dataLine == "dymsVersion:0.2.2")
-                {
-                    dymsDataVersion = "0.2.2";
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    songID = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    title = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    artist = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    designer = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    difficulty = int.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    playLevel = decimal.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    wave = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    offset = decimal.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    jacket = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    BPM = decimal.Parse(noteData[1]);
-                    BPMupdown.Value = BPM;
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    longNoteNumber = int.Parse(noteData[1]);
-                }
-                else if (dataLine == "dymsVersion:0.2")
-                {
-                    dymsDataVersion = "0.2";
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    songID = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    title = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    artist = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    designer = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    difficulty = int.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    playLevel = decimal.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    wave = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    offset = decimal.Parse(noteData[1]);
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    jacket = noteData[1];
-                    dataLine = sr.ReadLine();
-                    noteData = dataLine.Split(':');
-                    BPM = decimal.Parse(noteData[1]);
-                    BPMupdown.Value = BPM;
-                }
                 else
                 {
-                    dymsDataVersion = "0.1";
-                    noteData = dataLine.Split(',');
-                    indx = int.Parse(noteData[12]);
-                    sRoot.Scores[indx].setNote(noteData, "0.1");
+                    MessageBox.Show("対応していないバージョンのファイルです", "読み込みエラー");
+                    return;
                 }
-                if (dymsDataVersion == "0.1") msIndex = 12;
+                //initialize musicscore
+                sRoot.newScore();
+                setTotalNotes();
+                //
+                if (dymsDataVersion == "0.7") msIndex = 12;
                 else msIndex = 10;//index
                 bool flg = false;
                 while (sr.Peek() > -1)
