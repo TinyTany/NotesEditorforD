@@ -148,7 +148,7 @@ namespace NotesEditerforD
                 note.EndPosition = new Point(note.EndPosition.X + delta.Width, note.EndPosition.Y + delta.Height);
                 //if (prev != null) { prev.EndPosition = note.NotePosition; prev.update(); }
                 //if (next != null) { next.StartPosition = note.NotePosition; next.update(); }
-                note.update();
+                note.Update();
             }
             rectUL = locUL;
             rect.Location = rectUL;
@@ -197,11 +197,11 @@ namespace NotesEditerforD
                     }
                 }
                 note.NotePosition = new Point(rectUL.X + rect.Size.Width - (note.NotePosition.X - rectUL.X) - note.NoteSize * 10, note.NotePosition.Y);
-                if (prev != null) { prev.EndPosition = note.NotePosition; prev.update(); }
-                if (next != null) { next.StartPosition = note.NotePosition; next.update(); }
+                if (prev != null) { prev.EndPosition = note.NotePosition; prev.Update(); }
+                if (next != null) { next.StartPosition = note.NotePosition; next.Update(); }
                 if (note.AirDirection == "Left") note.AirDirection = "Right";
                 else if (note.AirDirection == "Right") note.AirDirection = "Left";
-                note.update();
+                note.Update();
             }
         }
 

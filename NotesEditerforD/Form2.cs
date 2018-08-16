@@ -267,6 +267,7 @@ namespace NotesEditerforD
             for (measure = 0; measure <= lastScore; measure++)
             {
                 ////////////////////////////////////////////////↓Tap, ExTap, Flick, HellTap
+                #region
                 _beatLCM1 = beatLCM(sRoot.Scores[measure].shortNotes, 0, 1);//譜面下
                 _beatLCM2 = beatLCM(sRoot.Scores[measure].shortNotes, 1, 1);//譜面上
                 if(_beatLCM1 != 0)
@@ -364,8 +365,10 @@ namespace NotesEditerforD
                         sw.Write(Environment.NewLine);
                     }
                 }
+                #endregion
                 //*
                 ////////////////////////////////////////////////////////////↓Air
+                #region
                 _beatLCM1 = beatLCM(sRoot.Scores[measure].shortNotes, 0, 5);//譜面下
                 _beatLCM2 = beatLCM(sRoot.Scores[measure].shortNotes, 1, 5);//譜面上
                 if (_beatLCM1 != 0)
@@ -500,8 +503,10 @@ namespace NotesEditerforD
                         sw.Write(Environment.NewLine);
                     }
                 }//*/
+                #endregion
             }
             /////////////////////////////////////////////////↓Hold
+            #region
             int[,] _beatLCMArray2x = new int[2, lastScore + 1];
             int[,] _beatLCMArray3x = new int[2, lastScore + 1];
             int[,] _beatLCMArray4x = new int[2, lastScore + 1];
@@ -646,7 +651,9 @@ namespace NotesEditerforD
                     }
                 }
             }
-            /////////////////////////////////////////////////↓Slide      
+            #endregion
+            /////////////////////////////////////////////////↓Slide
+            #region
             //[h,i,j,k]=lane,beat,layer
             for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < 1000; j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
             for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < 1000; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
@@ -874,7 +881,9 @@ namespace NotesEditerforD
                 }
             }
             //
+            #endregion
             /////////////////////////////////////////////////↓AirLine
+            #region
             //[h,i,j,k]=lane,beat,layer
             for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < 1000; j++) for (int k = 0; k < sign.Length; k++) longLane1[h, i, j, k] = "00";//initialize lane
             for (int h = 0; h < lastScore + 1; h++) for (int i = 0; i < 16; i++) for (int j = 0; j < 1000; j++) for (int k = 0; k < sign.Length; k++) longLane2[h, i, j, k] = "00";//initialize lane
@@ -1057,6 +1066,7 @@ namespace NotesEditerforD
                 }
             }
             //
+            #endregion
             sw.Close();
         }
 

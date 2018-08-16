@@ -20,41 +20,41 @@ namespace NotesEditerforD
         private ShortNote prevNote, nextNote;
         private int longNoteNumber, noteSize, startSize, endSize;
         private Point[] destPoints = new Point[3];//{ul, ur, ll}
-        private Point[] destPointsSq = new Point[4];//{ul, ur, ll, lr}
+        //private Point[] destPointsSq = new Point[4];//{ul, ur, ll, lr}
         private decimal specialValue;
         //*
         private Bitmap noteImage;
         //*/
-        private bool visible = true, collision = true;//for SlideLine
+        private bool visible = true;//, collision = true;//for SlideLine
 
         /// <summary>
         /// 汎用コンストラクタです
         /// </summary>
-        /// <param name="_musicscore"></param>
-        /// <param name="_position"></param>
-        /// <param name="_startPosition"></param>
-        /// <param name="_endPosition"></param>
-        /// <param name="_noteSize"></param>
-        /// <param name="_noteStyle"></param>
-        /// <param name="_airDirection"></param>
-        /// <param name="_longNoteNumber"></param>
-        public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber)
+        /// <param name="musicscore"></param>
+        /// <param name="position"></param>
+        /// <param name="startPosition"></param>
+        /// <param name="endPosition"></param>
+        /// <param name="noteSize"></param>
+        /// <param name="noteStyle"></param>
+        /// <param name="airDirection"></param>
+        /// <param name="longNoteNumber"></param>
+        public ShortNote(MusicScore musicscore, Point position, Point startPosition, Point endPosition, int noteSize, string noteStyle, string airDirection, int longNoteNumber)
         {
-            musicscore = _musicscore;
-            position = _position;
-            startPosition = _startPosition;
-            endPosition = _endPosition;
-            noteSize = _noteSize;//1-16
+            this.musicscore = musicscore;
+            this.position = position;
+            this.startPosition = startPosition;
+            this.endPosition = endPosition;
+            this.noteSize = noteSize;//1-16
             //startSize = endSize = noteSize;
-            noteStyle = _noteStyle;
-            airDirection = _airDirection;
-            longNoteNumber = _longNoteNumber;
+            this.noteStyle = noteStyle;
+            this.airDirection = airDirection;
+            this.longNoteNumber = longNoteNumber;
             //
             prevNote = null;
             nextNote = null;
             //destPoints = new Point[3];
 
-            noteImage = setNoteImage();
+            this.noteImage = setNoteImage();
             pos.Beat = MusicScore.SelectedBeat;
             setRelativePosition();
         }
@@ -69,26 +69,26 @@ namespace NotesEditerforD
         /// <param name="_startSize"></param>
         /// <param name="_endSize"></param>
         /// <param name="_longNoteNumber"></param>
-        public ShortNote(MusicScore _musicscore, Point _position, Point _startPosition, Point _endPosition, int _startSize, int _endSize, int _longNoteNumber)
+        public ShortNote(MusicScore musicscore, Point position, Point startPosition, Point endPosition, int startSize, int endSize, int longNoteNumber)
         {
-            musicscore = _musicscore;
-            position = _position;
-            startPosition = _startPosition;
-            endPosition = _endPosition;
-            startSize = _startSize;//1-16
-            endSize = _endSize;//1-16
-            noteStyle = "SlideLine";
-            airDirection = "Center";
-            longNoteNumber = _longNoteNumber;
+            this.musicscore =musicscore;
+            this.position = position;
+            this.startPosition = startPosition;
+            this.endPosition = endPosition;
+            this.startSize = startSize;//1-16
+            this.endSize = endSize;//1-16
+            this.noteStyle = "SlideLine";
+            this.airDirection = "Center";
+            this.longNoteNumber = longNoteNumber;
             //this.visible = visible == 0 ? false : true;
             //
-            prevNote = null;
-            nextNote = null;
+            this.prevNote = null;
+            this.nextNote = null;
             //destPoints = new Point[3];
 
-            noteImage = setNoteImage();
-            pos.Beat = MusicScore.SelectedBeat;
-            setRelativePosition();
+            this.noteImage = setNoteImage();
+            this.pos.Beat = MusicScore.SelectedBeat;
+            this.setRelativePosition();
         }
 
 
@@ -102,24 +102,24 @@ namespace NotesEditerforD
         /// <param name="_airDirection"></param>
         /// <param name="_longNoteNumber"></param>
         /// <param name="_beat"></param>
-        public ShortNote(MusicScore _musicscore, Point _position, int _noteSize, string _noteStyle, string _airDirection, int _longNoteNumber, int _beat)
+        public ShortNote(MusicScore musicscore, Point position, int noteSize, string noteStyle, string airDirection, int longNoteNumber, int beat)
         {
-            musicscore = _musicscore;
-            position = _position;
-            startPosition = _position;
-            endPosition = _position;
-            noteSize = _noteSize;//1-16
-            noteStyle = _noteStyle;
-            airDirection = _airDirection;
-            longNoteNumber = _longNoteNumber;
+            this.musicscore = musicscore;
+            this.position = position;
+            this.startPosition = position;
+            this.endPosition = position;
+            this.noteSize = noteSize;//1-16
+            this.noteStyle = noteStyle;
+            this.airDirection = airDirection;
+            this.longNoteNumber = longNoteNumber;
             //
-            prevNote = null;
-            nextNote = null;
+            this.prevNote = null;
+            this.nextNote = null;
             //destPoints = new Point[3];
 
-            noteImage = setNoteImage();
-            pos.Beat = _beat;
-            setRelativePosition();
+            this.noteImage = setNoteImage();
+            this.pos.Beat = beat;
+            this.setRelativePosition();
         }
 
         /// <summary>
@@ -129,18 +129,18 @@ namespace NotesEditerforD
         /// <param name="_position"></param>
         /// <param name="_noteStyle"></param>
         /// <param name="_value"></param>
-        public ShortNote(MusicScore _musicscore, Point _position, string _noteStyle, decimal _value)
+        public ShortNote(MusicScore musicscore, Point position, string noteStyle, decimal value)
         {
-            musicscore = _musicscore;
-            position = _position;
-            noteStyle = _noteStyle;
-            specialValue = _value;
-            noteSize = 16;
+            this.musicscore = musicscore;
+            this.position = position;
+            this.noteStyle = noteStyle;
+            this.specialValue = value;
+            this.noteSize = 16;
             //destPoints = new Point[3];
 
-            noteImage = setNoteImage();
-            pos.Beat = MusicScore.SelectedBeat;
-            setRelativePosition();
+            this.noteImage = setNoteImage();
+            this.pos.Beat = MusicScore.SelectedBeat;
+            this.setRelativePosition();
         }
         //
 
@@ -148,30 +148,31 @@ namespace NotesEditerforD
         {
             pos.X = (position.X - MusicScore.LeftMargin) / 10;
             //pos.Beat = MusicScore.SelectedBeat;//20160;
-            int localY = 778 - position.Y - MusicScore.BottomMargin;
-            if (localY < 386)//2*n+1小節
+            //int localY = 778 - position.Y - MusicScore.BottomMargin;
+            int localY = 768 - (position.Y - MusicScore.BottomMargin + 3);
+            if (localY < 384)//2*n+1小節
             {
                 pos.Measure = 2 * musicscore.Index + 1;
-                pos.BeatNumber = (int)Math.Round((localY - 3) * pos.Beat / 384m);
+                pos.BeatNumber = (int)Math.Round(localY * pos.Beat / 384m);
             }
             else//2*(n+1)小節
             {
-                localY -= 386;
+                localY -= 384;
                 pos.Measure = 2 * musicscore.Index + 2;
-                pos.BeatNumber = (int)Math.Round((localY - 3) * pos.Beat / 384m);//
+                pos.BeatNumber = (int)Math.Round(localY * pos.Beat / 384m);//
             }
             int beatGCD = GCD(pos.Beat, pos.BeatNumber);
             //pos.Beat /= beatGCD; pos.BeatNumber /= beatGCD;
         }
 
         //*
-        public void showRerativePosition()
+        public void ShowRerativePosition()
         {
             MessageBox.Show(pos.X + "\n" + pos.Measure + "(" + pos.BeatNumber + "/" + pos.Beat + ")");
         }
         //*/
 
-        private int GCD(int a, int b)
+        private static int GCD(int a, int b)
         {
             if (a == 0 || b == 0) return 1;
             if (a < b)
@@ -296,9 +297,9 @@ namespace NotesEditerforD
         
         
 
-        public void update()
+        public void Update()
         {
-            noteImage = setNoteImage();
+            this.noteImage = setNoteImage();
             pos.Beat = (MusicScore.SelectedBeat * pos.Beat) / GCD(MusicScore.SelectedBeat, pos.Beat);
             setRelativePosition();
         }
@@ -311,44 +312,53 @@ namespace NotesEditerforD
         {
             //System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix();
             //cm.Matrix00 = 1; cm.Matrix11 = 1; cm.Matrix22 = 1; cm.Matrix33 = 1; cm.Matrix44 = 1;
-            Bitmap canvas;
-            switch (noteStyle)
+            Bitmap canvas = new Bitmap(10, 10);
+            try
             {
-                case "HoldLine":
-                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
-                    //cm.Matrix33 = 0.9f;
-                    break;
-                case "SlideLine":
-                    canvas = new Bitmap(Math.Max(endPosition.X + endSize * 10, startPosition.X + startSize * 10) - Math.Min(endPosition.X, startPosition.X),
-                        startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
-                    //cm.Matrix33 = 0.9f;
-                    break;
-                case "AirLine":
-                    canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
-                    //cm.Matrix33 = 0.9f;
-                    break;
-                case "AirUp":
-                    canvas = new Bitmap(noteSize * 10, 30);
-                    break;
-                case "AirDown":
-                    canvas = new Bitmap(noteSize * 10, 30);
-                    break;
-                default:
-                    canvas = new Bitmap(noteSize * 10, 5);
-                    break;
+                switch (noteStyle)
+                {
+                    case "HoldLine":
+                        canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
+                        //cm.Matrix33 = 0.9f;
+                        break;
+                    case "SlideLine":
+                        canvas = new Bitmap(Math.Max(endPosition.X + endSize * 10, startPosition.X + startSize * 10) - Math.Min(endPosition.X, startPosition.X),
+                            startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
+                        //cm.Matrix33 = 0.9f;
+                        break;
+                    case "AirLine":
+                        canvas = new Bitmap(noteSize * 10, startPosition.Y - endPosition.Y <= 0 ? 1 : startPosition.Y - endPosition.Y);
+                        //cm.Matrix33 = 0.9f;
+                        break;
+                    case "AirUp":
+                        canvas = new Bitmap(noteSize * 10, 30);
+                        break;
+                    case "AirDown":
+                        canvas = new Bitmap(noteSize * 10, 30);
+                        break;
+                    default:
+                        canvas = new Bitmap(noteSize * 10, 5);
+                        break;
+                }
+            }
+            finally
+            {
+                //canvas.Dispose();
             }
             //System.Drawing.Imaging.ImageAttributes ia = new System.Drawing.Imaging.ImageAttributes();
             //ia.SetColorMatrix(cm);
             Graphics g = Graphics.FromImage(canvas);//設定した大きさで背景を作成
             g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;//ノーツ画像を拡大縮小するときの方式を指定
-            Bitmap _noteImage = setNoteImage(noteStyle);//生のノーツ画像を持ってくる
-            _noteImage.MakeTransparent(Color.Black);//黒い部分は透明とみなす
+            Bitmap noteImage = setNoteImage(noteStyle);//生のノーツ画像を持ってくる
+            noteImage.MakeTransparent(Color.Black);//黒い部分は透明とみなす
             destPoints = setDestPoints("ShortNote");//ノーツの相対位置を設定
             //g.DrawImage(_noteImage ,destPoints, new Rectangle(new Point(0, 0), canvas.Size), GraphicsUnit.Pixel, ia);
-            if (noteStyle == "SlideLine") g.DrawImage(_noteImage, new Point());
-            else g.DrawImage(_noteImage, destPoints);
+            if (noteStyle == "SlideLine") g.DrawImage(noteImage, new Point());
+            else g.DrawImage(noteImage, destPoints);
             g.Dispose();
-            _noteImage.Dispose();
+            noteImage.Dispose();
+            //this.noteImage = canvas;
+            //canvas.Dispose();
             return canvas;
         }
         //*
@@ -402,6 +412,7 @@ namespace NotesEditerforD
                     g.FillPolygon(new SolidBrush(Color.FromArgb(28, 255, 255)), ps);
                     g.Dispose();
                     noteImage = canvas;
+                    //canvas.Dispose();
                     break;
                 case "SlideTap":
                     
@@ -473,49 +484,49 @@ namespace NotesEditerforD
         //*/
         private Point[] setDestPoints(string state)
         {
-            Point[] _destPoints;// = new Point[3];
+            Point[] destPoints;// = new Point[3];
             switch (noteStyle)
             {
                 case "HoldEnd":
-                    if(state == "ShortNote") _destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 5) };
-                    else _destPoints = new Point[3] { new Point(startPosition.X, position.Y), new Point(startPosition.X + 10 * noteSize, position.Y), new Point(startPosition.X, position.Y + 5) };
+                    if(state == "ShortNote") destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 5) };
+                    else destPoints = new Point[3] { new Point(startPosition.X, position.Y), new Point(startPosition.X + 10 * noteSize, position.Y), new Point(startPosition.X, position.Y + 5) };
                     break;
                 case "HoldLine":
-                    if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
-                    else _destPoints = new Point[3] { new Point(startPosition.X + 2, endPosition.Y), new Point(startPosition.X + 10 * noteSize - 2, endPosition.Y), new Point(startPosition.X + 2, startPosition.Y) };
+                    if (state == "ShortNote") destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
+                    else destPoints = new Point[3] { new Point(startPosition.X + 2, endPosition.Y), new Point(startPosition.X + 10 * noteSize - 2, endPosition.Y), new Point(startPosition.X + 2, startPosition.Y) };
                     break;
                 case "SlideLine":
                     if (state == "ShortNote")
                     {
-                        if(startPosition.X > endPosition.X) _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(startPosition.X - endPosition.X + 2, startPosition.Y - endPosition.Y) };
-                        else _destPoints = new Point[3] { new Point(endPosition.X - startPosition.X + 2, 0), new Point(endPosition.X - startPosition.X + 10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
+                        if(startPosition.X > endPosition.X) destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(startPosition.X - endPosition.X + 2, startPosition.Y - endPosition.Y) };
+                        else destPoints = new Point[3] { new Point(endPosition.X - startPosition.X + 2, 0), new Point(endPosition.X - startPosition.X + 10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
                     }
-                    else _destPoints = new Point[4] { new Point(endPosition.X + 2, endPosition.Y), new Point(endPosition.X + 10 * endSize - 2, endPosition.Y), new Point(startPosition.X + 2, startPosition.Y), new Point(startPosition.X + startSize * 10 - 2, startPosition.Y)};
+                    else destPoints = new Point[4] { new Point(endPosition.X + 2, endPosition.Y), new Point(endPosition.X + 10 * endSize - 2, endPosition.Y), new Point(startPosition.X + 2, startPosition.Y), new Point(startPosition.X + startSize * 10 - 2, startPosition.Y)};
                     break;
                 case "AirLine":
-                    if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
-                    else _destPoints = new Point[3] { new Point(startPosition.X + 5 * noteSize - 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize + 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize - 3, startPosition.Y) };
+                    if (state == "ShortNote") destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, startPosition.Y - endPosition.Y) };
+                    else destPoints = new Point[3] { new Point(startPosition.X + 5 * noteSize - 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize + 3, endPosition.Y), new Point(startPosition.X + 5 * noteSize - 3, startPosition.Y) };
                     break;
                 case "AirBegin":
                 case "AirEnd":
                 case "AirAction":
-                    if (state == "ShortNote") _destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, 3) };
-                    else _destPoints = new Point[3] { new Point(startPosition.X + 2, position.Y), new Point(startPosition.X + 10 * noteSize - 2, position.Y), new Point(startPosition.X + 2, position.Y + 3) };
+                    if (state == "ShortNote") destPoints = new Point[3] { new Point(2, 0), new Point(10 * noteSize - 2, 0), new Point(2, 3) };
+                    else destPoints = new Point[3] { new Point(startPosition.X + 2, position.Y), new Point(startPosition.X + 10 * noteSize - 2, position.Y), new Point(startPosition.X + 2, position.Y + 3) };
                     break;
                 case "AirUp":
-                    if (state == "ShortNote") _destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 30) };
-                    else _destPoints = new Point[3] { new Point(position.X, position.Y - 32), new Point(position.X + 10 * noteSize, position.Y - 32), new Point(position.X, position.Y + 30 - 32) };
+                    if (state == "ShortNote") destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 30) };
+                    else destPoints = new Point[3] { new Point(position.X, position.Y - 32), new Point(position.X + 10 * noteSize, position.Y - 32), new Point(position.X, position.Y + 30 - 32) };
                     break;
                 case "AirDown":
-                    if (state == "ShortNote") _destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 30) };
-                    else _destPoints = new Point[3] { new Point(position.X, position.Y - 32), new Point(position.X + 10 * noteSize, position.Y - 32), new Point(position.X, position.Y + 30 - 32) };
+                    if (state == "ShortNote") destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 30) };
+                    else destPoints = new Point[3] { new Point(position.X, position.Y - 32), new Point(position.X + 10 * noteSize, position.Y - 32), new Point(position.X, position.Y + 30 - 32) };
                     break;
                 default:
-                    if (state == "ShortNote") _destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 5) };
-                    else _destPoints = new Point[3] { position, new Point(position.X + 10 * noteSize, position.Y), new Point(position.X, position.Y + 5) };
+                    if (state == "ShortNote") destPoints = new Point[3] { new Point(0, 0), new Point(10 * noteSize, 0), new Point(0, 5) };
+                    else destPoints = new Point[3] { position, new Point(position.X + 10 * noteSize, position.Y), new Point(position.X, position.Y + 5) };
                     break;
             }
-            return _destPoints;
+            return destPoints;
         }
     }
 }
