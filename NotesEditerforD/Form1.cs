@@ -385,7 +385,7 @@ namespace NotesEditerforD
             flowLayoutPanelMusicScore.Height = this.Height - 97;
             //*/
             flowLayoutPanelNotesButton.Height = this.Height - 72;
-            sRoot.panelResize(Width, Height);
+            sRoot?.panelResize(Width, Height);
         }
 
         private NotesButton activeNotesButton()
