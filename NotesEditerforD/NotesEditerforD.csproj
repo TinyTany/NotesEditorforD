@@ -62,7 +62,6 @@
     <Compile Include="MusicScore.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MusicScore2.cs" />
     <Compile Include="Note2.cs" />
     <Compile Include="NotesButton.cs">
       <SubType>UserControl</SubType>
